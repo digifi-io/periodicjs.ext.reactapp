@@ -8,8 +8,6 @@ import qs from 'querystring';
 import debounce from 'debounce';
 import { flatten, } from 'flat';
 import { getRenderedComponent, } from '../AppLayoutMap';
-// import capitalize from 'capitalize';
-// import pluralize from 'pluralize';
 import FileReaderInput from 'react-file-reader-input';
 import path from 'path';
 import { csv2json, json2csv, } from 'json-2-csv';
@@ -544,7 +542,7 @@ class ResponsiveTable extends Component {
           {selectOptions.map((opt, k) => {
             return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
           })}
-        </rb.Select>;
+        </rb.Select>
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'datalist') {
         let rowdata = Array.isArray(this.props.__tableOptions[ header.sortid ][ options.rowIndex ]) ? this.props.__tableOptions[ header.sortid ][ options.rowIndex ]
           : Array.isArray(this.props.__tableOptions[ header.sortid ]) ? this.props.__tableOptions[ header.sortid ]
@@ -894,7 +892,7 @@ class ResponsiveTable extends Component {
                         }}>{'⤫'}</rb.Button></rb.Td>
                       </rb.Tr>;
                     })
-                    : null}  
+                    : null}
                 </rb.Tbody>
                 <rb.Tfoot>
                   <rb.Tr>
@@ -1193,11 +1191,37 @@ class ResponsiveTable extends Component {
                         // console.debug({ row, header, });
                         //http://htmlarrows.com/arrows/
                         return (
-                          <rb.Td key={`row${rowIndex}col${colIndex}`} style={{ textAlign:'right', }} {...header.columnProps}>
-                            {(rowIndex !== 0 && this.props.useUpArrowButton)
+                          <rb.Td key={`row${rowIndex}col${colIndex}`} style={{ textAlign: 'right', }} {...header.columnProps}>
+                            { (header.buttons && header.buttons.length) ?
+                              header.buttons.map(button => {
+                                return this.getRenderedComponent(Object.assign({
+                                  component: 'ResponsiveButton',
+                                  props: Object.assign({
+                                    onclickPropObject: row,
+                                    buttonProps: {},
+                                  }, button.passProps),
+                                  children: this.formatValue(
+                                    (typeof row[ header.sortid ] !=='undefined')
+                                    ? row[ header.sortid ]
+                                    : header.value,
+                                    row,
+                                    {
+                                      idx: rowIndex+calcStartIndex,
+                                      momentFormat: header.momentFormat,
+                                      image: header.image,
+                                      imageProps: header.imageProps,
+                                      icon: header.icon,
+                                      iconProps: header.iconProps,
+                                    }) || '',
+                                }, button));
+                              }) : null
+                              // Object.assign
+                            }
+                            {
+                              (rowIndex !== 0 && this.props.useUpArrowButton)
                               ? <rb.Button {...this.props.formRowUpButton} onClick={() => {
                                 this.moveRowUp(rowIndex);
-                              }}>{(this.props.formRowUputtonLabel)?this.props.formRowUputtonLabel:'⇧'}</rb.Button>
+                              }}>{(this.props.formRowUpButtonLabel)?this.props.formRowUpButtonLabel:'⇧'}</rb.Button>
                               : null
                             }
                             {(rowIndex < this.state.rows.length - 1 && this.props.useDownArrowButton)
@@ -1208,7 +1232,7 @@ class ResponsiveTable extends Component {
                             }
                             <rb.Button {...this.props.formRowDeleteButton} onClick={() => {
                               this.deleteRow(rowIndex);
-                            }}>{(this.props.formRowDeleteButtonLabel)?this.props.formRowDeleteButtonLabel:'⤫'}</rb.Button>
+                            }}>{(this.props.formRowDeleteButtonLabel) ? this.props.formRowDeleteButtonLabel : '⤫'}</rb.Button>
                           </rb.Td>
                         );
                       } else if (header.buttons && header.buttons.length) {
