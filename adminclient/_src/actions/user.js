@@ -470,7 +470,8 @@ var user = {
       delete headers.clientid_default;
       var options = (0, _assign2.default)({}, requestOptions);
       options.headers = (0, _assign2.default)({}, options.headers, { 'x-access-token': state.user.jwt_token });
-      return _util2.default.fetchComponent(basename + '/load/mfa', options)().then(function (response) {
+      var url = state.setttings.validateMFAPath ? '' + basename + state.setttings.validateMFAPath : basename + '/load/mfa';
+      return _util2.default.fetchComponent(url, options)().then(function (response) {
         if (response && response.data && response.data.authenticated) {
           dispatch(_this7.authenticatedMFA());
           return _serverSideReactNative.AsyncStorage.setItem(_constants2.default.user.MFA_AUTHENTICATED, true).then(function () {

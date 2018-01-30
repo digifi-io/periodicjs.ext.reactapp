@@ -550,7 +550,7 @@ function getFormDropdown(options) {
       'div',
       wrapperProps,
       _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({}, passedProps, {
-        value: this.state[formElement.name] || initialValue,
+        defaultValue: initialValue,
         onChange: function onChange(event, newvalue) {
           _onChange.call(_this5, event, newvalue);
           if (customCallbackfunction) customCallbackfunction(event);
