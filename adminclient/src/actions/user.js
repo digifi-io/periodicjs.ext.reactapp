@@ -411,8 +411,8 @@ const user = {
       delete headers.clientid_default;
       let options = Object.assign({}, requestOptions);
       options.headers = Object.assign({}, options.headers, { 'x-access-token': state.user.jwt_token, });
-      let url = (state.setttings.validateMFAPath)
-        ? `${basename}${state.setttings.validateMFAPath}`
+      let url = (state.settings.validateMFAPath)
+        ? `${basename}${state.settings.validateMFAPath}`
         : `${basename}/load/mfa`;
       return utilities.fetchComponent(url, options)()
         .then(response => {
