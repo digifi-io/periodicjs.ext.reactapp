@@ -444,7 +444,7 @@ export function getFormDropdown(options){
     {getFormLabel(formElement)}  
     <div {...wrapperProps}>  
       <Dropdown {...passedProps}
-        value={this.state[ formElement.name ] || initialValue}  
+        defaultValue={initialValue} 
         onChange={(event, newvalue)=>{
           onChange.call(this, event, newvalue);
           if(customCallbackfunction) customCallbackfunction(event);
