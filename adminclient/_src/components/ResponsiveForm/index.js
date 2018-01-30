@@ -178,6 +178,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormDropdown = _FormElements.getFormDropdown.bind(_this);
     _this.getFormTextArea = _FormElements.getFormTextArea.bind(_this);
     _this.getFormCheckbox = _FormElements.getFormCheckbox.bind(_this);
+    _this.getFormSemanticCheckbox = _FormElements.getFormSemanticCheckbox.bind(_this);
     _this.getCardFooterItem = _FormElements.getCardFooterItem.bind(_this);
     _this.getFormSelect = _FormElements.getFormSelect.bind(_this);
     _this.getRawInput = _FormElements.getRawInput.bind(_this);
@@ -488,6 +489,8 @@ var ResponsiveForm = function (_Component) {
             return _this5.getFormDatatable({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'checkbox' || formElement.type === 'radio') {
             return _this5.getFormCheckbox({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'Semantic.checkbox') {
+            return _this5.getFormSemanticCheckbox({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'label') {
             return _react2.default.createElement(
               _reBulma.Column,
@@ -668,23 +671,24 @@ var ResponsiveForm = function (_Component) {
       }) : [];
 
       if (this.props.cardForm) {
+        var cardFormProps = this.props.cardFormProps || {};
         return _react2.default.createElement(
           _reBulma.Card,
-          (0, _extends3.default)({ className: '__ra_rf' }, (0, _assign2.default)({}, {
-            isFullwidth: true
-          }, this.props.cardFormProps)),
+          (0, _extends3.default)({}, (0, _assign2.default)({}, { isFullwidth: true }, cardFormProps.cardProps), {
+            style: this.props.cardStyle,
+            className: '__ra_rf' + (cardFormProps.cardProps && cardFormProps.cardProps.className) ? cardFormProps.cardProps.className : '' }),
           this.props.cardFormTitle ? _react2.default.createElement(
             _reBulma.CardHeader,
-            null,
+            { style: cardFormProps.headerStyle },
             _react2.default.createElement(
               _reBulma.CardHeaderTitle,
-              this.props.cardFormTitleProps,
-              this.props.cardFormTitle
+              { style: cardFormProps.headerTitleStyle },
+              cardFormProps.cardFormTitle
             )
           ) : null,
           _react2.default.createElement(
             _reBulma.CardContent,
-            null,
+            cardFormProps.cardContentProps,
             formGroupData,
             this.props.children
           ),

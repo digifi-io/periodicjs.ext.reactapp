@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         // cwd: 'public',
         expand: true,
         src: '**/*.*',
-        dest: '../../public/extensions/periodicjs.ext.reactapp',
+        dest: '../../../public/extensions/periodicjs.ext.reactapp',
       },
       ext: {
         cwd: 'adminclient/build',

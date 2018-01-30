@@ -137,7 +137,7 @@ var AppHeader = function (_Component) {
 
       var dropdownLinks = this.props.settings.ui.header.productHeader.productLinks.length > 0 ? this.props.settings.ui.header.productHeader.productLinks.map(function (link) {
         return _react2.default.createElement(_semanticUiReact.Dropdown.Item, { text: link.text, onClick: function onClick() {
-            _this2.props.reduxRouter.push(link.location);
+            link.location ? _this2.props.reduxRouter.push(link.location) : link.logoutUser ? _this2.props.logoutUser() : null;
           } });
       }) : null;
 
@@ -145,7 +145,7 @@ var AppHeader = function (_Component) {
         _reBulma.Hero,
         { color: this.props.settings.ui.header.color, isBold: this.props.settings.ui.header.isBold, style: (0, _assign2.default)(_styles2.default.fixedTop, _styles2.default.navContainer, this.props.settings.ui.header.containerStyle),
           className: this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed' },
-        this.props.ui && this.props.ui.components && this.props.ui.components.header && (0, _typeof3.default)(this.props.ui.components.header) === 'object' && this.props.ui.components.header.layout ? this.getRenderedComponent(this.props.ui.components.header.layout) : this.props.settings.ui.header.productHeader.layout ? _react2.default.createElement(
+        this.props.ui && this.props.ui.components && this.props.ui.components.header && (0, _typeof3.default)(this.props.ui.components.header) === 'object' && this.props.ui.components.header.layout ? this.getRenderedComponent(this.props.ui.components.header.layout) : _react2.default.createElement(
           _reBulma.HeroHead,
           null,
           _react2.default.createElement(
@@ -156,76 +156,25 @@ var AppHeader = function (_Component) {
               { style: { boxShadow: 'none' } },
               _react2.default.createElement(
                 _reBulma.NavGroup,
-                { align: 'left' },
+                { align: 'left', style: { overflow: 'visible' } },
                 _react2.default.createElement(
                   _reBulma.NavItem,
                   null,
-                  logoImage
+                  this.props.settings.ui.header.customDropdownNav ? logoImage : this.props.settings.ui.header.customButton && (0, _typeof3.default)(this.props.settings.ui.header.customButton) === 'object' && this.props.settings.ui.header.customButton.layout ? this.getRenderedComponent(this.props.settings.ui.header.customButton) : _react2.default.createElement(_reBulma.Button, { onClick: this.props.toggleUISidebar, buttonStyle: 'isOutlined', color: buttonColor, icon: 'fa fa-bars', style: _styles2.default.iconButton })
                 ),
-                _react2.default.createElement(
-                  _reBulma.NavItem,
-                  { style: this.props.settings.ui.header.navLabelStyle },
-                  _react2.default.createElement(
-                    'span',
-                    { style: (0, _assign2.default)({ fontSize: '17px' }, this.props.settings.ui.header.navLabelStyle) },
-                    this.props.settings.ui.header.productHeader.headerTitle
-                  )
-                )
-              ),
-              globalSearch,
-              _react2.default.createElement(
-                _reBulma.NavGroup,
-                { align: 'right', style: { display: 'flex' } },
-                _react2.default.createElement(
+                this.props.settings.ui.header.customDropdownNav ? _react2.default.createElement(
                   _reBulma.NavItem,
                   { style: (0, _assign2.default)({ padding: 0, alignItems: 'stretch' }, this.props.settings.ui.header.navLabelStyle) },
                   _react2.default.createElement(
                     _semanticUiReact.Dropdown,
-                    { text: this.props.ui.nav_label, style: { display: 'flex', alignItems: 'center', padding: '10px' } },
+                    { text: this.props.ui.nav_label, style: (0, _assign2.default)({ display: 'flex', alignItems: 'center', padding: '10px' }, this.props.settings.ui.header.navLabelStyle) },
                     _react2.default.createElement(
                       _semanticUiReact.Dropdown.Menu,
-                      { style: { right: '0px', left: 'initial' } },
+                      null,
                       dropdownLinks
                     )
                   )
-                ),
-                _react2.default.createElement(
-                  _reBulma.NavItem,
-                  { style: (0, _assign2.default)({ padding: 0, alignItems: 'stretch' }, this.props.settings.ui.header.navLabelStyle) },
-                  _react2.default.createElement(
-                    _semanticUiReact.Dropdown,
-                    { style: { display: 'flex', alignItems: 'center', padding: '10px 0 10px 10px' }, trigger: _react2.default.createElement('div', { style: profileStyle }) },
-                    _react2.default.createElement(
-                      _semanticUiReact.Dropdown.Menu,
-                      { style: { right: '0px', left: 'initial' } },
-                      _react2.default.createElement(_semanticUiReact.Dropdown.Item, { text: 'My Account', onClick: function onClick() {
-                          _this2.props.reduxRouter.push(_this2.all_prefixes.manifest_prefix + 'account/profile');
-                        } }),
-                      _react2.default.createElement(_semanticUiReact.Dropdown.Item, { text: 'Log Out', onClick: this.props.logoutUser })
-                    )
-                  )
-                )
-              )
-            )
-          )
-        ) : _react2.default.createElement(
-          _reBulma.HeroHead,
-          null,
-          _react2.default.createElement(
-            _reBulma.Container,
-            null,
-            _react2.default.createElement(
-              _reBulma.Nav,
-              { style: { boxShadow: 'none' } },
-              _react2.default.createElement(
-                _reBulma.NavGroup,
-                { align: 'left' },
-                _react2.default.createElement(
-                  _reBulma.NavItem,
-                  null,
-                  this.props.settings.ui.header.customButton && (0, _typeof3.default)(this.props.settings.ui.header.customButton) === 'object' && this.props.settings.ui.header.customButton.layout ? this.getRenderedComponent(this.props.settings.ui.header.customButton) : _react2.default.createElement(_reBulma.Button, { onClick: this.props.toggleUISidebar, buttonStyle: 'isOutlined', color: buttonColor, icon: 'fa fa-bars', style: _styles2.default.iconButton })
-                ),
-                _react2.default.createElement(
+                ) : _react2.default.createElement(
                   _reBulma.NavItem,
                   { style: (0, _assign2.default)({ justifyContent: 'flex-start' }, _styles2.default.fullWidth) },
                   !this.props.settings.ui.header.useGlobalSearch && this.props.ui.nav_label ? _react2.default.createElement(
@@ -249,7 +198,7 @@ var AppHeader = function (_Component) {
                   _react2.default.createElement(
                     _reactRouter.Link,
                     { to: this.all_prefixes.manifest_prefix + 'account/profile', style: (0, _assign2.default)({ fontSize: '20px' }, _styles2.default.noUnderline, this.props.settings.ui.header.userNameStyle) },
-                    (0, _capitalize2.default)(this.state.user.firstname || '') + ' ' + (0, _capitalize2.default)(this.state.user.lastname || '')
+                    (0, _capitalize2.default)(this.state.user.userdata.first_name || '') + ' ' + (0, _capitalize2.default)(this.state.user.userdata.last_name || '')
                   )
                 ),
                 _react2.default.createElement(
