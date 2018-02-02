@@ -683,7 +683,7 @@ var ResponsiveForm = function (_Component) {
             _react2.default.createElement(
               _reBulma.CardHeaderTitle,
               { style: cardFormProps.headerTitleStyle },
-              cardFormProps.cardFormTitle
+              this.props.cardFormTitle
             )
           ) : null,
           _react2.default.createElement(
