@@ -72,6 +72,7 @@ var ResponsiveFormContainer = function (_Component) {
     _this.updateFormLayout = _this.updateFormLayout.bind(_this);
     _this.updateFormGroup = _this.updateFormGroup.bind(_this);
     _this.updateValidations = _this.updateValidations.bind(_this);
+    _this.updateDoubleCardFormGroup = _this.updateDoubleCardFormGroup.bind(_this);
     return _this;
   }
 
@@ -104,13 +105,51 @@ var ResponsiveFormContainer = function (_Component) {
       return formgroup;
     }
   }, {
+    key: 'updateDoubleCardFormGroup',
+    value: function updateDoubleCardFormGroup(options) {
+      var formgroup = options.formgroup,
+          prevState = options.prevState,
+          currState = options.currState,
+          prop = options.prop,
+          order = options.order;
+
+      var formElementsQueue = [];
+      formElementsQueue.push.apply(formElementsQueue, (0, _toConsumableArray3.default)(formgroup.formElements[0][prop].slice()));
+      formgroup.formElements[0][prop] = order.length ? order.map(function (el) {
+        return false;
+      }) : [];
+      while (formElementsQueue.length > 0) {
+        var currentElement = formElementsQueue.shift();
+        if (currentElement.name && this.props.renderFormElements[currentElement.name]) {
+          currentElement = window[this.props.renderFormElements[currentElement.name].replace('func:window.', '')].call(this, currState, formElementsQueue, currentElement, prevState);
+          if (currentElement) {
+            if (order.length) formgroup.formElements[0][prop][order.indexOf(currentElement.name)] = currentElement;else formgroup.formElements[0][prop].push(currentElement);
+          }
+        } else {
+          if (order.length) formgroup.formElements[0][prop][order.indexOf(currentElement.name)] = currentElement;else formgroup.formElements[0][prop].push(currentElement);
+        }
+      }
+      formgroup.formElements[0][prop] = formgroup.formElements[0][prop].filter(function (el) {
+        return el !== false;
+      });
+      return formgroup;
+    }
+  }, {
     key: 'updateValidations',
     value: function updateValidations(options) {
       var _this2 = this;
 
       var formElements = [];
       this.props.form.formgroups.forEach(function (formgroup) {
-        if (formgroup.formElements) formElements.push.apply(formElements, (0, _toConsumableArray3.default)(formgroup.formElements));
+        if (formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight) {
+          formElements.push.apply(formElements, (0, _toConsumableArray3.default)(formgroup.formElements[0].formGroupCardLeft));
+          formElements.push.apply(formElements, (0, _toConsumableArray3.default)(formgroup.formElements[0].formGroupCardRight));
+        } else if (formgroup.formElements[0].formGroupElementsLeft && formgroup.formElements[0].formGroupElementsRight) {
+          formElements.push.apply(formElements, (0, _toConsumableArray3.default)(formgroup.formElements[0].formGroupElementsLeft));
+          formElements.push.apply(formElements, (0, _toConsumableArray3.default)(formgroup.formElements[0].formGroupElementsRight));
+        } else if (formgroup.formElements) {
+          formElements.push.apply(formElements, (0, _toConsumableArray3.default)(formgroup.formElements));
+        }
       });
       var validations = formElements.reduce(function (valArr, formElement) {
         if (formElement.name && _this2.props.validations[formElement.name]) valArr.push(_this2.props.validations[formElement.name]);
@@ -124,7 +163,15 @@ var ResponsiveFormContainer = function (_Component) {
       var _this3 = this;
 
       this.props.form.formgroups = this.props.form.formgroups.map(function (formgroup) {
-        if (formgroup.formElements) {
+        if (formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight) {
+          formgroup = _this3.updateDoubleCardFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState, prop: 'formGroupCardLeft', order: formgroup.formElements[0].leftOrder });
+          formgroup = _this3.updateDoubleCardFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState, prop: 'formGroupCardRight', order: formgroup.formElements[0].rightOrder });
+          return formgroup;
+        } else if (formgroup.formElements[0].formGroupElementsLeft && formgroup.formElements[0].formGroupElementsRight) {
+          formgroup = _this3.updateDoubleCardFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState, prop: 'formGroupElementsLeft', order: formgroup.formElements[0].leftOrder });
+          formgroup = _this3.updateDoubleCardFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState, prop: 'formGroupElementsRight', order: formgroup.formElements[0].rightOrder });
+          return formgroup;
+        } else if (formgroup.formElements) {
           return _this3.updateFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState });
         } else {
           return formgroup;
