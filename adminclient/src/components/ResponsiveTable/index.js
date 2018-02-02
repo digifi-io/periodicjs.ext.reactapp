@@ -68,6 +68,7 @@ class ResponsiveTable extends Component {
       selectedRowIndex: {},
       showFilterSearch: props.showFilterSearch,
       disableSort: props.disableSort,
+      
       // usingFiltersInSearch: props.usingFiltersInSearch,
     };
     this.searchFunction = debounce(this.updateTableData, 200);
@@ -696,6 +697,7 @@ class ResponsiveTable extends Component {
   }
   render() {
     // console.debug('render this.state', this.state);
+    let maxFormRowLength;
     let calcStartIndex = ((this.state.currentPage - 1) * this.state.limit);
     let startIndex = (!this.props.baseUrl)
       ? calcStartIndex
@@ -830,7 +832,6 @@ class ResponsiveTable extends Component {
         }}
       >Advanced</rb.Button>;
     }
-    let maxFormRowLength;
     let tableBody = displayRows.map((row, rowIndex) => (
       <rb.Tr key={`row${rowIndex}`} className={(this.props.selectEntireRow && rowIndex === this.state.selectedRowIndex) ? '__selected' : undefined} >
         {this.state.headers.map((header, colIndex) => {
@@ -859,7 +860,7 @@ class ResponsiveTable extends Component {
           } else if (header.formRowButtons) {
             // console.debug({ row, header, });
             //http://htmlarrows.com/arrows/
-            maxFormRowLength = (header.dynamicFormRowWidth) ? 0 : undefined;
+            maxFormRowLength = (header.dynamicFormRowWidth) ? (maxFormRowLength) ? maxFormRowLength : 0 : undefined;
             let buttonCell = (
               <rb.Td key={`row${rowIndex}col${colIndex}`} style={{ textAlign: 'right', }} {...header.columnProps}>
                 {(header.buttons && header.buttons.length) ?
@@ -906,7 +907,9 @@ class ResponsiveTable extends Component {
               </rb.Td>
             );
             let currentButtonLength = buttonCell.props.children.filter(Boolean).length;
+            console.log('CURRENT', currentButtonLength, 'TOTLA', maxFormRowLength);
             maxFormRowLength = (currentButtonLength > maxFormRowLength) ? currentButtonLength : maxFormRowLength;
+            console.log('AFTER', maxFormRowLength)
             return buttonCell;
           } else if (header.buttons && header.buttons.length) {
             // console.debug({ row, header, });
