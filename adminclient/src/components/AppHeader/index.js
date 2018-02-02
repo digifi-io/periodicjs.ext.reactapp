@@ -72,13 +72,17 @@ class AppHeader extends Component {
     let dropdownLinks = (this.props.settings.ui.header.productHeader.productLinks.length > 0)
       ? this.props.settings.ui.header.productHeader.productLinks.map(link => {
         return (
-          <Dropdown.Item text={link.text} onClick={() => {
-            (link.location)
-              ? this.props.reduxRouter.push(link.location)
-              : (link.logoutUser)
-                ? this.props.logoutUser()
-                : null
-            }} />
+          <Dropdown.Item
+            text={link.text}
+            onClick={() => {
+              (link.location)
+                ? this.props.reduxRouter.push(link.location)
+                : (link.logoutUser)
+                  ? this.props.logoutUser()
+                  : null
+            }}
+            className={(link.className) ? link.className : ''}
+          />
         )
         })
       : null;
