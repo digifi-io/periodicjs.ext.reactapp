@@ -697,7 +697,7 @@ class ResponsiveTable extends Component {
   }
   render() {
     // console.debug('render this.state', this.state);
-    let maxFormRowLength;
+    let maxFormRowLength = 0;
     let calcStartIndex = ((this.state.currentPage - 1) * this.state.limit);
     let startIndex = (!this.props.baseUrl)
       ? calcStartIndex
@@ -860,7 +860,6 @@ class ResponsiveTable extends Component {
           } else if (header.formRowButtons) {
             // console.debug({ row, header, });
             //http://htmlarrows.com/arrows/
-            maxFormRowLength = (header.dynamicFormRowWidth) ? (maxFormRowLength) ? maxFormRowLength : 0 : undefined;
             let buttonCell = (
               <rb.Td key={`row${rowIndex}col${colIndex}`} style={{ textAlign: 'right', }} {...header.columnProps}>
                 {(header.buttons && header.buttons.length) ?
@@ -1271,7 +1270,10 @@ class ResponsiveTable extends Component {
                     <rb.Th key={idx}  {...header.headerColumnProps}
                       style={Object.assign({ cursor: 'pointer', },
                         (header.headerColumnProps && header.headerColumnProps.style) ? header.headerColumnProps.style : {},
-                        (header.dynamicFormRowWidth && header.formRowButtons) ? { width: maxFormRowLength * header.dynamicFormRowWidth + 'px' } : {})} >{(header.sortable)
+                        (header.dynamicFormRowWidth && header.formRowButtons)
+                          ? { width: maxFormRowLength * header.dynamicFormRowWidth + 'px' }
+                          : {})} >
+                      {(header.sortable)
                       ? (<a style={{
                         cursor: 'pointer',
                       }} {...this.props.headerLinkProps} onClick={() => {
