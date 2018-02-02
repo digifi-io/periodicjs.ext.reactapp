@@ -907,9 +907,7 @@ class ResponsiveTable extends Component {
               </rb.Td>
             );
             let currentButtonLength = buttonCell.props.children.filter(Boolean).length;
-            console.log('CURRENT', currentButtonLength, 'TOTLA', maxFormRowLength);
             maxFormRowLength = (currentButtonLength > maxFormRowLength) ? currentButtonLength : maxFormRowLength;
-            console.log('AFTER', maxFormRowLength)
             return buttonCell;
           } else if (header.buttons && header.buttons.length) {
             // console.debug({ row, header, });
