@@ -1269,7 +1269,7 @@ class ResponsiveTable extends Component {
                   {this.state.headers.map((header, idx) => (
                     <rb.Th key={idx}  {...header.headerColumnProps}
                       style={Object.assign({ cursor: 'pointer', },
-                        (header.headerColumnProps) ? header.headerColumnProps : {},
+                        (header.headerColumnProps && header.headerColumnProps.style) ? header.headerColumnProps.style : {},
                         (header.dynamicFormRowWidth && header.formRowButtons) ? { width: maxFormRowLength * header.dynamicFormRowWidth + 'px' } : {})} >{(header.sortable)
                       ? (<a style={{
                         cursor: 'pointer',
