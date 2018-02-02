@@ -581,7 +581,7 @@ class ResponsiveForm extends Component{
           className={'__ra_rf' + (cardFormProps.cardProps && cardFormProps.cardProps.className) ? (cardFormProps.cardProps.className) : ''} >
         {(this.props.cardFormTitle)
           ? (<CardHeader style={cardFormProps.headerStyle}>
-              <CardHeaderTitle style={cardFormProps.headerTitleStyle}>{cardFormProps.cardFormTitle}
+              <CardHeaderTitle style={cardFormProps.headerTitleStyle}>{this.props.cardFormTitle}
               </CardHeaderTitle>
             </CardHeader>)
           : null}
