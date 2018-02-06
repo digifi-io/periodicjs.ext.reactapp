@@ -1199,16 +1199,18 @@ var ResponsiveTable = function (_Component) {
             'Search'
           ),
           fbts
-        ) : this.props.tableSearch && this.props.simpleSearchFilter ? _react2.default.createElement(rb.Input, (0, _extends3.default)({}, this.props.filterSearchProps, {
+        ) : this.props.tableSearch && this.props.simpleSearchFilter ? _react2.default.createElement(rb.Input, (0, _extends3.default)({
+          hasIconRight: true,
+          icon: 'fa fa-search'
+        }, this.props.filterSearchProps, {
           onChange: function onChange(data) {
             _this8.searchFunction({ search: data.target.value });
             _this8.searchInputTextVal = data.target.value; //TODO: this is janky fix it
           },
           ref: function ref(input) {
             _this8.searchTextInput = input;
-          },
-          hasIconRight: true,
-          icon: 'fa fa-search'
+          }
+
         })) : null,
         this.state.showFilterSearch ? _react2.default.createElement(
           'div',
