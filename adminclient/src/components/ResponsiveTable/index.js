@@ -1006,7 +1006,10 @@ class ResponsiveTable extends Component {
             </rb.Addons>)
           : (this.props.tableSearch && this.props.simpleSearchFilter)
             ? (
-              <rb.Input {...this.props.filterSearchProps}
+              <rb.Input
+                hasIconRight
+                icon="fa fa-search"
+                {...this.props.filterSearchProps}
                 onChange={(data) => {
                   this.searchFunction({ search: data.target.value, });
                   this.searchInputTextVal = data.target.value;  //TODO: this is janky fix it
@@ -1014,8 +1017,7 @@ class ResponsiveTable extends Component {
                 ref={(input) => {
                   this.searchTextInput = input;
                 }}
-                hasIconRight
-                icon="fa fa-search"
+                
               />
             )
             : null }
