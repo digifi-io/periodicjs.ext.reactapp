@@ -60,7 +60,7 @@ class ResponsiveNavBar extends Component {
     }
     return returnLink
   }
-  handleClick = (e, titleProps) => {
+  handleClick(e, titleProps) {
     const { index } = titleProps;
     const { activeIndex } = this.state;
     if (activeIndex.indexOf(index) === -1) {
