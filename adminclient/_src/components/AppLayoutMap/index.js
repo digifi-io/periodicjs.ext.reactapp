@@ -199,7 +199,7 @@ var AppLayoutMap = exports.AppLayoutMap = (0, _assign2.default)({}, { victory: v
   RCTreeNode: _rcTree.TreeNode,
   RCSwitch: _rcSwitch2.default,
   Slick: _reactSlick2.default
-}, _react2.default.DOM, rebulma, semantic, window.__ra_custom_elements, { Link: _reactRouter.Link });
+}, _react2.default.DOM, rebulma, window.__ra_custom_elements, { Link: _reactRouter.Link });
 
 function getComponentFromMap() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};

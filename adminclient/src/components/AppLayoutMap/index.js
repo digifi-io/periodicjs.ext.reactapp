@@ -65,7 +65,7 @@ export let AppLayoutMap = Object.assign({}, { victory,
   RCTreeNode,
   RCSwitch,
   Slick,
-}, React.DOM, rebulma, semantic, window.__ra_custom_elements, { Link, });
+}, React.DOM, rebulma, window.__ra_custom_elements, { Link, });
 
 export function getComponentFromMap(options = {}) {
   const { componentObject, AppLayoutMap } = options;
