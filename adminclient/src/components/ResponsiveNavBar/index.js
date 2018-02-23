@@ -89,6 +89,7 @@ class ResponsiveNavBar extends Component {
         return (
           <div 
             {...this.props.itemProps}
+            key={idx + '-' + linkIdx}
             className={activeClass} >
             <Link 
                 to={link.linkURL}
