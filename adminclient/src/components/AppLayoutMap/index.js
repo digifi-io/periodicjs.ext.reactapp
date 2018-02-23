@@ -14,6 +14,7 @@ import { Carousel, } from 'react-responsive-carousel';
 import GoogleMap from 'google-map-react';
 import { getAdvancedBinding, } from './advancedBinding';
 import ResponsiveForm from '../ResponsiveForm';
+import ResponsiveNavBar from '../ResponsiveNavBar';
 import DynamicForm from '../DynamicForm';
 import DynamicLayout from '../DynamicLayout';
 import RawOutput from '../RawOutput';
@@ -55,7 +56,7 @@ export function getFunctionFromProps(options) {
 }
 
 export let AppLayoutMap = Object.assign({}, { victory,
-  recharts, ResponsiveForm, ResponsiveFormContainer, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, ResponsiveSteps, /* Editor,*/
+  recharts, ResponsiveForm, ResponsiveNavBar, ResponsiveFormContainer, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, ResponsiveSteps, /* Editor,*/
   ResponsiveLink,
   ResponsiveButton,
   MaskedInput,
@@ -227,7 +228,6 @@ export function getRenderedComponent(componentObject, resources, debug) {
       && !Object.keys(utilities.traverse(componentObject.conditionalprops, renderedCompProps)).filter(key => utilities.traverse(componentObject.conditionalprops, renderedCompProps)[ key ]).length && (!componentObject.comparisonorprops || (componentObject.comparisonorprops && comparisons.filter(comp => comp === true).length===0))) {
       return null;
     } else {
-
 
       return createElement(
         //element component
