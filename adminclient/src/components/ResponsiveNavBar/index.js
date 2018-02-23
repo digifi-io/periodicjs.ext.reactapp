@@ -1,113 +1,148 @@
 import React, { Component, PropTypes } from 'react';
 import { Link, } from 'react-router';
-import * as rb from 're-bulma';
-import moment from 'moment';
-import numeral from 'numeral';
-import utilities from '../../util';
-import qs from 'querystring';
-import debounce from 'debounce';
-import { flatten, } from 'flat';
 import { getRenderedComponent, } from '../AppLayoutMap';
-import FileReaderInput from 'react-file-reader-input';
-import path from 'path';
-import { csv2json, json2csv, } from 'json-2-csv';
-import RACodeMirror from '../RACodeMirror';
-import ResponsiveDatalist from '../ResponsiveDatalist';
-import { Accordion } from 'semantic-ui-react';
+import { Accordion, Menu } from 'semantic-ui-react';
 
 const propTypes = {
-  headerColor: PropTypes.object,
-  headerTextColor: PropTypes.object,
-  cardTitle: PropTypes.any,
-  display: PropTypes.bool,
-  leftIcon: PropTypes.bool,
-  icon: PropTypes.string,
+  activeLinkStyle: PropTypes.object,
+  linkProps: PropTypes.object,
+  navData: PropTypes.array,
+  navSections: PropTypes.array,
+  params: PropTypes.array,
+  active: PropTypes.boolean,
 };
 
 const defaultProps = {
-  // headerColor: styles.isSecondaryBackground,
-  // headerTextColor: styles.isWhite,
-  cardStyle: {
-    marginBottom: '20px',
-  },
-  cardTitle: '',
-  display: true,
-  icon: 'fa fa-angle-down',
-  iconDown: 'fa fa-angle-down',
-  iconUp: 'fa fa-angle-right',
+  activeLinkStyle: {},
+  navData: [],
+  navSections: [],
+  params: [],
+  linkProps: {},
 };
 
-class ResponsiveNavBAr extends Component {
+class ResponsiveNavBar extends Component {
   constructor(props) {
     super(props);
-    // console.debug('this.props.getState()',this.props.getState());
-    let rows = props.rows || [];
-    rows = (rows.documents) ? rows.documents : rows;
-    if (props.flattenRowData) {
-      rows = rows.map(row => Object.assign({}, row, flatten(row, props.flattenRowDataOptions)));
-    }
+    let navData = props.navData || [];
+    let navSections = props.navSections || [];
+    let params = props.params || [];
+    let linkProps = props.linkProps || {};
     this.state = {
-      rows: rows,
-      activeIndex: 0,
+      initialActiveIndex: -1,
+      activeIndex: this.props.navSections.map((section, idx) => {
+      if (this.props.navData[idx]) {
+        this.props.navData[idx].map((link, linkIdx) => {
+          let linkURL = this.getBaseUrl(section.baseURL, this.props.params, this.props, linkIdx);
+          link.linkURL = linkURL;
+        })
+        return idx;
+      }
+    }),
     };
-    this.getRenderedComponent = getRenderedComponent.bind(this);
-    // this.addFilterRow = this.addFilterByAddRow.bind(this);
-    // this.updateNewFilterRowText = this.updateNewFilterRowDataText.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.getBaseUrl = this.getBaseUrl.bind(this);
+    this.getRenderedComponent = getRenderedComponent.bind(this);
+  } 
+
+  componentWillMount() {
   }
-  componentWillReceiveProps(nextProps) {
-    let rows = nextProps.rows || [];
-    if (nextProps.flattenRowData) {
-      rows = (rows||[]).map(row => Object.assign({}, row, flatten(row, nextProps.flattenRowDataOptions)));
+
+  getBaseUrl(baseurl, params, prop, index) {
+    let returnLink = baseurl;
+    if (params && params.length > 0) {
+      params.forEach((param) => {
+        if (param.key === ":index") {
+          returnLink = returnLink.replace(":index", index);
+        } else {
+          returnLink = returnLink.replace(param.key, prop[ param.val ]);
+        }
+      });
     }
-    // console.debug('nextProps.limit', nextProps.limit);
-    // console.debug('this.state.limit', this.state.limit);
-
-    this.setState({
-      rows: rows,
-    });
+    return returnLink
   }
-
   handleClick = (e, titleProps) => {
-    const { index } = titleProps
-    const { activeIndex } = this.state
-    const newIndex = activeIndex === index ? -1 : index
-
-    this.setState({ activeIndex: newIndex })
+    const { index } = titleProps;
+    const { activeIndex } = this.state;
+    if (activeIndex.indexOf(index) === -1) {
+      this.setState({ 
+        activeIndex: [...activeIndex, index] 
+      });
+    } else {
+      let newIndexArray = activeIndex;
+      newIndexArray.splice(newIndexArray.indexOf(index), 1);
+      this.setState({
+        activeIndex: newIndexArray,
+      });
+    }
   }
+
+
 
   render() {
-    let maxFormRowLength = 0;
-    let calcStartIndex = ((this.state.currentPage - 1) * this.state.limit);
-    let startIndex = (!this.props.baseUrl)
-      ? calcStartIndex
-      :0 ;
-    let endIndex = (!this.props.baseUrl)
-      ? ((this.state.limit * this.state.currentPage))
-      : this.state.limit;
-    let displayRows = this.state.rows.slice(startIndex, endIndex);
-    
-    let links = displayRows.map((row, rowIdx) => {
+  const { activeIndex } = this.state;
+   let navMenu = this.props.navSections.map((section, idx)=> {
+      let subMenu = this.props.navData[idx].map((link, linkIdx) => {
+        let itemProps = (this.props.linkProps && this.props.linkProps.className) ? this.props.linkProps.className : '';
+        let activeClass = (link.linkURL === this.props.location.pathname) 
+          ? 'active-nav-link nav-link' + itemProps
+          : 'nav-link' + itemProps;
         return (
-            <div key={rowIdx}>
-              <Link to={`/decision/strategies/` + row._id + '/detail'} style={{color:`${(row._id === this.props.formdata._id) ? 'red' : 'blue'}`}}>{row.title}</Link>
-            </div>
+          <div 
+            {...this.props.itemProps}
+            className={activeClass} >
+            <Link 
+                to={link.linkURL}
+                {...this.props.linkProps}
+                >
+              {link.name}
+            </Link>
+            {(section.buttons) ? section.buttons.map(button => {
+                return this.getRenderedComponent(Object.assign({
+                  component: 'ResponsiveButton',
+                  props: Object.assign({
+                    buttonProps: {},
+                  }, button.passProps, 
+                  {
+                    onclickProps: this.getBaseUrl(button.passProps.onclickBaseUrl, button.passProps.onclickLinkParams, this.props, linkIdx),
+                    onclickBaseUrl: null,
+                    onclickLinkParams: null,
+                  }
+                ),
+                }))
+              }) : null }
+          </div>
         )
-      })
-    const {activeIndex} = this.state;
+      });
+
+     return (
+        <Menu.Item {...this.props.sectionProps}>
+          <Accordion.Title  
+            active={activeIndex.indexOf(idx) !== -1} 
+            index={idx} onClick={this.handleClick} 
+            content={section.title} 
+            {...this.props.titleProps}>
+          </Accordion.Title>
+          <Accordion.Content 
+            active={activeIndex.indexOf(idx) !== -1}
+            {...this.props.contentProps}>
+            {subMenu}
+          </Accordion.Content>
+        </Menu.Item>
+     )
+    })
     return (
-      <Accordion  vertical styled>
-          <Accordion.Title  active={activeIndex === 0} index={0} onClick={this.handleClick} content="Menu" ></Accordion.Title>
-          <Accordion.Content active={activeIndex === 0} content={links}></Accordion.Content>
-          <Accordion.Title active={activeIndex === 1} index={1} onClick={this.handleClick} content="Menu"></Accordion.Title>
-          <Accordion.Content active={activeIndex === 1} index={1} content={links}></Accordion.Content>
+      <Accordion 
+        as={Menu} 
+        vertical
+        {...this.props.accordionProps}
+        >
+       {navMenu}
       </Accordion>
     );
   }
 }
-//tble
 
-ResponsiveNavBAr.propType = propTypes;
-ResponsiveNavBAr.defaultProps = defaultProps;
+ResponsiveNavBar.propType = propTypes;
+// ResponsiveNavBar.defaultProps = defaultProps;
 
-export default ResponsiveNavBAr;
+export default ResponsiveNavBar;
