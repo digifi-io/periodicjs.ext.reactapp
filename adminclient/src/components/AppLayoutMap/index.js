@@ -111,7 +111,6 @@ export function getRenderedComponent(componentObject, resources, debug) {
   }
   try {
     const getFunction = getFunctionFromProps.bind(this);
-    // console.log(getFunction, 'FUNCTION');
     let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object')
       ? utilities.traverse(componentObject.asyncprops, resources)
       : {};
