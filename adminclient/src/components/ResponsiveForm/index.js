@@ -3,7 +3,7 @@ import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, Ca
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormMaskedInput, getFormDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, } from './FormElements';
+import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, } from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, } from './FormHelpers';
 import flatten from 'flat';
 import qs from 'querystring';
@@ -130,6 +130,7 @@ class ResponsiveForm extends Component{
     this.getFormLink = getFormLink.bind(this);
     this.getFormGroup = getFormGroup.bind(this);
     this.getImage = getImage.bind(this);
+    this.getFormDNDTable = getFormDNDTable.bind(this);
     this.validateFormElement = validateFormElement.bind(this);
 
     this.staticLayouts = (this.props.staticLayouts)
@@ -432,6 +433,8 @@ class ResponsiveForm extends Component{
           return this.getFormDropdown({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'datatable') {
           return this.getFormDatatable({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'dndtable') {
+          return this.getFormDNDTable({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'checkbox' || formElement.type === 'radio') {
           return this.getFormCheckbox({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'Semantic.checkbox') {

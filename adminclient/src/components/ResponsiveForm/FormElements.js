@@ -291,43 +291,38 @@ export function getFormDNDTable(options){
     {},
     this.props,
     {
-      selectEntireRow: formElement.selectEntireRow,
-      insertSelectedRowHeaderIndex: formElement.insertSelectedRowHeaderIndex,
-      selectOptionSortId: formElement.selectOptionSortId,
-      selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
-      flattenRowData: formElement.flattenRowData,
-      addNewRows: formElement.addNewRows,
-      sortable: formElement.sortable,
-      replaceButton: false,
-      uploadAddButton: true,
-      useInputRows: formElement.useInputRows,
       rows: initialValue,
       headers: tableHeaders,
-      limit: 5000,
-      hasPagination: false,
-      tableForm:true,
     },
     formElement.passProps
   );
+  function getRows(rows) {
+    console.log({ rows, formElement });
+    console.log(this);
+    setTimeout(() => {
+    this.setState(Object.assign({}, {ruleset: rows}), () =>{
+    if (formElement.submitOnChange) {
+      this.submitForm();
+    } else {
+      return;
+    }
+        
+      }, 3000)
+
+    });
+  }
   return (<FormItem key={i} {...formElement.layoutProps} >
   {getFormLabel(formElement)}  
-    <DNDTable {...passedProps}
+  <DNDTable {...passedProps}
+      getRows={getRows.bind(this)}  
       onChange={(newvalue) => {
-        let selectedRowData = (formElement.selectEntireRow && (newvalue.selectedRowData || newvalue.selectedRowIndex))
-          ? {
-            [ `${formElement.name}__tabledata` ]: {
-              selectedRowData: newvalue.selectedRowData,
-              selectedRowIndex: newvalue.selectedRowIndex,
-            },
-          }
-          : {};
         let flattenedData = (this.props.flattenFormData)
-          ? flatten(Object.assign({}, selectedRowData, { [ formElement.name ]: newvalue.rows, }))
+          ? flatten(Object.assign({}, { [ formElement.name ]: newvalue.rows, }))
           : {};
         let updatedStateProp = Object.assign({
           formDataTables: Object.assign({}, this.state.formDataTables, { [ formElement.name ]: newvalue.rows, }),
           [ formElement.name ]: newvalue.rows,
-        }, flattenedData, selectedRowData);
+        }, flattenedData );
         if (formElement.onChangeFilter) {
           const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
           updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
