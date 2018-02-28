@@ -134,17 +134,16 @@ var AppHeader = function (_Component) {
       }, this.props.settings.ui.header.profileImageStyle, {
         backgroundImage: 'url(' + (this.props.user.profile_image_preview || this.props.settings.default_user_image || '/favicon.png') + ')'
       });
-
       var dropdownLinks = this.props.settings.ui.header.productHeader.productLinks.length > 0 ? this.props.settings.ui.header.productHeader.productLinks.map(function (link) {
         return _react2.default.createElement(_semanticUiReact.Dropdown.Item, {
           text: link.text,
+          style: { display: link.type && _this2.props.user.userdata.entitytype !== link.type ? 'none' : undefined },
           onClick: function onClick() {
             link.location ? _this2.props.reduxRouter.push(link.location) : link.logoutUser ? _this2.props.logoutUser() : null;
           },
           className: link.className ? link.className : ''
         });
       }) : null;
-
       return _react2.default.createElement(
         _reBulma.Hero,
         { color: this.props.settings.ui.header.color, isBold: this.props.settings.ui.header.isBold, style: (0, _assign2.default)(_styles2.default.fixedTop, _styles2.default.navContainer, this.props.settings.ui.header.containerStyle),

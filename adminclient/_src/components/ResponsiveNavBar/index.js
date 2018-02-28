@@ -139,12 +139,17 @@ var ResponsiveNavBar = function (_Component) {
       var activeIndex = this.state.activeIndex;
 
       var navMenu = this.props.navSections.map(function (section, idx) {
+        if (!_this2.props.toggleData[section.toggle]) {
+          return;
+        }
+
         var subMenu = _this2.props.navData[idx].map(function (link, linkIdx) {
           var itemProps = _this2.props.linkProps && _this2.props.linkProps.className ? _this2.props.linkProps.className : '';
           var activeClass = link.linkURL === _this2.props.location.pathname ? 'active-nav-link nav-link' + itemProps : 'nav-link' + itemProps;
           return _react2.default.createElement(
             'div',
             (0, _extends3.default)({}, _this2.props.itemProps, {
+              key: idx + '-' + linkIdx,
               className: activeClass }),
             _react2.default.createElement(
               _reactRouter.Link,
@@ -199,6 +204,6 @@ var ResponsiveNavBar = function (_Component) {
 }(_react.Component);
 
 ResponsiveNavBar.propType = propTypes;
-// ResponsiveNavBar.defaultProps = defaultProps;
+ResponsiveNavBar.defaultProps = defaultProps;
 
 exports.default = ResponsiveNavBar;
