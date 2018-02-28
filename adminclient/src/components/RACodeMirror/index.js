@@ -11,7 +11,18 @@ import 'codemirror/mode/sql/sql';
 import 'codemirror/mode/css/css';
 import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/markdown/markdown';
-
+import 'codemirror/mode/clojure/clojure';
+import 'codemirror/mode/coffeescript/coffeescript';
+import 'codemirror/mode/commonlisp/commonlisp';
+import 'codemirror/mode/django/django';
+import 'codemirror/mode/elm/elm';
+import 'codemirror/mode/erlang/erlang';
+import 'codemirror/mode/go/go';
+import 'codemirror/mode/groovy/groovy';
+import 'codemirror/mode/perl/perl';
+import 'codemirror/mode/php/php';
+import 'codemirror/mode/python/python';
+import 'codemirror/mode/ruby/ruby';
 
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/hint/css-hint';
