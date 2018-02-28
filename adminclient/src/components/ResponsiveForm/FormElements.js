@@ -4,6 +4,7 @@ import RACodeMirror from '../RACodeMirror';
 import PreviewEditor from '../PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 import ResponsiveTable from '../ResponsiveTable';
+import DNDTable from '../DNDTable';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import capitalize from 'capitalize';
 // import RAEditor from '../RAEditor';
@@ -20,7 +21,7 @@ import pluralize from 'pluralize';
 import flatten, { unflatten, } from 'flat';
 import styles from '../../styles';
 import { validateForm, } from './FormHelpers';
-    
+
 export function getPropertyAttribute(options) {
   let { property, element, } = options;
   let attribute = element.name;
@@ -223,6 +224,90 @@ function getFunctionFromProps(options) {
   } else {
     return function () { }
   }
+}
+
+export function getFormDNDTable(options){
+  let { formElement, i, } = options;
+  // let initialValue = getInitialValue(formElement,
+  // (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true })));
+  let initialValue = this.state[formElement.name];
+  // console.debug({ initialValue },this.state, this.state[formElement.name]);
+  let hasError = getErrorStatus(this.state, formElement.name);
+  const getTableHeaders = (row) => {
+    return row.map(rowkey => {
+      let selectOptions = (this.state.__formOptions && this.state.__formOptions[ rowkey ])
+        ? this.state.__formOptions[ rowkey ]
+        : [];
+      // console.log({ selectOptions });
+      return {
+        label: capitalize(rowkey),
+        sortid: rowkey,
+        sortable: (typeof formElement.sortable !=='undefined')
+          ? formElement.sortable
+          : true,
+        formtype: (formElement.tableHeaderType && formElement.tableHeaderType[rowkey])
+          ? formElement.tableHeaderType[rowkey]
+          : 'text',
+        defaultValue: (formElement.tableHeaderDefaultValue && formElement.tableHeaderDefaultValue[rowkey])
+          ? formElement.tableHeaderDefaultValue[rowkey]
+          : (selectOptions.length)
+            ? selectOptions[ 0 ].value
+            : undefined,
+        formoptions: selectOptions,
+        footerFormElementPassProps: Object.assign({
+          placeholder: capitalize(rowkey),
+        }, formElement.footerFormElementPassProps),
+      };
+    });
+  };
+  let handleRowUpdate;
+  if (formElement.handleRowUpdate && formElement.handleRowUpdate.indexOf('func:window') !== -1 && typeof window[ formElement.handleRowUpdate.replace('func:window.', '') ] ==='function') {
+    handleRowUpdate = window[ formElement.handleRowUpdate.replace('func:window.', '') ].bind(this, formElement); 
+  }
+  let useRowButtons = formElement.rowButtons;
+  let ignoreTableHeaders = formElement.ignoreTableHeaders || [];
+  let tableHeaders = (formElement.headers)
+    ? (formElement.useStandardHeaders)
+      ? getTableHeaders( formElement.headers.map(header=>header.sortid) )
+      : formElement.headers
+    : (initialValue && Array.isArray(initialValue) && initialValue.length)
+      ? getTableHeaders(Object.keys(initialValue[0]).filter(header=>ignoreTableHeaders.indexOf(header)===-1))
+      : [];
+  tableHeaders = (useRowButtons)
+    ? tableHeaders.concat({
+      label: formElement.rowOptionsLabel || '',
+      formtype: false,
+      formRowButtons: true,
+      formRowButtonProps: formElement.formRowButtonProps,
+    })
+    : tableHeaders.concat({
+      label: '',
+      formtype: false,
+    });
+  tableHeaders = tableHeaders.map(header => {
+    if ((header.formtype === 'select' || header.formtype === 'dropdown')  && !header.formoptions) {
+      header.formoptions = (header.sortid && this.state.__formOptions && this.state.__formOptions[ header.sortid ])
+      ? this.state.__formOptions[ header.sortid ]
+      : [];
+    }
+    return header;
+  })
+  let passedProps = Object.assign(
+    {},
+    this.props,
+    {
+      rows: initialValue,
+      headers: tableHeaders,
+    },
+    formElement.passProps
+  );
+  return (<FormItem key={i} {...formElement.layoutProps} >
+  {getFormLabel(formElement)}  
+  <DNDTable {...passedProps}
+      handleRowUpdate={handleRowUpdate.bind(this)}  
+      value={initialValue} />
+    {getCustomErrorLabel(hasError, this.state, formElement)}
+  </FormItem>);
 }
 
 export function getFormDatatable(options){
@@ -444,7 +529,7 @@ export function getFormDropdown(options){
     {getFormLabel(formElement)}  
     <div {...wrapperProps}>  
       <Dropdown {...passedProps}
-        value={this.state[ formElement.name ] || initialValue}  
+        defaultValue={initialValue} 
         onChange={(event, newvalue)=>{
           onChange.call(this, event, newvalue);
           if(customCallbackfunction) customCallbackfunction(event);

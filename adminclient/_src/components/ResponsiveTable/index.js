@@ -110,8 +110,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import capitalize from 'capitalize';
-// import pluralize from 'pluralize';
 var filterLabelStyleProps = {
   alignItems: 'center',
   display: 'flex',
@@ -170,6 +168,7 @@ var ResponsiveTable = function (_Component) {
       selectedRowIndex: {},
       showFilterSearch: props.showFilterSearch,
       disableSort: props.disableSort
+
       // usingFiltersInSearch: props.usingFiltersInSearch,
     };
     _this.searchFunction = (0, _debounce2.default)(_this.updateTableData, 200);
@@ -862,6 +861,7 @@ var ResponsiveTable = function (_Component) {
       var _this8 = this;
 
       // console.debug('render this.state', this.state);
+      var maxFormRowLength = 0;
       var calcStartIndex = (this.state.currentPage - 1) * this.state.limit;
       var startIndex = !this.props.baseUrl ? calcStartIndex : 0;
       var endIndex = !this.props.baseUrl ? this.state.limit * this.state.currentPage : this.state.limit;
@@ -1043,6 +1043,137 @@ var ResponsiveTable = function (_Component) {
           'Advanced'
         );
       }
+      var tableBody = displayRows.map(function (row, rowIndex) {
+        return _react2.default.createElement(
+          rb.Tr,
+          { key: 'row' + rowIndex, className: _this8.props.selectEntireRow && rowIndex === _this8.state.selectedRowIndex ? '__selected' : undefined },
+          _this8.state.headers.map(function (header, colIndex) {
+            // console.debug({header});
+            if (header.link) {
+              return _react2.default.createElement(
+                rb.Td,
+                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
+                _react2.default.createElement(
+                  _reactRouter.Link,
+                  (0, _extends3.default)({}, header.linkProps, { to: _this8.getHeaderLinkURL(header.link, row) }),
+                  _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                    idx: rowIndex + calcStartIndex,
+                    momentFormat: header.momentFormat,
+                    numeralFormat: header.numeralFormat,
+                    image: header.image,
+                    imageProps: header.imageProps,
+                    icon: header.icon,
+                    iconProps: header.iconProps
+                  })
+                )
+              );
+            } else if (header.formRowButtons) {
+              // console.debug({ row, header, });
+              //http://htmlarrows.com/arrows/
+              var buttonCell = _react2.default.createElement(
+                rb.Td,
+                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex, style: { textAlign: 'right' } }, header.columnProps),
+                header.buttons && header.buttons.length ? header.buttons.map(function (button) {
+                  return _this8.getRenderedComponent((0, _assign2.default)({
+                    component: 'ResponsiveButton',
+                    props: (0, _assign2.default)({
+                      onclickPropObject: row,
+                      buttonProps: {}
+                    }, button.passProps),
+                    children: _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                      idx: rowIndex + calcStartIndex,
+                      momentFormat: header.momentFormat,
+                      image: header.image,
+                      imageProps: header.imageProps,
+                      icon: header.icon,
+                      iconProps: header.iconProps
+                    }) || ''
+                  }, button));
+                }) : null
+                // Object.assign
+                ,
+                rowIndex !== 0 && _this8.props.useUpArrowButton ? _react2.default.createElement(
+                  rb.Button,
+                  (0, _extends3.default)({}, _this8.props.formRowUpButton, { onClick: function onClick() {
+                      _this8.moveRowUp(rowIndex);
+                    } }),
+                  _this8.props.formRowUpButtonLabel ? _this8.props.formRowUpButtonLabel : '⇧'
+                ) : null,
+                rowIndex < _this8.state.rows.length - 1 && _this8.props.useDownArrowButton ? _react2.default.createElement(
+                  rb.Button,
+                  (0, _extends3.default)({}, _this8.props.formRowDownButton, { onClick: function onClick() {
+                      _this8.moveRowDown(rowIndex);
+                    } }),
+                  _this8.props.formRowDownButtonLabel ? _this8.props.formRowDownButtonLabel : '⇩'
+                ) : null,
+                _react2.default.createElement(
+                  rb.Button,
+                  (0, _extends3.default)({}, _this8.props.formRowDeleteButton, { onClick: function onClick() {
+                      _this8.deleteRow(rowIndex);
+                    } }),
+                  _this8.props.formRowDeleteButtonLabel ? _this8.props.formRowDeleteButtonLabel : '⤫'
+                )
+              );
+              var currentButtonLength = buttonCell.props.children.filter(Boolean).length;
+              maxFormRowLength = currentButtonLength > maxFormRowLength ? currentButtonLength : maxFormRowLength;
+              return buttonCell;
+            } else if (header.buttons && header.buttons.length) {
+              // console.debug({ row, header, });
+              return _react2.default.createElement(
+                rb.Td,
+                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
+                header.buttons.map(function (button) {
+                  return _this8.getRenderedComponent((0, _assign2.default)({
+                    component: 'ResponsiveButton',
+                    props: (0, _assign2.default)({
+                      onclickPropObject: row,
+                      buttonProps: {}
+                    }, button.passProps),
+                    children: _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                      idx: rowIndex + calcStartIndex,
+                      momentFormat: header.momentFormat,
+                      image: header.image,
+                      imageProps: header.imageProps,
+                      icon: header.icon,
+                      iconProps: header.iconProps
+                    }) || ''
+                  }, button));
+                })
+                // Object.assign
+
+              );
+            } else {
+              return _react2.default.createElement(
+                rb.Td,
+                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, { onClick: function onClick() {
+                    if (_this8.props.selectEntireRow) {
+                      _this8.selectRow({
+                        selectedRowData: row,
+                        selectedRowIndex: rowIndex
+                      });
+                    }
+                    // console.debug({ event, rowIndex });
+                  } }),
+                _this8.formatValue.call(_this8, typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                  rowIndex: rowIndex,
+                  idx: rowIndex + calcStartIndex,
+                  momentFormat: header.momentFormat,
+                  numeralFormat: header.numeralFormat,
+                  image: header.image,
+                  imageProps: header.imageProps,
+                  icon: header.icon,
+                  iconProps: header.iconProps
+                }, header)
+              );
+              // return (
+              //   <rb.Td>{(row[ header.sortid ] && header.momentFormat)
+              //     ? moment(row[header.sortid]).format(header.momentFormat)
+              //     :row[ header.sortid ]}</rb.Td>
+              // );
+            }
+          })
+        );
+      });
       return _react2.default.createElement(
         rb.Container,
         this.props.containerProps,
@@ -1068,16 +1199,18 @@ var ResponsiveTable = function (_Component) {
             'Search'
           ),
           fbts
-        ) : this.props.tableSearch && this.props.simpleSearchFilter ? _react2.default.createElement(rb.Input, (0, _extends3.default)({}, this.props.filterSearchProps, {
+        ) : this.props.tableSearch && this.props.simpleSearchFilter ? _react2.default.createElement(rb.Input, (0, _extends3.default)({
+          hasIconRight: true,
+          icon: 'fa fa-search'
+        }, this.props.filterSearchProps, {
           onChange: function onChange(data) {
             _this8.searchFunction({ search: data.target.value });
             _this8.searchInputTextVal = data.target.value; //TODO: this is janky fix it
           },
           ref: function ref(input) {
             _this8.searchTextInput = input;
-          },
-          hasIconRight: true,
-          icon: 'fa fa-search'
+          }
+
         })) : null,
         this.state.showFilterSearch ? _react2.default.createElement(
           'div',
@@ -1527,7 +1660,8 @@ var ResponsiveTable = function (_Component) {
                 this.state.headers.map(function (header, idx) {
                   return _react2.default.createElement(
                     rb.Th,
-                    (0, _extends3.default)({ key: idx, style: { cursor: 'pointer' } }, header.headerColumnProps),
+                    (0, _extends3.default)({ key: idx }, header.headerColumnProps, {
+                      style: (0, _assign2.default)({ cursor: 'pointer' }, header.headerColumnProps && header.headerColumnProps.style ? header.headerColumnProps.style : {}, header.dynamicFormRowWidth && header.formRowButtons ? { width: maxFormRowLength * header.dynamicFormRowWidth + 'px' } : {}) }),
                     header.sortable ? _react2.default.createElement(
                       'a',
                       (0, _extends3.default)({ style: {
@@ -1589,115 +1723,7 @@ var ResponsiveTable = function (_Component) {
             _react2.default.createElement(
               rb.Tbody,
               null,
-              displayRows.map(function (row, rowIndex) {
-                return _react2.default.createElement(
-                  rb.Tr,
-                  { key: 'row' + rowIndex, className: _this8.props.selectEntireRow && rowIndex === _this8.state.selectedRowIndex ? '__selected' : undefined },
-                  _this8.state.headers.map(function (header, colIndex) {
-                    // console.debug({header});
-                    if (header.link) {
-                      return _react2.default.createElement(
-                        rb.Td,
-                        (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
-                        _react2.default.createElement(
-                          _reactRouter.Link,
-                          (0, _extends3.default)({}, header.linkProps, { to: _this8.getHeaderLinkURL(header.link, row) }),
-                          _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
-                            idx: rowIndex + calcStartIndex,
-                            momentFormat: header.momentFormat,
-                            numeralFormat: header.numeralFormat,
-                            image: header.image,
-                            imageProps: header.imageProps,
-                            icon: header.icon,
-                            iconProps: header.iconProps
-                          })
-                        )
-                      );
-                    } else if (header.formRowButtons) {
-                      // console.debug({ row, header, });
-                      //http://htmlarrows.com/arrows/
-                      return _react2.default.createElement(
-                        rb.Td,
-                        (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex, style: { textAlign: 'right' } }, header.columnProps),
-                        rowIndex !== 0 && _this8.props.useUpArrowButton ? _react2.default.createElement(
-                          rb.Button,
-                          (0, _extends3.default)({}, _this8.props.formRowUpButton, { onClick: function onClick() {
-                              _this8.moveRowUp(rowIndex);
-                            } }),
-                          _this8.props.formRowUputtonLabel ? _this8.props.formRowUputtonLabel : '⇧'
-                        ) : null,
-                        rowIndex < _this8.state.rows.length - 1 && _this8.props.useDownArrowButton ? _react2.default.createElement(
-                          rb.Button,
-                          (0, _extends3.default)({}, _this8.props.formRowDownButton, { onClick: function onClick() {
-                              _this8.moveRowDown(rowIndex);
-                            } }),
-                          _this8.props.formRowDownButtonLabel ? _this8.props.formRowDownButtonLabel : '⇩'
-                        ) : null,
-                        _react2.default.createElement(
-                          rb.Button,
-                          (0, _extends3.default)({}, _this8.props.formRowDeleteButton, { onClick: function onClick() {
-                              _this8.deleteRow(rowIndex);
-                            } }),
-                          _this8.props.formRowDeleteButtonLabel ? _this8.props.formRowDeleteButtonLabel : '⤫'
-                        )
-                      );
-                    } else if (header.buttons && header.buttons.length) {
-                      // console.debug({ row, header, });
-                      return _react2.default.createElement(
-                        rb.Td,
-                        (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
-                        header.buttons.map(function (button) {
-                          return _this8.getRenderedComponent((0, _assign2.default)({
-                            component: 'ResponsiveButton',
-                            props: (0, _assign2.default)({
-                              onclickPropObject: row,
-                              buttonProps: {}
-                            }, button.passProps),
-                            children: _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
-                              idx: rowIndex + calcStartIndex,
-                              momentFormat: header.momentFormat,
-                              image: header.image,
-                              imageProps: header.imageProps,
-                              icon: header.icon,
-                              iconProps: header.iconProps
-                            }) || ''
-                          }, button));
-                        })
-                        // Object.assign
-
-                      );
-                    } else {
-                      return _react2.default.createElement(
-                        rb.Td,
-                        (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, { onClick: function onClick() {
-                            if (_this8.props.selectEntireRow) {
-                              _this8.selectRow({
-                                selectedRowData: row,
-                                selectedRowIndex: rowIndex
-                              });
-                            }
-                            // console.debug({ event, rowIndex });
-                          } }),
-                        _this8.formatValue.call(_this8, typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
-                          rowIndex: rowIndex,
-                          idx: rowIndex + calcStartIndex,
-                          momentFormat: header.momentFormat,
-                          numeralFormat: header.numeralFormat,
-                          image: header.image,
-                          imageProps: header.imageProps,
-                          icon: header.icon,
-                          iconProps: header.iconProps
-                        }, header)
-                      );
-                      // return (
-                      //   <rb.Td>{(row[ header.sortid ] && header.momentFormat)
-                      //     ? moment(row[header.sortid]).format(header.momentFormat)
-                      //     :row[ header.sortid ]}</rb.Td>
-                      // );
-                    }
-                  })
-                );
-              })
+              tableBody
             )
           )
         ),

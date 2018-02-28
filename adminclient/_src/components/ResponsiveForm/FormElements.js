@@ -20,13 +20,13 @@ var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _extends2 = require('babel-runtime/helpers/extends');
-
-var _extends3 = _interopRequireDefault(_extends2);
-
 var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
 
 var _keys = require('babel-runtime/core-js/object/keys');
 
@@ -37,6 +37,7 @@ var _assign = require('babel-runtime/core-js/object/assign');
 var _assign2 = _interopRequireDefault(_assign);
 
 exports.getPropertyAttribute = getPropertyAttribute;
+exports.getFormDNDTable = getFormDNDTable;
 exports.getFormDatatable = getFormDatatable;
 exports.getFormDatalist = getFormDatalist;
 exports.getFormDropdown = getFormDropdown;
@@ -81,6 +82,10 @@ var _ResponsiveDatalist2 = _interopRequireDefault(_ResponsiveDatalist);
 var _ResponsiveTable = require('../ResponsiveTable');
 
 var _ResponsiveTable2 = _interopRequireDefault(_ResponsiveTable);
+
+var _DNDTable = require('../DNDTable');
+
+var _DNDTable2 = _interopRequireDefault(_DNDTable);
 
 var _createNumberMask = require('text-mask-addons/dist/createNumberMask');
 
@@ -336,8 +341,77 @@ function getFunctionFromProps(options) {
   }
 }
 
-function getFormDatatable(options) {
+function getFormDNDTable(options) {
   var _this3 = this;
+
+  var formElement = options.formElement,
+      i = options.i;
+  // let initialValue = getInitialValue(formElement,
+  // (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true })));
+
+  var initialValue = this.state[formElement.name];
+  // console.debug({ initialValue },this.state, this.state[formElement.name]);
+  var hasError = getErrorStatus(this.state, formElement.name);
+  var getTableHeaders = function getTableHeaders(row) {
+    return row.map(function (rowkey) {
+      var selectOptions = _this3.state.__formOptions && _this3.state.__formOptions[rowkey] ? _this3.state.__formOptions[rowkey] : [];
+      // console.log({ selectOptions });
+      return {
+        label: (0, _capitalize2.default)(rowkey),
+        sortid: rowkey,
+        sortable: typeof formElement.sortable !== 'undefined' ? formElement.sortable : true,
+        formtype: formElement.tableHeaderType && formElement.tableHeaderType[rowkey] ? formElement.tableHeaderType[rowkey] : 'text',
+        defaultValue: formElement.tableHeaderDefaultValue && formElement.tableHeaderDefaultValue[rowkey] ? formElement.tableHeaderDefaultValue[rowkey] : selectOptions.length ? selectOptions[0].value : undefined,
+        formoptions: selectOptions,
+        footerFormElementPassProps: (0, _assign2.default)({
+          placeholder: (0, _capitalize2.default)(rowkey)
+        }, formElement.footerFormElementPassProps)
+      };
+    });
+  };
+  var handleRowUpdate = void 0;
+  if (formElement.handleRowUpdate && formElement.handleRowUpdate.indexOf('func:window') !== -1 && typeof window[formElement.handleRowUpdate.replace('func:window.', '')] === 'function') {
+    handleRowUpdate = window[formElement.handleRowUpdate.replace('func:window.', '')].bind(this, formElement);
+  }
+  var useRowButtons = formElement.rowButtons;
+  var ignoreTableHeaders = formElement.ignoreTableHeaders || [];
+  var tableHeaders = formElement.headers ? formElement.useStandardHeaders ? getTableHeaders(formElement.headers.map(function (header) {
+    return header.sortid;
+  })) : formElement.headers : initialValue && Array.isArray(initialValue) && initialValue.length ? getTableHeaders((0, _keys2.default)(initialValue[0]).filter(function (header) {
+    return ignoreTableHeaders.indexOf(header) === -1;
+  })) : [];
+  tableHeaders = useRowButtons ? tableHeaders.concat({
+    label: formElement.rowOptionsLabel || '',
+    formtype: false,
+    formRowButtons: true,
+    formRowButtonProps: formElement.formRowButtonProps
+  }) : tableHeaders.concat({
+    label: '',
+    formtype: false
+  });
+  tableHeaders = tableHeaders.map(function (header) {
+    if ((header.formtype === 'select' || header.formtype === 'dropdown') && !header.formoptions) {
+      header.formoptions = header.sortid && _this3.state.__formOptions && _this3.state.__formOptions[header.sortid] ? _this3.state.__formOptions[header.sortid] : [];
+    }
+    return header;
+  });
+  var passedProps = (0, _assign2.default)({}, this.props, {
+    rows: initialValue,
+    headers: tableHeaders
+  }, formElement.passProps);
+  return _react2.default.createElement(
+    _FormItem2.default,
+    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    getFormLabel(formElement),
+    _react2.default.createElement(_DNDTable2.default, (0, _extends3.default)({}, passedProps, {
+      handleRowUpdate: handleRowUpdate.bind(this),
+      value: initialValue })),
+    getCustomErrorLabel(hasError, this.state, formElement)
+  );
+}
+
+function getFormDatatable(options) {
+  var _this4 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -347,7 +421,7 @@ function getFormDatatable(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var getTableHeaders = function getTableHeaders(row) {
     return row.map(function (rowkey) {
-      var selectOptions = _this3.state.__formOptions && _this3.state.__formOptions[rowkey] ? _this3.state.__formOptions[rowkey] : [];
+      var selectOptions = _this4.state.__formOptions && _this4.state.__formOptions[rowkey] ? _this4.state.__formOptions[rowkey] : [];
       // console.log({ selectOptions });
       return {
         label: (0, _capitalize2.default)(rowkey),
@@ -380,7 +454,7 @@ function getFormDatatable(options) {
   });
   tableHeaders = tableHeaders.map(function (header) {
     if ((header.formtype === 'select' || header.formtype === 'dropdown') && !header.formoptions) {
-      header.formoptions = header.sortid && _this3.state.__formOptions && _this3.state.__formOptions[header.sortid] ? _this3.state.__formOptions[header.sortid] : [];
+      header.formoptions = header.sortid && _this4.state.__formOptions && _this4.state.__formOptions[header.sortid] ? _this4.state.__formOptions[header.sortid] : [];
     }
     return header;
   });
@@ -416,16 +490,16 @@ function getFormDatatable(options) {
           selectedRowData: newvalue.selectedRowData,
           selectedRowIndex: newvalue.selectedRowIndex
         }) : {};
-        var flattenedData = _this3.props.flattenFormData ? (0, _flat2.default)((0, _assign2.default)({}, selectedRowData, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))) : {};
+        var flattenedData = _this4.props.flattenFormData ? (0, _flat2.default)((0, _assign2.default)({}, selectedRowData, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))) : {};
         var updatedStateProp = (0, _assign2.default)((0, _defineProperty3.default)({
-          formDataTables: (0, _assign2.default)({}, _this3.state.formDataTables, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))
+          formDataTables: (0, _assign2.default)({}, _this4.state.formDataTables, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))
         }, formElement.name, newvalue.rows), flattenedData, selectedRowData);
         if (formElement.onChangeFilter) {
-          var onChangeFunc = getFunctionFromProps.call(_this3, { propFunc: formElement.onChangeFilter });
-          updatedStateProp = onChangeFunc.call(_this3, (0, _assign2.default)({}, _this3.state, updatedStateProp), updatedStateProp);
+          var onChangeFunc = getFunctionFromProps.call(_this4, { propFunc: formElement.onChangeFilter });
+          updatedStateProp = onChangeFunc.call(_this4, (0, _assign2.default)({}, _this4.state, updatedStateProp), updatedStateProp);
         }
         // console.debug('DATATABLE',updatedStateProp);
-        _this3.setState(updatedStateProp);
+        _this4.setState(updatedStateProp);
       },
       value: initialValue })),
     getCustomErrorLabel(hasError, this.state, formElement)
@@ -433,7 +507,7 @@ function getFormDatatable(options) {
 }
 
 function getFormDatalist(options) {
-  var _this4 = this;
+  var _this5 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -480,14 +554,14 @@ function getFormDatalist(options) {
       onChange: function onChange(newvalue) {
         var updatedStateProp = {};
         updatedStateProp[formElement.name] = newvalue;
-        _this4.setState(updatedStateProp);
+        _this5.setState(updatedStateProp);
       },
       value: initialValue }))
   );
 }
 
 function getFormDropdown(options) {
-  var _this5 = this;
+  var _this6 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -527,9 +601,9 @@ function getFormDropdown(options) {
     _onChange = function onChange(event, newvalue) {
       var updatedStateProp = {};
       updatedStateProp[formElement.name] = newvalue.value;
-      _this5.setState(updatedStateProp, function () {
+      _this6.setState(updatedStateProp, function () {
         if (formElement.validateOnChange) {
-          _this5.validateFormElement({ formElement: formElement });
+          _this6.validateFormElement({ formElement: formElement });
         }
       });
     };
@@ -550,9 +624,9 @@ function getFormDropdown(options) {
       'div',
       wrapperProps,
       _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({}, passedProps, {
-        value: this.state[formElement.name] || initialValue,
+        defaultValue: initialValue,
         onChange: function onChange(event, newvalue) {
-          _onChange.call(_this5, event, newvalue);
+          _onChange.call(_this6, event, newvalue);
           if (customCallbackfunction) customCallbackfunction(event);
         },
         onSubmit: function onSubmit() {
@@ -566,7 +640,7 @@ function getFormDropdown(options) {
 }
 
 function getFormMaskedInput(options) {
-  var _this6 = this;
+  var _this7 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -596,7 +670,7 @@ function getFormMaskedInput(options) {
         document.querySelector('.' + fileClassname + ' input').setAttribute('multiple', true);
       }
       updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength) : text;
-      _this6.setState(updatedStateProp);
+      _this7.setState(updatedStateProp);
     };
   }
   passableProps = getPassablePropkeyevents(passableProps, formElement);
@@ -670,7 +744,7 @@ function getFormMaskedInput(options) {
 }
 
 function getFormTextInputArea(options) {
-  var _this7 = this;
+  var _this8 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -702,15 +776,15 @@ function getFormTextInputArea(options) {
       }
 
       if (passableProps && passableProps.type === 'file') {
-        updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this7.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
+        updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this8.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
       } else {
         updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength) : text;
       }
       if (formElement.onChangeFilter) {
-        var onChangeFunc = getFunctionFromProps.call(_this7, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(_this7, (0, _assign2.default)({}, _this7.state, updatedStateProp), updatedStateProp);
+        var onChangeFunc = getFunctionFromProps.call(_this8, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(_this8, (0, _assign2.default)({}, _this8.state, updatedStateProp), updatedStateProp);
       }
-      _this7.setState(updatedStateProp);
+      _this8.setState(updatedStateProp);
     };
   }
   passableProps = getPassablePropkeyevents(passableProps, formElement);
@@ -841,7 +915,7 @@ function getFormSelect(options) {
 }
 
 function getFormCheckbox(options) {
-  var _this8 = this;
+  var _this9 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -859,18 +933,18 @@ function getFormCheckbox(options) {
       // console.debug('before', { updatedStateProp, formElement, }, event.target);
       if (formElement.type === 'radio') {
         // event.target.value = 'on';
-        updatedStateProp[_this8.state[formElement.formdata_name] || formElement.name] = _this8.state[formElement.formdata_value] || formElement.value || 'on';
+        updatedStateProp[_this9.state[formElement.formdata_name] || formElement.name] = _this9.state[formElement.formdata_value] || formElement.value || 'on';
       } else {
-        updatedStateProp[_this8.state[formElement.formdata_name] || formElement.name] = _this8.state[_this8.state[formElement.formdata_name] || formElement.name] ? 0 : 'on';
+        updatedStateProp[_this9.state[formElement.formdata_name] || formElement.name] = _this9.state[_this9.state[formElement.formdata_name] || formElement.name] ? 0 : 'on';
       }
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
       if (formElement.onChangeFilter) {
-        var onChangeFunc = getFunctionFromProps.call(_this8, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(_this8, (0, _assign2.default)({}, _this8.state, updatedStateProp), updatedStateProp);
+        var onChangeFunc = getFunctionFromProps.call(_this9, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(_this9, (0, _assign2.default)({}, _this9.state, updatedStateProp), updatedStateProp);
       }
-      _this8.setState(updatedStateProp, function () {
+      _this9.setState(updatedStateProp, function () {
         if (formElement.validateOnChange) {
-          _this8.validateFormElement({ formElement: formElement });
+          _this9.validateFormElement({ formElement: formElement });
         }
       });
     };
@@ -896,7 +970,7 @@ function getFormCheckbox(options) {
 }
 
 function getFormSemanticCheckbox(options) {
-  var _this9 = this;
+  var _this10 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -912,15 +986,15 @@ function getFormSemanticCheckbox(options) {
       var updatedStateProp = {};
       // console.debug('before', { updatedStateProp, formElement, }, event.target);
 
-      updatedStateProp[_this9.state[formElement.formdata_name] || formElement.name] = _this9.state[_this9.state[formElement.formdata_name] || formElement.name] ? 0 : 'on';
+      updatedStateProp[_this10.state[formElement.formdata_name] || formElement.name] = _this10.state[_this10.state[formElement.formdata_name] || formElement.name] ? 0 : 'on';
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
       if (formElement.onChangeFilter) {
-        var onChangeFunc = getFunctionFromProps.call(_this9, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(_this9, (0, _assign2.default)({}, _this9.state, updatedStateProp), updatedStateProp);
+        var onChangeFunc = getFunctionFromProps.call(_this10, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(_this10, (0, _assign2.default)({}, _this10.state, updatedStateProp), updatedStateProp);
       }
-      _this9.setState(updatedStateProp, function () {
+      _this10.setState(updatedStateProp, function () {
         if (formElement.validateOnChange) {
-          _this9.validateFormElement({ formElement: formElement });
+          _this10.validateFormElement({ formElement: formElement });
         }
       });
     };
@@ -939,7 +1013,7 @@ function getFormSemanticCheckbox(options) {
 }
 
 function getFormSwitch(options) {
-  var _this10 = this;
+  var _this11 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -955,20 +1029,20 @@ function getFormSwitch(options) {
       // let text = event.target.value;
       var updatedStateProp = {};
       // console.debug('before', { updatedStateProp, formElement, }, event.target);
-      updatedStateProp[_this10.state[formElement.formdata_name] || formElement.name] = _this10.state[_this10.state[formElement.formdata_name] || formElement.name] ? 0 : 'on';
+      updatedStateProp[_this11.state[formElement.formdata_name] || formElement.name] = _this11.state[_this11.state[formElement.formdata_name] || formElement.name] ? 0 : 'on';
 
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
       if (formElement.onChange) {
-        var onChangeFunc = getFunctionFromProps.call(_this10, { propFunc: formElement.onChange });
-        onChangeFunc.call(_this10, (0, _assign2.default)({}, _this10.state, updatedStateProp), updatedStateProp);
+        var onChangeFunc = getFunctionFromProps.call(_this11, { propFunc: formElement.onChange });
+        onChangeFunc.call(_this11, (0, _assign2.default)({}, _this11.state, updatedStateProp), updatedStateProp);
       }
       if (formElement.onChangeFilter) {
-        var _onChangeFunc = getFunctionFromProps.call(_this10, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = _onChangeFunc.call(_this10, (0, _assign2.default)({}, _this10.state, updatedStateProp), updatedStateProp);
+        var _onChangeFunc = getFunctionFromProps.call(_this11, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = _onChangeFunc.call(_this11, (0, _assign2.default)({}, _this11.state, updatedStateProp), updatedStateProp);
       }
-      _this10.setState(updatedStateProp, function () {
+      _this11.setState(updatedStateProp, function () {
         if (formElement.validateOnChange) {
-          _this10.validateFormElement({ formElement: formElement });
+          _this11.validateFormElement({ formElement: formElement });
         }
       });
     };
@@ -1001,7 +1075,7 @@ function getFormSwitch(options) {
 }
 
 function getRawInput(options) {
-  var _this11 = this;
+  var _this12 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -1025,13 +1099,13 @@ function getRawInput(options) {
     onValueChange = function onValueChange() /*event*/{
       // let text = event.target.value;
       var updatedStateProp = {};
-      updatedStateProp[formElement.name] = _this11.state[formElement.name] ? false : 'on';
+      updatedStateProp[formElement.name] = _this12.state[formElement.name] ? false : 'on';
       // console.log({ updatedStateProp });
       if (formElement.onChangeFilter) {
-        var onChangeFunc = getFunctionFromProps.call(_this11, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(_this11, (0, _assign2.default)({}, _this11.state, updatedStateProp), updatedStateProp);
+        var onChangeFunc = getFunctionFromProps.call(_this12, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(_this12, (0, _assign2.default)({}, _this12.state, updatedStateProp), updatedStateProp);
       }
-      _this11.setState(updatedStateProp);
+      _this12.setState(updatedStateProp);
     };
   }
 
@@ -1053,7 +1127,7 @@ function getRawInput(options) {
 }
 
 function getSliderInput(options) {
-  var _this12 = this;
+  var _this13 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -1101,10 +1175,10 @@ function getSliderInput(options) {
       updatedStateProp[formElement.name] = val;
       // console.log({ updatedStateProp });
       if (formElement.onChangeFilter) {
-        var onChangeFunc = getFunctionFromProps.call(_this12, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(_this12, (0, _assign2.default)({}, _this12.state, updatedStateProp), updatedStateProp);
+        var onChangeFunc = getFunctionFromProps.call(_this13, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(_this13, (0, _assign2.default)({}, _this13.state, updatedStateProp), updatedStateProp);
       }
-      _this12.setState(updatedStateProp);
+      _this13.setState(updatedStateProp);
       customCallbackfunction(val);
     };
   }
@@ -1270,7 +1344,7 @@ function getFormCode(options) {
 }
 
 function getFormEditor(options) {
-  var _this13 = this;
+  var _this14 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -1283,10 +1357,10 @@ function getFormEditor(options) {
       var updatedStateProp = {};
       updatedStateProp[formElement.name] = newvalue.target.value;
       if (formElement.onChangeFilter) {
-        var onChangeFunc = getFunctionFromProps.call(_this13, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(_this13, (0, _assign2.default)({}, _this13.state, updatedStateProp), updatedStateProp);
+        var onChangeFunc = getFunctionFromProps.call(_this14, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(_this14, (0, _assign2.default)({}, _this14.state, updatedStateProp), updatedStateProp);
       }
-      _this13.setState(updatedStateProp);
+      _this14.setState(updatedStateProp);
     };
   }
   // console.debug({ initialVal });
@@ -1322,7 +1396,7 @@ function getFormEditor(options) {
 }
 
 function getConfirmModal(options) {
-  var _this14 = this;
+  var _this15 = this;
 
   var formElement = options.formElement;
 
@@ -1332,15 +1406,15 @@ function getConfirmModal(options) {
   if (formElement.confirmModal.type === 'comment') {
     var name = formElement.confirmModal.name || 'comment';
     onSubmit = function onSubmit(e) {
-      if (_this14.props.formgroups[_this14.props.formgroups.length - 1] && _this14.props.formgroups[_this14.props.formgroups.length - 1].formElements) {
-        _this14.props.formgroups[_this14.props.formgroups.length - 1].formElements.push({ name: name });
-        _this14.props.hideModal('last');
-        _this14.submitForm.call(_this14);
-        _this14.props.formgroups[_this14.props.formgroups.length - 1].formElements = _this14.props.formgroups[_this14.props.formgroups.length - 1].formElements.filter(function (formElement) {
+      if (_this15.props.formgroups[_this15.props.formgroups.length - 1] && _this15.props.formgroups[_this15.props.formgroups.length - 1].formElements) {
+        _this15.props.formgroups[_this15.props.formgroups.length - 1].formElements.push({ name: name });
+        _this15.props.hideModal('last');
+        _this15.submitForm.call(_this15);
+        _this15.props.formgroups[_this15.props.formgroups.length - 1].formElements = _this15.props.formgroups[_this15.props.formgroups.length - 1].formElements.filter(function (formElement) {
           return formElement.name !== name;
         });
       } else {
-        _this14.submitForm.call(_this14);
+        _this15.submitForm.call(_this15);
       }
     };
     var comment_box = (0, _assign2.default)({}, {
@@ -1348,7 +1422,7 @@ function getConfirmModal(options) {
       type: 'commentbox',
       props: {
         onChange: function onChange(e) {
-          return _this14.setState((0, _defineProperty3.default)({}, name, e.target.value));
+          return _this15.setState((0, _defineProperty3.default)({}, name, e.target.value));
         }
       }
     }, formElement.confirmModal.comment);
@@ -1360,8 +1434,8 @@ function getConfirmModal(options) {
     }
   } else {
     onSubmit = function onSubmit() {
-      _this14.props.hideModal('last');
-      _this14.submitForm.call(_this14);
+      _this15.props.hideModal('last');
+      _this15.submitForm.call(_this15);
     };
   }
   confirmModal = (0, _assign2.default)({
@@ -1421,7 +1495,7 @@ function getConfirmModal(options) {
 }
 
 function getFormSubmit(options) {
-  var _this15 = this;
+  var _this16 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -1439,15 +1513,15 @@ function getFormSubmit(options) {
       _reBulma.Button,
       (0, _extends3.default)({}, passableProps, {
         onClick: function onClick() {
-          var validated_formdata = _FormHelpers.validateForm.call(_this15, { formdata: _this15.state, validationErrors: {} });
+          var validated_formdata = _FormHelpers.validateForm.call(_this16, { formdata: _this16.state, validationErrors: {} });
           var updateStateData = {
             formDataErrors: validated_formdata.validationErrors
           };
-          if (_this15.props.sendSubmitButtonVal) {
+          if (_this16.props.sendSubmitButtonVal) {
             updateStateData['submitButtonVal'] = formElement.value;
           }
-          _this15.setState(updateStateData, function () {
-            formElement.confirmModal && (0, _keys2.default)(_this15.state.formDataErrors).length < 1 ? getConfirmModal.call(_this15, { formElement: formElement }) : _this15.submitForm.call(_this15);
+          _this16.setState(updateStateData, function () {
+            formElement.confirmModal && (0, _keys2.default)(_this16.state.formDataErrors).length < 1 ? getConfirmModal.call(_this16, { formElement: formElement }) : _this16.submitForm.call(_this16);
           });
         } }),
       formElement.value

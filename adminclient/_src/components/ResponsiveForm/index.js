@@ -190,6 +190,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormLink = _FormElements.getFormLink.bind(_this);
     _this.getFormGroup = _FormElements.getFormGroup.bind(_this);
     _this.getImage = _FormElements.getImage.bind(_this);
+    _this.getFormDNDTable = _FormElements.getFormDNDTable.bind(_this);
     _this.validateFormElement = _FormHelpers.validateFormElement.bind(_this);
 
     _this.staticLayouts = _this.props.staticLayouts ? (0, _keys2.default)(_this.props.staticLayouts).reduce(function (result, layout) {
@@ -487,6 +488,8 @@ var ResponsiveForm = function (_Component) {
             return _this5.getFormDropdown({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'datatable') {
             return _this5.getFormDatatable({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'dndtable') {
+            return _this5.getFormDNDTable({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'checkbox' || formElement.type === 'radio') {
             return _this5.getFormCheckbox({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'Semantic.checkbox') {
@@ -683,7 +686,7 @@ var ResponsiveForm = function (_Component) {
             _react2.default.createElement(
               _reBulma.CardHeaderTitle,
               { style: cardFormProps.headerTitleStyle },
-              cardFormProps.cardFormTitle
+              this.props.cardFormTitle
             )
           ) : null,
           _react2.default.createElement(

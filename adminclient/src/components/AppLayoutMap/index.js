@@ -26,6 +26,7 @@ import PreviewEditor from '../PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 // import Editor from '../RAEditor';
 import ResponsiveTable from '../ResponsiveTable';
+import DNDTable from '../DNDTable';
 import ResponsiveCard from '../ResponsiveCard';
 import DynamicChart from '../DynamicChart';
 import ResponsiveTabs from '../ResponsiveTabs';
@@ -56,7 +57,7 @@ export function getFunctionFromProps(options) {
 }
 
 export let AppLayoutMap = Object.assign({}, { victory,
-  recharts, ResponsiveForm, ResponsiveNavBar, ResponsiveFormContainer, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, ResponsiveSteps, /* Editor,*/
+  recharts, ResponsiveForm, ResponsiveNavBar, ResponsiveFormContainer, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, DNDTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, ResponsiveSteps, /* Editor,*/
   ResponsiveLink,
   ResponsiveButton,
   MaskedInput,

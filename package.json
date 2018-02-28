@@ -15,7 +15,8 @@
       ]
     }
   },
-  "contributors": [{
+  "contributors": [
+    {
       "name": "Jan Bialostok",
       "email": "janbialostok@gmail.com",
       "url": "https://github.com/janbialostok"
@@ -155,5 +156,5 @@
     "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
     "test": "mocha -R spec --recursive"
   },
-  "version": "11.3.7"
+  "version": "11.5.5"
 }

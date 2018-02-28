@@ -136,9 +136,13 @@ var AppHeader = function (_Component) {
       });
 
       var dropdownLinks = this.props.settings.ui.header.productHeader.productLinks.length > 0 ? this.props.settings.ui.header.productHeader.productLinks.map(function (link) {
-        return _react2.default.createElement(_semanticUiReact.Dropdown.Item, { text: link.text, onClick: function onClick() {
+        return _react2.default.createElement(_semanticUiReact.Dropdown.Item, {
+          text: link.text,
+          onClick: function onClick() {
             link.location ? _this2.props.reduxRouter.push(link.location) : link.logoutUser ? _this2.props.logoutUser() : null;
-          } });
+          },
+          className: link.className ? link.className : ''
+        });
       }) : null;
 
       return _react2.default.createElement(

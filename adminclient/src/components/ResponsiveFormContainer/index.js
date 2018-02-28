@@ -21,6 +21,7 @@ class ResponsiveFormContainer extends Component {
     this.updateFormLayout = this.updateFormLayout.bind(this);
     this.updateFormGroup = this.updateFormGroup.bind(this);
     this.updateValidations = this.updateValidations.bind(this);
+    this.updateDoubleCardFormGroup = this.updateDoubleCardFormGroup.bind(this);
   }
 
   componentWillMount() {
@@ -46,10 +47,40 @@ class ResponsiveFormContainer extends Component {
     return formgroup;
   }
 
+  updateDoubleCardFormGroup(options) {
+    let { formgroup, prevState, currState, prop, order} = options;
+    let formElementsQueue = [];
+    formElementsQueue.push(...formgroup.formElements[ 0 ][ prop ].slice());
+    formgroup.formElements[ 0 ][ prop ] = (order.length) ? order.map(el => false) : [];
+    while (formElementsQueue.length > 0) {
+      let currentElement = formElementsQueue.shift();
+      if (currentElement.name && this.props.renderFormElements[ currentElement.name ]) {
+        currentElement = window[ this.props.renderFormElements[ currentElement.name ].replace('func:window.', '') ].call(this, currState, formElementsQueue, currentElement, prevState);
+        if (currentElement) {
+          if (order.length) formgroup.formElements[ 0 ][ prop ][ order.indexOf(currentElement.name) ] = currentElement;
+          else formgroup.formElements[ 0 ][ prop ].push(currentElement);
+        }
+      } else {
+        if (order.length) formgroup.formElements[ 0 ][ prop ][ order.indexOf(currentElement.name) ] = currentElement;
+        else formgroup.formElements[ 0 ][ prop ].push(currentElement);
+      }
+    }
+    formgroup.formElements[ 0 ][ prop ]= formgroup.formElements[ 0 ][ prop ].filter(el => el !== false);
+    return formgroup;
+  }
+
   updateValidations(options) {
     let formElements = [];
     this.props.form.formgroups.forEach(formgroup => {
-      if (formgroup.formElements) formElements.push(...formgroup.formElements);
+      if ((formgroup.formElements[ 0 ].formGroupCardLeft && formgroup.formElements[ 0 ].formGroupCardRight)) {
+        formElements.push(...formgroup.formElements[0].formGroupCardLeft);
+        formElements.push(...formgroup.formElements[0].formGroupCardRight);
+      } else if ((formgroup.formElements[ 0 ].formGroupElementsLeft && formgroup.formElements[ 0 ].formGroupElementsRight)) {
+        formElements.push(...formgroup.formElements[0].formGroupElementsLeft);
+        formElements.push(...formgroup.formElements[0].formGroupElementsRight);
+      } else if (formgroup.formElements) {
+        formElements.push(...formgroup.formElements);
+      }
     });
     let validations = formElements.reduce((valArr, formElement) => { 
       if (formElement.name && this.props.validations[ formElement.name ]) valArr.push(this.props.validations[ formElement.name ]);
@@ -60,7 +91,15 @@ class ResponsiveFormContainer extends Component {
 
   updateFormLayout(prevState, currState) {
     this.props.form.formgroups = this.props.form.formgroups.map(formgroup => {
-      if (formgroup.formElements) {
+      if ((formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight)) {
+        formgroup = this.updateDoubleCardFormGroup({ formgroup, prevState, currState, prop: 'formGroupCardLeft', order: formgroup.formElements[0].leftOrder });
+        formgroup = this.updateDoubleCardFormGroup({ formgroup, prevState, currState, prop: 'formGroupCardRight', order: formgroup.formElements[0].rightOrder });
+        return formgroup;
+      } else if ((formgroup.formElements[0].formGroupElementsLeft && formgroup.formElements[0].formGroupElementsRight)) {
+        formgroup = this.updateDoubleCardFormGroup({ formgroup, prevState, currState, prop: 'formGroupElementsLeft', order: formgroup.formElements[0].leftOrder });
+        formgroup = this.updateDoubleCardFormGroup({ formgroup, prevState, currState, prop: 'formGroupElementsRight', order: formgroup.formElements[0].rightOrder });
+        return formgroup;
+      } else if (formgroup.formElements) {
         return this.updateFormGroup({formgroup, prevState, currState });
       } else {
         return formgroup;
