@@ -4,7 +4,6 @@ import {render} from 'react-dom';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import { Table, List, Column, defaultTableRowRenderer } from 'react-virtualized';
 import classNames from 'classnames';
-import 'react-virtualized/styles.css';
 import range from 'lodash/range';
 import random from 'lodash/random';
 import ReactDOM from 'react-dom';
@@ -18,6 +17,28 @@ import numeral from 'numeral';
  * you *must* pass in {withRef: true} as the second param. Refs are opt-in.
  */
 
+ const LRpropTypes = {
+  rows: PropTypes.array,
+  className: PropTypes.string,
+  itemClass: PropTypes.string,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  onSortStart: PropTypes.func,
+  onSortEnd: PropTypes.func,
+  component: PropTypes.func,
+  shouldUseDragHandle: PropTypes.bool,
+  headers: PropTypes.array,
+  handleRowUpdate: PropTypes.func,
+};
+
+const LRdefaultProps = {
+  className: 'list',
+  itemClass: 'item',
+  width: 400,
+  height: 600,
+  headers: [],
+};
+
 class ListWrapper extends Component {
   constructor({rows}) {
     super();
@@ -26,27 +47,8 @@ class ListWrapper extends Component {
       isSorting: false,
     };
   }
-  static propTypes = {
-    rows: PropTypes.array,
-    className: PropTypes.string,
-    itemClass: PropTypes.string,
-    width: PropTypes.number,
-    height: PropTypes.number,
-    onSortStart: PropTypes.func,
-    onSortEnd: PropTypes.func,
-    component: PropTypes.func,
-    shouldUseDragHandle: PropTypes.bool,
-    headers: PropTypes.array,
-    handleRowUpdate: PropTypes.func,
-  };
-  static defaultProps = {
-    className: 'list',
-    itemClass: 'item',
-    width: 400,
-    height: 600,
-    headers: [],
-  };
-  onSortStart = () => {
+  
+  onSortStart() {
     const {onSortStart} = this.props;
     this.setState({isSorting: true});
 
@@ -54,7 +56,7 @@ class ListWrapper extends Component {
       onSortStart(this.refs.component);
     }
   };
-  onSortEnd = ({oldIndex, newIndex}) => {
+  onSortEnd({oldIndex, newIndex}) {
     const {onSortEnd} = this.props;
     const {rows} = this.state;
     let newRows = arrayMove(rows, oldIndex, newIndex);
@@ -81,19 +83,22 @@ class ListWrapper extends Component {
   }
 }
 
-class TableWrapper extends Component {
-  static propTypes = {
-    rows: PropTypes.array,
-    className: PropTypes.string,
-    helperClass: PropTypes.string,
-    itemClass: PropTypes.string,
-    width: PropTypes.number,
-    height: PropTypes.number,
-    itemHeight: PropTypes.number,
-    onSortEnd: PropTypes.func,
-    headers: PropTypes.array,
-  };
+ListWrapper.propTypes = LRpropTypes;
+ListWrapper.defaultProps = LRdefaultProps;
 
+const TWpropTypes = {
+  rows: PropTypes.array,
+  className: PropTypes.string,
+  helperClass: PropTypes.string,
+  itemClass: PropTypes.string,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  itemHeight: PropTypes.number,
+  onSortEnd: PropTypes.func,
+  headers: PropTypes.array,
+};
+
+class TableWrapper extends Component {
   constructor(props) {
     super(props);
     this.getRenderedComponent = getRenderedComponent.bind(this);
@@ -124,7 +129,7 @@ class TableWrapper extends Component {
     const SortableTable = SortableContainer(Table, { withRef: true });
     const SortableRowRenderer = SortableElement(defaultTableRowRenderer);
     let tableheaders = headers.map((header, idx) => (<Column cellRenderer={this.cellRenderer} label={header.label} key={idx} dataKey={header.sortid} width={100} />))
-    // let tableheaders = [<Column label={headers[0].label} key={1} dataKey={headers[0].sortid} width={100} />]
+
     return (
       <SortableTable
         getContainer={wrappedInstance => ReactDOM.findDOMNode(wrappedInstance.Grid)}
@@ -134,13 +139,6 @@ class TableWrapper extends Component {
         helperClass={helperClass}
         onSortEnd={onSortEnd}
         transitionDuration={0}
-        // shouldCancelStart={(e) => {
-        //   // Cancel sorting if the event target is an `input`, `textarea`, `select` or `option`
-        //   const disabledElements = [ 'input', 'textarea', 'select', 'option', 'button' ];
-        //   if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1) {
-        //     return true; // Return true to cancel sorting
-        //   }
-        // }}
         rowClassName={itemClass}
         rowCount={rows.length}
         rowGetter={({index}) => rows[index]}
@@ -156,21 +154,13 @@ class TableWrapper extends Component {
   }
 }
 
+TableWrapper.propTypes = TWpropTypes;
 
-// <Column label="Index" dataKey="value" width={100} />
-        // <Column label="Height" dataKey="height" width={width - 100} />
+
 class DNDTable extends Component {
   constructor(props) {
     super(props);
-    // this.state = {
-    //   rows: this.props.rows || []
-    // }
   }
-
-  // updateRows() {
-  //   this.setState({ rows })
-  // }
-  
   render() {
     return (
       <div className={'root'}>
@@ -178,7 +168,6 @@ class DNDTable extends Component {
           component={TableWrapper}
           rows={this.props.rows}
           handleRowUpdate={this.props.handleRowUpdate}
-          // updateDNDRows={updateRows}
           itemHeight={50}
           helperClass={'helper'}
           headers={this.props.headers}
