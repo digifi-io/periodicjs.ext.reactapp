@@ -37,7 +37,7 @@ class ListWrapper extends Component {
     component: PropTypes.func,
     shouldUseDragHandle: PropTypes.bool,
     headers: PropTypes.array,
-    getRows: PropTypes.func,
+    handleRowUpdate: PropTypes.func,
   };
   static defaultProps = {
     className: 'list',
@@ -59,7 +59,7 @@ class ListWrapper extends Component {
     const {rows} = this.state;
     let newRows = arrayMove(rows, oldIndex, newIndex);
     this.setState(Object.assign({}, { rows: newRows }, { isSorting: false }), () => {
-      this.props.getRows(newRows);
+      this.props.handleRowUpdate(newRows);
     });
     if (onSortEnd) {
       onSortEnd(this.refs.component);
@@ -177,7 +177,7 @@ class DNDTable extends Component {
         <ListWrapper
           component={TableWrapper}
           rows={this.props.rows}
-          getRows={this.props.getRows}
+          handleRowUpdate={this.props.handleRowUpdate}
           // updateDNDRows={updateRows}
           itemHeight={50}
           helperClass={'helper'}

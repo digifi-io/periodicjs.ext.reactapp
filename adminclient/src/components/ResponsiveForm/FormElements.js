@@ -260,9 +260,9 @@ export function getFormDNDTable(options){
       };
     });
   };
-  let getRows;
-  if (formElement.getRows && formElement.getRows.indexOf('func:window') !== -1 && typeof window[ formElement.getRows.replace('func:window.', '') ] ==='function') {
-    getRows = window[ formElement.getRows.replace('func:window.', '') ].bind(this, formElement); 
+  let handleRowUpdate;
+  if (formElement.handleRowUpdate && formElement.handleRowUpdate.indexOf('func:window') !== -1 && typeof window[ formElement.handleRowUpdate.replace('func:window.', '') ] ==='function') {
+    handleRowUpdate = window[ formElement.handleRowUpdate.replace('func:window.', '') ].bind(this, formElement); 
   }
   let useRowButtons = formElement.rowButtons;
   let ignoreTableHeaders = formElement.ignoreTableHeaders || [];
@@ -304,7 +304,7 @@ export function getFormDNDTable(options){
   return (<FormItem key={i} {...formElement.layoutProps} >
   {getFormLabel(formElement)}  
   <DNDTable {...passedProps}
-      getRows={getRows.bind(this)}  
+      handleRowUpdate={handleRowUpdate.bind(this)}  
       value={initialValue} />
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
