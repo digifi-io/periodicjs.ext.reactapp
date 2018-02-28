@@ -66,6 +66,6 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://des-digifi.cc:8788",
+  "proxy": "https://localhost:8787",
   "homepage": "/extensions/periodicjs.ext.reactapp"
 }
