@@ -81,37 +81,39 @@ class ResponsiveNavBar extends Component {
   render() {
   const { activeIndex } = this.state;
    let navMenu = this.props.navSections.map((section, idx)=> {
-      let subMenu = this.props.navData[idx].map((link, linkIdx) => {
-        let itemProps = (this.props.linkProps && this.props.linkProps.className) ? this.props.linkProps.className : '';
-        let activeClass = (link.linkURL === this.props.location.pathname) 
-          ? 'active-nav-link nav-link' + itemProps
-          : 'nav-link' + itemProps;
-        return (
-          <div 
-            {...this.props.itemProps}
-            key={idx + '-' + linkIdx}
-            className={activeClass} >
-            <Link 
-                to={link.linkURL}
-                {...this.props.linkProps}
-                >
-              {link.name}
-            </Link>
-            {(section.buttons) ? section.buttons.map(button => {
-                return this.getRenderedComponent(Object.assign({
-                  component: 'ResponsiveButton',
-                  props: Object.assign({
-                    buttonProps: {},
-                  }, button.passProps, 
-                  {
-                    onclickProps: this.getBaseUrl(button.passProps.onclickBaseUrl, button.passProps.onclickLinkParams, this.props, linkIdx),
-                    onclickBaseUrl: null,
-                    onclickLinkParams: null,
-                  }
-                ),
-                }))
-              }) : null }
-          </div>
+    if (!this.props.toggleData[section.toggle]) { return; }
+    
+    let subMenu = this.props.navData[idx].map((link, linkIdx) => {
+      let itemProps = (this.props.linkProps && this.props.linkProps.className) ? this.props.linkProps.className : '';
+      let activeClass = (link.linkURL === this.props.location.pathname) 
+        ? 'active-nav-link nav-link' + itemProps
+        : 'nav-link' + itemProps;
+      return (
+        <div 
+          {...this.props.itemProps}
+          key={idx + '-' + linkIdx}
+          className={activeClass} >
+          <Link 
+              to={link.linkURL}
+              {...this.props.linkProps}
+              >
+            {link.name}
+          </Link>
+          {(section.buttons) ? section.buttons.map(button => {
+              return this.getRenderedComponent(Object.assign({
+                component: 'ResponsiveButton',
+                props: Object.assign({
+                  buttonProps: {},
+                }, button.passProps, 
+                {
+                  onclickProps: this.getBaseUrl(button.passProps.onclickBaseUrl, button.passProps.onclickLinkParams, this.props, linkIdx),
+                  onclickBaseUrl: null,
+                  onclickLinkParams: null,
+                }
+              ),
+              }))
+            }) : null }
+        </div>
         )
       });
 
@@ -144,6 +146,6 @@ class ResponsiveNavBar extends Component {
 }
 
 ResponsiveNavBar.propType = propTypes;
-// ResponsiveNavBar.defaultProps = defaultProps;
+ResponsiveNavBar.defaultProps = defaultProps;
 
 export default ResponsiveNavBar;
