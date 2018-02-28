@@ -4,6 +4,7 @@ import {render} from 'react-dom';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import { Table, List, Column, defaultTableRowRenderer } from 'react-virtualized';
 import classNames from 'classnames';
+import 'react-virtualized/styles.css';
 import range from 'lodash/range';
 import random from 'lodash/random';
 import ReactDOM from 'react-dom';
@@ -17,21 +18,20 @@ import numeral from 'numeral';
  * you *must* pass in {withRef: true} as the second param. Refs are opt-in.
  */
 
- const LRpropTypes = {
-  rows: PropTypes.array,
-  className: PropTypes.string,
-  itemClass: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
-  onSortStart: PropTypes.func,
-  onSortEnd: PropTypes.func,
-  component: PropTypes.func,
-  shouldUseDragHandle: PropTypes.bool,
-  headers: PropTypes.array,
-  handleRowUpdate: PropTypes.func,
-};
-
-const LRdefaultProps = {
+const LWpropTypes = {
+    rows: PropTypes.array,
+    className: PropTypes.string,
+    itemClass: PropTypes.string,
+    width: PropTypes.number,
+    height: PropTypes.number,
+    onSortStart: PropTypes.func,
+    onSortEnd: PropTypes.func,
+    component: PropTypes.func,
+    shouldUseDragHandle: PropTypes.bool,
+    headers: PropTypes.array,
+    handleRowUpdate: PropTypes.func,
+  };
+const LWdefaultProps = {
   className: 'list',
   itemClass: 'item',
   width: 400,
@@ -40,15 +40,25 @@ const LRdefaultProps = {
 };
 
 class ListWrapper extends Component {
-  constructor({rows}) {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      rows,
+      rows: props.rows,
+      className: props.className,
+      itemClass: props.itemClass,
+      width: props.width,
+      height: props.height,
+      onSortStart: props.onSortStart,
+      onSortEnd: props.onSortEnd,
+      component: props.component,
+      shouldUseDragHandle: props.shouldUseDragHandle,
+      headers: props.headers,
+      handleRowUpdate: props.handleRowUpdate,
       isSorting: false,
     };
   }
   
-  onSortStart() {
+  onSortStart = () => {
     const {onSortStart} = this.props;
     this.setState({isSorting: true});
 
@@ -56,7 +66,7 @@ class ListWrapper extends Component {
       onSortStart(this.refs.component);
     }
   };
-  onSortEnd({oldIndex, newIndex}) {
+  onSortEnd = ({oldIndex, newIndex}) => {
     const {onSortEnd} = this.props;
     const {rows} = this.state;
     let newRows = arrayMove(rows, oldIndex, newIndex);
@@ -83,8 +93,8 @@ class ListWrapper extends Component {
   }
 }
 
-ListWrapper.propTypes = LRpropTypes;
-ListWrapper.defaultProps = LRdefaultProps;
+ListWrapper.propTypes = LWpropTypes;
+ListWrapper.defaultProps = LWdefaultProps;
 
 const TWpropTypes = {
   rows: PropTypes.array,
@@ -103,6 +113,17 @@ class TableWrapper extends Component {
     super(props);
     this.getRenderedComponent = getRenderedComponent.bind(this);
     this.cellRenderer = this.cellRenderer.bind(this);
+    this.state = {
+      rows: props.rows,
+      className: props.className,
+      helperClass: props.helperClass,
+      itemClass: props.itemClass,
+      width: props.width,
+      height: props.height,
+      itemHeight: props.itemHeight,
+      onSortEnd: props.onSortEnd,
+      headers: props.headers,
+    }
   }
 
   cellRenderer({ cellData }) {
@@ -129,7 +150,6 @@ class TableWrapper extends Component {
     const SortableTable = SortableContainer(Table, { withRef: true });
     const SortableRowRenderer = SortableElement(defaultTableRowRenderer);
     let tableheaders = headers.map((header, idx) => (<Column cellRenderer={this.cellRenderer} label={header.label} key={idx} dataKey={header.sortid} width={100} />))
-
     return (
       <SortableTable
         getContainer={wrappedInstance => ReactDOM.findDOMNode(wrappedInstance.Grid)}
@@ -153,14 +173,21 @@ class TableWrapper extends Component {
     );
   }
 }
-
 TableWrapper.propTypes = TWpropTypes;
 
 
 class DNDTable extends Component {
   constructor(props) {
     super(props);
+    // this.state = {
+    //   rows: this.props.rows || []
+    // }
   }
+
+  // updateRows() {
+  //   this.setState({ rows })
+  // }
+  
   render() {
     return (
       <div className={'root'}>
@@ -168,6 +195,7 @@ class DNDTable extends Component {
           component={TableWrapper}
           rows={this.props.rows}
           handleRowUpdate={this.props.handleRowUpdate}
+          // updateDNDRows={updateRows}
           itemHeight={50}
           helperClass={'helper'}
           headers={this.props.headers}
