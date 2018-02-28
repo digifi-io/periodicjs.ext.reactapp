@@ -11,7 +11,8 @@ import 'codemirror/mode/sql/sql';
 import 'codemirror/mode/css/css';
 import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/markdown/markdown';
-
+import 'codemirror/mode/python/python';
+import 'codemirror/mode/ruby/ruby';
 
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/hint/css-hint';
