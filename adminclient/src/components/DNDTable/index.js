@@ -57,16 +57,9 @@ class ListWrapper extends Component {
   onSortEnd = ({oldIndex, newIndex}) => {
     const {onSortEnd} = this.props;
     const {rows} = this.state;
-    console.log('sup tho');
     let newRows = arrayMove(rows, oldIndex, newIndex);
-    console.log({ newRows });
-    this.setState({ rows: newRows, isSorting: false }, () => {
-      console.log('state after setState: ', this.state.rows);
-      // setTimeout(() => {
-        console.log('timeout has been set')
-        console.log('the new Rows setTimeout: ', newRows);
-        this.props.getRows(newRows);
-      // }, 3000)
+    this.setState(Object.assign({}, { rows: newRows }, { isSorting: false }), () => {
+      this.props.getRows(newRows);
     });
     if (onSortEnd) {
       onSortEnd(this.refs.component);
@@ -74,7 +67,7 @@ class ListWrapper extends Component {
   };
   render() {
     const Component = this.props.component;
-    const {rows, isSorting} = this.state;
+    let { rows, isSorting } = this.state;
     const props = {
       isSorting,
       rows,
@@ -140,6 +133,7 @@ class TableWrapper extends Component {
         height={height}
         helperClass={helperClass}
         onSortEnd={onSortEnd}
+        transitionDuration={0}
         // shouldCancelStart={(e) => {
         //   // Cancel sorting if the event target is an `input`, `textarea`, `select` or `option`
         //   const disabledElements = [ 'input', 'textarea', 'select', 'option', 'button' ];

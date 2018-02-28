@@ -21,7 +21,7 @@ import pluralize from 'pluralize';
 import flatten, { unflatten, } from 'flat';
 import styles from '../../styles';
 import { validateForm, } from './FormHelpers';
-    
+
 export function getPropertyAttribute(options) {
   let { property, element, } = options;
   let attribute = element.name;
@@ -228,8 +228,9 @@ function getFunctionFromProps(options) {
 
 export function getFormDNDTable(options){
   let { formElement, i, } = options;
-  let initialValue = getInitialValue(formElement,
-  (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true })));
+  // let initialValue = getInitialValue(formElement,
+  // (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true })));
+  let initialValue = this.state[formElement.name];
   // console.debug({ initialValue },this.state, this.state[formElement.name]);
   let hasError = getErrorStatus(this.state, formElement.name);
   const getTableHeaders = (row) => {
@@ -259,6 +260,10 @@ export function getFormDNDTable(options){
       };
     });
   };
+  let getRows;
+  if (formElement.getRows && formElement.getRows.indexOf('func:window') !== -1 && typeof window[ formElement.getRows.replace('func:window.', '') ] ==='function') {
+    getRows = window[ formElement.getRows.replace('func:window.', '') ].bind(this, formElement); 
+  }
   let useRowButtons = formElement.rowButtons;
   let ignoreTableHeaders = formElement.ignoreTableHeaders || [];
   let tableHeaders = (formElement.headers)
@@ -296,40 +301,10 @@ export function getFormDNDTable(options){
     },
     formElement.passProps
   );
-  function getRows(rows) {
-    console.log({ rows, formElement });
-    console.log(this);
-    setTimeout(() => {
-    this.setState(Object.assign({}, {ruleset: rows}), () =>{
-    if (formElement.submitOnChange) {
-      this.submitForm();
-    } else {
-      return;
-    }
-        
-      }, 3000)
-
-    });
-  }
   return (<FormItem key={i} {...formElement.layoutProps} >
   {getFormLabel(formElement)}  
   <DNDTable {...passedProps}
       getRows={getRows.bind(this)}  
-      onChange={(newvalue) => {
-        let flattenedData = (this.props.flattenFormData)
-          ? flatten(Object.assign({}, { [ formElement.name ]: newvalue.rows, }))
-          : {};
-        let updatedStateProp = Object.assign({
-          formDataTables: Object.assign({}, this.state.formDataTables, { [ formElement.name ]: newvalue.rows, }),
-          [ formElement.name ]: newvalue.rows,
-        }, flattenedData );
-        if (formElement.onChangeFilter) {
-          const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-          updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-        }
-        // console.debug('DATATABLE',updatedStateProp);
-        this.setState(updatedStateProp);
-      }}
       value={initialValue} />
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
