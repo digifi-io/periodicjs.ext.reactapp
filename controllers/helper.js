@@ -93,8 +93,8 @@ const decryptAsset = function (req, res, next) {
 };
 
 const handleFileUpload = function (req, res, next) {
+  const extsettings = utilities.reactapp().settings;
   if (!encryption_key) {
-    const extsettings = utilities.reactapp().settings;
     encryption_key = fs.readFileSync(extsettings.encryption_key_path).toString();
   }
   if (req.query.forcequerytobody) { //this is because multer rename function is being called before multipart form body is parsed
@@ -107,10 +107,13 @@ const handleFileUpload = function (req, res, next) {
   // console.log('handleFileUpload req.body', req.body);
   // console.log("req.headers['content-type'].indexOf('multipart/form-data')", req.headers[ 'content-type' ].indexOf('multipart/form-data'));
   // if ((req.query.handleupload || req.controllerData.handleupload || req.body.handleupload ) && (req.headers && req.headers['content-type']&& req.headers['content-type'].indexOf('multipart/form-data')!==-1)) {
+  const { sizeLimit, acceptedMIMETypes, } = extsettings.fileUpload;
   if (req.headers && req.headers[ 'content-type' ] && req.headers[ 'content-type' ].indexOf('multipart/form-data') !== -1) {
     if (req.query.encryptfiles) {
       return periodic.core.files.uploadMiddlewareHandler({
         periodic,
+        sizeLimit,
+        acceptedMIMETypes,
         encrypted_client_side: true,
         encryption_key,
         save_file_to_asset: (typeof req.save_file_to_asset==='boolean')? req.save_file_to_asset: true,
@@ -119,6 +122,8 @@ const handleFileUpload = function (req, res, next) {
     } else {
       return periodic.core.files.uploadMiddlewareHandler({
         periodic,
+        sizeLimit,
+        acceptedMIMETypes,
         save_file_to_asset: (typeof req.save_file_to_asset==='boolean')? req.save_file_to_asset: true,
         send_response: (typeof req.send_response ==='boolean') ? req.send_response : false,
       })(req, res, next);
