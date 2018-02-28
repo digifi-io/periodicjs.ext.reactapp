@@ -68,12 +68,12 @@ class AppHeader extends Component {
     }, this.props.settings.ui.header.profileImageStyle, {
         backgroundImage: 'url(' + (this.props.user.profile_image_preview || this.props.settings.default_user_image || '/favicon.png') + ')',
     })
-
     let dropdownLinks = (this.props.settings.ui.header.productHeader.productLinks.length > 0)
       ? this.props.settings.ui.header.productHeader.productLinks.map(link => {
         return (
           <Dropdown.Item
             text={link.text}
+            style={{display: (link.type && this.props.user.userdata.entitytype !== link.type) ? 'none' : undefined}}
             onClick={() => {
               (link.location)
                 ? this.props.reduxRouter.push(link.location)
@@ -86,7 +86,6 @@ class AppHeader extends Component {
         )
         })
       : null;
-
     return (
       <Hero color={this.props.settings.ui.header.color} isBold={this.props.settings.ui.header.isBold} style={Object.assign(styles.fixedTop, styles.navContainer, this.props.settings.ui.header.containerStyle)}
       className={(this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn) ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed'}>
