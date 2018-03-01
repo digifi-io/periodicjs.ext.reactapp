@@ -54,8 +54,6 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-require('react-virtualized/styles.css');
-
 var _range = require('lodash/range');
 
 var _range2 = _interopRequireDefault(_range);

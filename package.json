@@ -7,7 +7,6 @@
   "bugs": {
     "url": "https://github.com/digifi-io/periodicjs.ext.reactapp/issues"
   },
-  "bundleDependencies": false,
   "config": {
     "blanket": {
       "pattern": [
@@ -158,5 +157,5 @@
     "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
     "test": "mocha -R spec --recursive"
   },
-  "version": "11.5.7"
+  "version": "11.5.8"
 }
