@@ -18,6 +18,7 @@ const defaultProps = {
   navSections: [],
   params: [],
   linkProps: {},
+  toggleData: {},
 };
 
 class ResponsiveNavBar extends Component {
@@ -27,6 +28,7 @@ class ResponsiveNavBar extends Component {
     let navSections = props.navSections || [];
     let params = props.params || [];
     let linkProps = props.linkProps || {};
+    let toggleData =  props.toggleData || {};
     this.state = {
       initialActiveIndex: -1,
       activeIndex: this.props.navSections.map((section, idx) => {
@@ -81,7 +83,7 @@ class ResponsiveNavBar extends Component {
   render() {
   const { activeIndex } = this.state;
    let navMenu = this.props.navSections.map((section, idx)=> {
-    if (!this.props.toggleData[section.toggle]) { return; }
+    if (section.toggle && !this.props.toggleData[section.toggle]) { return; }
     
     let subMenu = this.props.navData[idx].map((link, linkIdx) => {
       let itemProps = (this.props.linkProps && this.props.linkProps.className) ? this.props.linkProps.className : '';
