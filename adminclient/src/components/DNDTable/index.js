@@ -58,7 +58,7 @@ class ListWrapper extends Component {
     };
   }
   
-  onSortStart = () => {
+  onSortStart() {
     const {onSortStart} = this.props;
     this.setState({isSorting: true});
 
@@ -66,7 +66,7 @@ class ListWrapper extends Component {
       onSortStart(this.refs.component);
     }
   };
-  onSortEnd = ({oldIndex, newIndex}) => {
+  onSortEnd ({oldIndex, newIndex}) {
     const {onSortEnd} = this.props;
     const {rows} = this.state;
     let newRows = arrayMove(rows, oldIndex, newIndex);

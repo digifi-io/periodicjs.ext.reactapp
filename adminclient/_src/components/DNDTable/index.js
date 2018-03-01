@@ -54,6 +54,8 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
+require('react-virtualized/styles.css');
+
 var _range = require('lodash/range');
 
 var _range2 = _interopRequireDefault(_range);
@@ -84,7 +86,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * you *must* pass in {withRef: true} as the second param. Refs are opt-in.
  */
 
-var LRpropTypes = {
+var LWpropTypes = {
   rows: _react.PropTypes.array,
   className: _react.PropTypes.string,
   itemClass: _react.PropTypes.string,
@@ -97,8 +99,7 @@ var LRpropTypes = {
   headers: _react.PropTypes.array,
   handleRowUpdate: _react.PropTypes.func
 };
-
-var LRdefaultProps = {
+var LWdefaultProps = {
   className: 'list',
   itemClass: 'item',
   width: 400,
@@ -109,14 +110,23 @@ var LRdefaultProps = {
 var ListWrapper = function (_Component) {
   (0, _inherits3.default)(ListWrapper, _Component);
 
-  function ListWrapper(_ref) {
-    var rows = _ref.rows;
+  function ListWrapper(props) {
     (0, _classCallCheck3.default)(this, ListWrapper);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (ListWrapper.__proto__ || (0, _getPrototypeOf2.default)(ListWrapper)).call(this));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (ListWrapper.__proto__ || (0, _getPrototypeOf2.default)(ListWrapper)).call(this, props));
 
     _this.state = {
-      rows: rows,
+      rows: props.rows,
+      className: props.className,
+      itemClass: props.itemClass,
+      width: props.width,
+      height: props.height,
+      onSortStart: props.onSortStart,
+      onSortEnd: props.onSortEnd,
+      component: props.component,
+      shouldUseDragHandle: props.shouldUseDragHandle,
+      headers: props.headers,
+      handleRowUpdate: props.handleRowUpdate,
       isSorting: false
     };
     return _this;
@@ -135,11 +145,11 @@ var ListWrapper = function (_Component) {
     }
   }, {
     key: 'onSortEnd',
-    value: function onSortEnd(_ref2) {
+    value: function onSortEnd(_ref) {
       var _this2 = this;
 
-      var oldIndex = _ref2.oldIndex,
-          newIndex = _ref2.newIndex;
+      var oldIndex = _ref.oldIndex,
+          newIndex = _ref.newIndex;
       var onSortEnd = this.props.onSortEnd;
       var rows = this.state.rows;
 
@@ -174,8 +184,8 @@ var ListWrapper = function (_Component) {
   return ListWrapper;
 }(_react.Component);
 
-ListWrapper.propTypes = LRpropTypes;
-ListWrapper.defaultProps = LRdefaultProps;
+ListWrapper.propTypes = LWpropTypes;
+ListWrapper.defaultProps = LWdefaultProps;
 
 var TWpropTypes = {
   rows: _react.PropTypes.array,
@@ -199,15 +209,26 @@ var TableWrapper = function (_Component2) {
 
     _this3.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this3);
     _this3.cellRenderer = _this3.cellRenderer.bind(_this3);
+    _this3.state = {
+      rows: props.rows,
+      className: props.className,
+      helperClass: props.helperClass,
+      itemClass: props.itemClass,
+      width: props.width,
+      height: props.height,
+      itemHeight: props.itemHeight,
+      onSortEnd: props.onSortEnd,
+      headers: props.headers
+    };
     return _this3;
   }
 
   (0, _createClass3.default)(TableWrapper, [{
     key: 'cellRenderer',
-    value: function cellRenderer(_ref3) {
+    value: function cellRenderer(_ref2) {
       var _this4 = this;
 
-      var cellData = _ref3.cellData;
+      var cellData = _ref2.cellData;
 
       if (typeof cellData === 'string') return String(cellData);
       if (Array.isArray(cellData)) {
@@ -239,7 +260,6 @@ var TableWrapper = function (_Component2) {
       var tableheaders = headers.map(function (header, idx) {
         return _react2.default.createElement(_reactVirtualized.Column, { cellRenderer: _this5.cellRenderer, label: header.label, key: idx, dataKey: header.sortid, width: 100 });
       });
-
       return _react2.default.createElement(
         SortableTable,
         {
@@ -254,8 +274,8 @@ var TableWrapper = function (_Component2) {
           transitionDuration: 0,
           rowClassName: itemClass,
           rowCount: rows.length,
-          rowGetter: function rowGetter(_ref4) {
-            var index = _ref4.index;
+          rowGetter: function rowGetter(_ref3) {
+            var index = _ref3.index;
             return rows[index];
           },
           rowHeight: itemHeight,
@@ -279,7 +299,14 @@ var DNDTable = function (_Component3) {
   function DNDTable(props) {
     (0, _classCallCheck3.default)(this, DNDTable);
     return (0, _possibleConstructorReturn3.default)(this, (DNDTable.__proto__ || (0, _getPrototypeOf2.default)(DNDTable)).call(this, props));
+    // this.state = {
+    //   rows: this.props.rows || []
+    // }
   }
+
+  // updateRows() {
+  //   this.setState({ rows })
+  // }
 
   (0, _createClass3.default)(DNDTable, [{
     key: 'render',
@@ -290,8 +317,9 @@ var DNDTable = function (_Component3) {
         _react2.default.createElement(ListWrapper, (0, _extends3.default)({
           component: TableWrapper,
           rows: this.props.rows,
-          handleRowUpdate: this.props.handleRowUpdate,
-          itemHeight: 50,
+          handleRowUpdate: this.props.handleRowUpdate
+          // updateDNDRows={updateRows}
+          , itemHeight: 50,
           helperClass: 'helper',
           headers: this.props.headers
         }, this.props))
