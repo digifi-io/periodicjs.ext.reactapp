@@ -149,7 +149,7 @@ class TableWrapper extends Component {
     } = this.props;
     const SortableTable = SortableContainer(Table, { withRef: true });
     const SortableRowRenderer = SortableElement(defaultTableRowRenderer);
-    let tableheaders = headers.map((header, idx) => (<Column cellRenderer={this.cellRenderer} label={header.label} key={idx} dataKey={header.sortid} width={100} />))
+    let tableheaders = headers.map((header, idx) => (<Column cellRenderer={this.cellRenderer} label={header.label} key={idx} dataKey={header.sortid} width={width} />))
 
     return (
       <SortableTable
@@ -176,19 +176,14 @@ class TableWrapper extends Component {
 }
 TableWrapper.propTypes = TWpropTypes;
 
-
+const DNDTabledefaultProps = {
+  itemHeight: 50,
+};
 class DNDTable extends Component {
   constructor(props) {
     super(props);
-    // this.state = {
-    //   rows: this.props.rows || []
-    // }
   }
 
-  // updateRows() {
-  //   this.setState({ rows })
-  // }
-  
   render() {
     return (
       <div className={'root'}>
@@ -197,7 +192,7 @@ class DNDTable extends Component {
           rows={this.props.rows}
           handleRowUpdate={this.props.handleRowUpdate}
           // updateDNDRows={updateRows}
-          itemHeight={50}
+          itemHeight={this.props.itemHeight}
           helperClass={'helper'}
           headers={this.props.headers}
           {...this.props}
@@ -207,5 +202,6 @@ class DNDTable extends Component {
   }
 }
 
+DNDTable.defaultProps = DNDTabledefaultProps;
 
 export default DNDTable;
