@@ -256,7 +256,7 @@ var TableWrapper = function (_Component2) {
       var SortableTable = (0, _reactSortableHoc.SortableContainer)(_reactVirtualized.Table, { withRef: true });
       var SortableRowRenderer = (0, _reactSortableHoc.SortableElement)(_reactVirtualized.defaultTableRowRenderer);
       var tableheaders = headers.map(function (header, idx) {
-        return _react2.default.createElement(_reactVirtualized.Column, { cellRenderer: _this5.cellRenderer, label: header.label, key: idx, dataKey: header.sortid, width: 100 });
+        return _react2.default.createElement(_reactVirtualized.Column, { cellRenderer: _this5.cellRenderer, label: header.label, key: idx, dataKey: header.sortid, width: width });
       });
 
       return _react2.default.createElement(
@@ -292,20 +292,17 @@ var TableWrapper = function (_Component2) {
 
 TableWrapper.propTypes = TWpropTypes;
 
+var DNDTabledefaultProps = {
+  itemHeight: 50
+};
+
 var DNDTable = function (_Component3) {
   (0, _inherits3.default)(DNDTable, _Component3);
 
   function DNDTable(props) {
     (0, _classCallCheck3.default)(this, DNDTable);
     return (0, _possibleConstructorReturn3.default)(this, (DNDTable.__proto__ || (0, _getPrototypeOf2.default)(DNDTable)).call(this, props));
-    // this.state = {
-    //   rows: this.props.rows || []
-    // }
   }
-
-  // updateRows() {
-  //   this.setState({ rows })
-  // }
 
   (0, _createClass3.default)(DNDTable, [{
     key: 'render',
@@ -318,7 +315,7 @@ var DNDTable = function (_Component3) {
           rows: this.props.rows,
           handleRowUpdate: this.props.handleRowUpdate
           // updateDNDRows={updateRows}
-          , itemHeight: 50,
+          , itemHeight: this.props.itemHeight,
           helperClass: 'helper',
           headers: this.props.headers
         }, this.props))
@@ -327,5 +324,7 @@ var DNDTable = function (_Component3) {
   }]);
   return DNDTable;
 }(_react.Component);
+
+DNDTable.defaultProps = DNDTabledefaultProps;
 
 exports.default = DNDTable;
