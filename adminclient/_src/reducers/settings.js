@@ -170,6 +170,7 @@ var packageJSON = {
     useragent: '^2.1.13'
   },
   dependencies: {
+    '@digifi/react-sortable-hoc': '0.0.2',
     'babel-polyfill': '^6.23.0',
     debounce: '^1.0.0',
     'draft-js': '^0.10.0',

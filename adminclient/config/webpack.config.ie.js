@@ -20,28 +20,6 @@ module.exports = {
   },
   module: {
     rules: [
-      // { test: /\.js$/, 
-      //   loader: 'babel-loader', 
-      //   exclude: /node_modules/, 
-      // },
-      // { test: /\.(js|jsx)$/, 
-      //   loader: 'babel-loader', 
-      //   exclude: /node_modules/,
-      //   options: {
-      //     babelrc: false,
-      //     presets: [
-      //       require.resolve('babel-preset-react'),
-      //       require.resolve('babel-preset-es2015'),
-      //       require.resolve('babel-preset-es2016'),
-      //       require.resolve('babel-preset-es2017'),
-      //       require.resolve('babel-preset-es2015-ie'),
-      //     ],
-      //     plugins: [
-      //       require.resolve('babel-plugin-transform-runtime'),
-      //     ],
-      //     cacheDirectory:  false,
-      //   },
-      // },
       { test: /\.(js|jsx)$/, 
         loader: 'babel-loader', 
         include:[path.resolve(__dirname, '../src')],
@@ -153,23 +131,6 @@ module.exports = {
   },
   plugins:[
     new webpack.optimize.OccurrenceOrderPlugin(),
-    // // Try to dedupe duplicated modules, if any:
-    // new webpack.optimize.DedupePlugin(),
-    // // Minify the code.
-    // new webpack.optimize.UglifyJsPlugin({
-    //   // sourceMap: true,
-    //   compress: {
-    //     screw_ie8: true, // React doesn't support IE8
-    //     warnings: false
-    //   },
-    //   mangle: {
-    //     screw_ie8: true
-    //   },
-    //   output: {
-    //     comments: false,
-    //     screw_ie8: true
-    //   }
-    // }),
   ],
   node: {
     fs: 'empty',

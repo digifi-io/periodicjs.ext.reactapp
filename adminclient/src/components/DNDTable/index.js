@@ -1,10 +1,9 @@
 import React, { Component, PropTypes, } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import {render} from 'react-dom';
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+import {SortableContainer, SortableElement, arrayMove} from '@digifi/react-sortable-hoc';
 import { Table, List, Column, defaultTableRowRenderer } from 'react-virtualized';
 import classNames from 'classnames';
-import 'react-virtualized/styles.css';
 import range from 'lodash/range';
 import random from 'lodash/random';
 import ReactDOM from 'react-dom';
@@ -69,8 +68,6 @@ class ListWrapper extends Component {
   };
   
   onSortEnd({ oldIndex, newIndex }) {
-    console.log('this: ', this);
-    console.log('this.props: ', this.props);
     const {onSortEnd} = this.props;
     const {rows} = this.state;
     let newRows = arrayMove(rows, oldIndex, newIndex);
