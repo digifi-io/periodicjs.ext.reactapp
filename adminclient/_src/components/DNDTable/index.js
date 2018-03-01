@@ -46,7 +46,7 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _reactSortableHoc = require('react-sortable-hoc');
+var _reactSortableHoc = require('@digifi/react-sortable-hoc');
 
 var _reactVirtualized = require('react-virtualized');
 
