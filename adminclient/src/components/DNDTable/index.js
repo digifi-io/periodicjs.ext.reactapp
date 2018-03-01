@@ -42,6 +42,7 @@ const LWdefaultProps = {
 class ListWrapper extends Component {
   constructor(props) {
     super(props);
+    this.onSortEnd = this.onSortEnd.bind(this);
     this.state = {
       rows: props.rows,
       className: props.className,
@@ -58,7 +59,7 @@ class ListWrapper extends Component {
     };
   }
   
-  onSortStart = () => {
+  onSortStart(){
     const {onSortStart} = this.props;
     this.setState({isSorting: true});
 
@@ -66,7 +67,10 @@ class ListWrapper extends Component {
       onSortStart(this.refs.component);
     }
   };
-  onSortEnd = ({oldIndex, newIndex}) => {
+  
+  onSortEnd({ oldIndex, newIndex }) {
+    console.log('this: ', this);
+    console.log('this.props: ', this.props);
     const {onSortEnd} = this.props;
     const {rows} = this.state;
     let newRows = arrayMove(rows, oldIndex, newIndex);
@@ -146,10 +150,10 @@ class TableWrapper extends Component {
       onSortEnd,
       width,
     } = this.props;
-    
     const SortableTable = SortableContainer(Table, { withRef: true });
     const SortableRowRenderer = SortableElement(defaultTableRowRenderer);
     let tableheaders = headers.map((header, idx) => (<Column cellRenderer={this.cellRenderer} label={header.label} key={idx} dataKey={header.sortid} width={100} />))
+
     return (
       <SortableTable
         getContainer={wrappedInstance => ReactDOM.findDOMNode(wrappedInstance.Grid)}
