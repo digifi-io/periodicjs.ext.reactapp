@@ -113,6 +113,7 @@ var ListWrapper = function (_Component) {
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (ListWrapper.__proto__ || (0, _getPrototypeOf2.default)(ListWrapper)).call(this, props));
 
+    _this.onSortEnd = _this.onSortEnd.bind(_this);
     _this.state = {
       rows: props.rows,
       className: props.className,
@@ -252,12 +253,12 @@ var TableWrapper = function (_Component2) {
           onSortEnd = _props.onSortEnd,
           width = _props.width;
 
-
       var SortableTable = (0, _reactSortableHoc.SortableContainer)(_reactVirtualized.Table, { withRef: true });
       var SortableRowRenderer = (0, _reactSortableHoc.SortableElement)(_reactVirtualized.defaultTableRowRenderer);
       var tableheaders = headers.map(function (header, idx) {
         return _react2.default.createElement(_reactVirtualized.Column, { cellRenderer: _this5.cellRenderer, label: header.label, key: idx, dataKey: header.sortid, width: 100 });
       });
+
       return _react2.default.createElement(
         SortableTable,
         {
