@@ -62,7 +62,8 @@ var defaultProps = {
   navData: [],
   navSections: [],
   params: [],
-  linkProps: {}
+  linkProps: {},
+  toggleData: {}
 };
 
 var ResponsiveNavBar = function (_Component) {
@@ -77,6 +78,7 @@ var ResponsiveNavBar = function (_Component) {
     var navSections = props.navSections || [];
     var params = props.params || [];
     var linkProps = props.linkProps || {};
+    var toggleData = props.toggleData || {};
     _this.state = {
       initialActiveIndex: -1,
       activeIndex: _this.props.navSections.map(function (section, idx) {
@@ -139,7 +141,7 @@ var ResponsiveNavBar = function (_Component) {
       var activeIndex = this.state.activeIndex;
 
       var navMenu = this.props.navSections.map(function (section, idx) {
-        if (!_this2.props.toggleData[section.toggle]) {
+        if (section.toggle && !_this2.props.toggleData[section.toggle]) {
           return;
         }
 
