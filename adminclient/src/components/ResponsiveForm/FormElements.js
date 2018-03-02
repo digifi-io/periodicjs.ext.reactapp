@@ -833,6 +833,42 @@ export function getFormCheckbox(options) {
   </FormItem>);
 }
 
+export function getFormButton(options) {
+  let { formElement, i, onValueChange, } = options;
+  if (formElement.value) {
+    this.setState({[formElement.name]: formElement.value})
+  }
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let hasValue = (formElement.name && this.state[ formElement.name ]) ? true : false;
+  let onClickHandler;
+  if (formElement.onClick) {
+    if (formElement.onClick.indexOf('func:this.props') !== -1) {
+      onClickHandler= this.props[ formElement.onClick.replace('func:this.props.', '') ];
+    } else if (formElement.onClick.indexOf('func:window') !== -1 && typeof window[ formElement.onClick.replace('func:window.', '') ] === 'function') {
+      onClickHandler= window[ formElement.onClick.replace('func:window.', '') ].bind(this, formElement);
+    } else {
+      onClickHandler = () => { };
+    } 
+  } else {
+    onClickHandler = () => { };
+  }
+
+  let getFormDataLabel = getFormLabel.bind(this);
+  
+  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
+    {getFormDataLabel(formElement)}  
+    <Button {...formElement.passProps}
+      type={formElement.type}
+      name={this.state[ formElement.formdata_name ] || formElement.name}
+      onClick={onClickHandler}
+    >
+    </Button>
+    <span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder] || formElement.placeholder}</span>
+    {getCustomErrorLabel(hasError, this.state, formElement)}
+  </FormItem>);
+}
+
+
 export function getFormSemanticCheckbox(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);

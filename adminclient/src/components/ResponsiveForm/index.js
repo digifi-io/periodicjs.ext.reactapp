@@ -3,7 +3,7 @@ import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, Ca
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, } from './FormElements';
+import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, } from './FormHelpers';
 import flatten from 'flat';
 import qs from 'querystring';
@@ -118,6 +118,7 @@ class ResponsiveForm extends Component{
     this.getFormDropdown = getFormDropdown.bind(this);
     this.getFormTextArea = getFormTextArea.bind(this);
     this.getFormCheckbox = getFormCheckbox.bind(this);
+    this.getFormButton = getFormButton.bind(this);
     this.getFormSemanticCheckbox = getFormSemanticCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
@@ -419,6 +420,8 @@ class ResponsiveForm extends Component{
           return null;
         } else if (formElement.type === 'text' || formElement.type === 'file' ) {
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'button' ) {
+          return this.getFormButton({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'input' ) {
           return this.getRawInput({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'maskedinput' ) {
