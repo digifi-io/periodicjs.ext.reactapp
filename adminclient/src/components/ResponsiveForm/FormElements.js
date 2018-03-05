@@ -389,7 +389,8 @@ export function getFormDatatable(options){
       headers: tableHeaders,
       limit: 5000,
       hasPagination: false,
-      tableForm:true,
+      tableForm: true,
+      uniqueFormOptions: formElement.uniqueFormOptions,
     },
     formElement.passProps
   );// formElement.datalist,

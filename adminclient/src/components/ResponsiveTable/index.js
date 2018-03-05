@@ -181,7 +181,7 @@ class ResponsiveTable extends Component {
   updateInlineRowDataText(options) {
     let { name, text, rowIndex, } = options;
     let rows = this.state.rows.concat([]);
-    rows[rowIndex][name] = text;
+    rows[ rowIndex ][ name ] = text;
     // console.debug({ rowIndex, rows, deletedRow }, this.state.rows);
     // this.props.onChange({ rows, });
     this.updateTableData({ rows, });
@@ -259,11 +259,11 @@ class ResponsiveTable extends Component {
       if (typeof options.selectedRowData !== undefined) {
         updatedState.selectedRowData = options.selectedRowData;
       }
-      if (!this.props.baseUrl) {
+    if (!this.props.baseUrl) {
         // console.debug({options})
         updatedState.rows = (typeof options.rows !== 'undefined') ? options.rows : this.props.rows;
         // console.debug({ updatedState, });
-        if (options.sort) {
+      if (options.sort) {
           newSortOptions.sortProp = options.sort;
           if (this.state.sortProp === options.sort) {
             newSortOptions.sortOrder = (this.state.sortOrder !== 'desc') ? 'desc' : 'asc';
@@ -273,7 +273,7 @@ class ResponsiveTable extends Component {
           updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, options.sort));
           updatedState.sortOrder = newSortOptions.sortOrder;
           updatedState.sortProp = options.sort;
-        } else if (this.props.turnOffTableSort){
+      } else if (this.props.turnOffTableSort) {
         updatedState.rows = updatedState.rows;
       } else if ((this.state.sortOrder || this.state.sortProp) && !this.state.disableSort) {
           newSortOptions.sortProp = this.state.sortProp;
@@ -281,7 +281,7 @@ class ResponsiveTable extends Component {
           updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, newSortOptions.sortProp));
         }
 
-        if (this.props.tableSearch && this.state.filterRowData && this.state.filterRowData.length) {
+      if (this.props.tableSearch && this.state.filterRowData && this.state.filterRowData.length) {
           let filteredRows = [];
           updatedState.rows.forEach(row => {
             this.state.filterRowData.forEach(filter => {
@@ -343,7 +343,7 @@ class ResponsiveTable extends Component {
           updatedState.rows = filteredRows;
           // console.debug('updatedState.rows', updatedState.rows, { filteredRows, });
         }
-        if (this.props.tableSearch && this.props.searchField && options.search) {
+      if (this.props.tableSearch && this.props.searchField && options.search) {
           updatedState.rows = (updatedState.rows||this.props.rows).filter(row => {
             return row[ this.props.searchField ] && row[ this.props.searchField ].indexOf(options.search) !== -1
           });
@@ -358,7 +358,7 @@ class ResponsiveTable extends Component {
         updatedState.isLoading = false;
 
         if (this.props.tableForm) {
-          // console.debug('befroe', {updatedState})
+          // console.debug('before', {updatedState})
           this.props.onChange(updatedState);
         }
         // else {
@@ -373,9 +373,9 @@ class ResponsiveTable extends Component {
           } else {
             newSortOptions.sortOrder = '';
           }
-        } else if (this.props.turnOffTableSort){
+        } else if (this.props.turnOffTableSort) {
         updatedState.rows = updatedState.rows;
-      } else if (this.state.sortOrder || this.state.sortProp) {
+        } else if (this.state.sortOrder || this.state.sortProp) {
           newSortOptions.sortProp = this.state.sortProp;
           newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? '-' : '';
         }
@@ -446,7 +446,7 @@ class ResponsiveTable extends Component {
         });
     }
   }
-  formatValue(value, row, options, header) {
+  formatValue(value, row, options, header, uniqueFormOptions) {
    
     try {
        // console.debug({ value, row, options, header, });
@@ -530,7 +530,9 @@ class ResponsiveTable extends Component {
           }}
         >{value}</rb.Input>;
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
-        let selectOptions = header.formoptions || [];
+        let selectOptions = uniqueFormOptions
+          ? value || []
+          : header.formoptions || [];
         return <rb.Select
           value={value}
           {...header.selectProps}
@@ -968,7 +970,8 @@ class ResponsiveTable extends Component {
                       icon: header.icon,
                       iconProps: header.iconProps,
                     },
-                    header)
+                    header,
+                    this.props.uniqueFormOptions)
                 }
               </rb.Td>
             );
