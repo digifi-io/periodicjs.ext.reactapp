@@ -50,6 +50,10 @@ var _reactSortableHoc = require('@digifi/react-sortable-hoc');
 
 var _reactVirtualized = require('react-virtualized');
 
+var _tableHelpers = require('./tableHelpers');
+
+var _tableHelpers2 = _interopRequireDefault(_tableHelpers);
+
 var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
@@ -227,7 +231,8 @@ var TableWrapper = function (_Component2) {
     value: function cellRenderer(_ref2) {
       var _this4 = this;
 
-      var cellData = _ref2.cellData;
+      var cellData = _ref2.cellData,
+          index = _ref2.index;
 
       if (typeof cellData === 'string') return String(cellData);
       if (Array.isArray(cellData)) {
@@ -254,11 +259,17 @@ var TableWrapper = function (_Component2) {
           width = _props.width;
 
       var SortableTable = (0, _reactSortableHoc.SortableContainer)(_reactVirtualized.Table, { withRef: true });
-      var SortableRowRenderer = (0, _reactSortableHoc.SortableElement)(_reactVirtualized.defaultTableRowRenderer);
-      var tableheaders = headers.map(function (header, idx) {
-        return _react2.default.createElement(_reactVirtualized.Column, { cellRenderer: _this5.cellRenderer, label: header.label, key: idx, dataKey: header.sortid, width: width });
-      });
+      var SortableRowRenderer = (0, _reactSortableHoc.SortableElement)(_tableHelpers2.default);
 
+      var tableheaders = headers.map(function (header, idx) {
+        return _react2.default.createElement(_reactVirtualized.Column, { content: idx,
+          cellRenderer: _this5.cellRenderer,
+          label: header.label,
+          key: idx,
+          dataKey: header.sortid,
+          width: width,
+          headerStyle: header.columnProps && header.columnProps.style ? header.columnProps.style : null });
+      });
       return _react2.default.createElement(
         SortableTable,
         {
@@ -279,7 +290,7 @@ var TableWrapper = function (_Component2) {
           },
           rowHeight: itemHeight,
           rowRenderer: function rowRenderer(props) {
-            return _react2.default.createElement(SortableRowRenderer, props);
+            return _react2.default.createElement(SortableRowRenderer, (0, _extends3.default)({}, props, { indexCopy: props.index, headers: _this5.props.headers }));
           },
           width: width
         },
