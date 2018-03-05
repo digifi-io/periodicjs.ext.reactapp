@@ -178,6 +178,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormDropdown = _FormElements.getFormDropdown.bind(_this);
     _this.getFormTextArea = _FormElements.getFormTextArea.bind(_this);
     _this.getFormCheckbox = _FormElements.getFormCheckbox.bind(_this);
+    _this.getFormButton = _FormElements.getFormButton.bind(_this);
     _this.getFormSemanticCheckbox = _FormElements.getFormSemanticCheckbox.bind(_this);
     _this.getCardFooterItem = _FormElements.getCardFooterItem.bind(_this);
     _this.getFormSelect = _FormElements.getFormSelect.bind(_this);
@@ -474,6 +475,8 @@ var ResponsiveForm = function (_Component) {
             return null;
           } else if (formElement.type === 'text' || formElement.type === 'file') {
             return _this5.getFormTextInputArea({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'button') {
+            return _this5.getFormButton({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'input') {
             return _this5.getRawInput({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'maskedinput') {

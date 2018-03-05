@@ -46,6 +46,7 @@ exports.getFormTextInputArea = getFormTextInputArea;
 exports.getFormTextArea = getFormTextArea;
 exports.getFormSelect = getFormSelect;
 exports.getFormCheckbox = getFormCheckbox;
+exports.getFormButton = getFormButton;
 exports.getFormSemanticCheckbox = getFormSemanticCheckbox;
 exports.getFormSwitch = getFormSwitch;
 exports.getRawInput = getRawInput;
@@ -959,6 +960,49 @@ function getFormCheckbox(options) {
       name: this.state[formElement.formdata_name] || formElement.name,
       checked: formElement.type === 'radio' ? this.state[formElement.name] === formElement.value : this.state[formElement.name],
       onChange: onValueChange
+    })),
+    _react2.default.createElement(
+      'span',
+      formElement.placeholderProps,
+      this.state[formElement.formdata_placeholder] || formElement.placeholder
+    ),
+    getCustomErrorLabel(hasError, this.state, formElement)
+  );
+}
+
+function getFormButton(options) {
+  var formElement = options.formElement,
+      i = options.i,
+      onValueChange = options.onValueChange;
+
+  if (formElement.value) {
+    this.setState((0, _defineProperty3.default)({}, formElement.name, formElement.value));
+  }
+  var hasError = getErrorStatus(this.state, formElement.name);
+  var hasValue = formElement.name && this.state[formElement.name] ? true : false;
+  var onClickHandler = void 0;
+  if (formElement.onClick) {
+    if (formElement.onClick.indexOf('func:this.props') !== -1) {
+      onClickHandler = this.props[formElement.onClick.replace('func:this.props.', '')];
+    } else if (formElement.onClick.indexOf('func:window') !== -1 && typeof window[formElement.onClick.replace('func:window.', '')] === 'function') {
+      onClickHandler = window[formElement.onClick.replace('func:window.', '')].bind(this, formElement);
+    } else {
+      onClickHandler = function onClickHandler() {};
+    }
+  } else {
+    onClickHandler = function onClickHandler() {};
+  }
+
+  var getFormDataLabel = getFormLabel.bind(this);
+
+  return _react2.default.createElement(
+    _FormItem2.default,
+    (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
+    getFormDataLabel(formElement),
+    _react2.default.createElement(_reBulma.Button, (0, _extends3.default)({}, formElement.passProps, {
+      type: formElement.type,
+      name: this.state[formElement.formdata_name] || formElement.name,
+      onClick: onClickHandler
     })),
     _react2.default.createElement(
       'span',
