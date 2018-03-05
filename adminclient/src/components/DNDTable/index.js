@@ -2,7 +2,8 @@ import React, { Component, PropTypes, } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import {render} from 'react-dom';
 import {SortableContainer, SortableElement, arrayMove} from '@digifi/react-sortable-hoc';
-import { Table, List, Column, defaultTableRowRenderer } from 'react-virtualized';
+import { Table, List, Column,  } from 'react-virtualized';
+import defaultTableRowRenderer from './tableHelpers';
 import classNames from 'classnames';
 import range from 'lodash/range';
 import random from 'lodash/random';
@@ -10,12 +11,13 @@ import ReactDOM from 'react-dom';
 import * as rb from 're-bulma';
 import moment from 'moment';
 import numeral from 'numeral';
-
 /*
  * Important note:
  * To access the ref of a component that has been wrapped with the SortableContainer HOC,
  * you *must* pass in {withRef: true} as the second param. Refs are opt-in.
  */
+
+
 
 const LWpropTypes = {
     rows: PropTypes.array,
@@ -127,7 +129,7 @@ class TableWrapper extends Component {
     }
   }
 
-  cellRenderer({ cellData }) {
+  cellRenderer({ cellData, index }) {
     if (typeof cellData === 'string') return String(cellData);
     if (Array.isArray(cellData)) {
       return cellData.map(celldata => this.cellRenderer({ cellData: celldata }))
@@ -149,8 +151,15 @@ class TableWrapper extends Component {
     } = this.props;
     const SortableTable = SortableContainer(Table, { withRef: true });
     const SortableRowRenderer = SortableElement(defaultTableRowRenderer);
-    let tableheaders = headers.map((header, idx) => (<Column cellRenderer={this.cellRenderer} label={header.label} key={idx} dataKey={header.sortid} width={width} />))
-
+    
+    let tableheaders = headers.map((header, idx) => (
+      <Column content={idx} 
+        cellRenderer={this.cellRenderer} 
+        label={header.label} 
+        key={idx} 
+        dataKey={header.sortid} 
+        width={width} 
+        headerStyle={(header.columnProps && header.columnProps.style)? header.columnProps.style : null}/>))
     return (
       <SortableTable
         getContainer={wrappedInstance => ReactDOM.findDOMNode(wrappedInstance.Grid)}
@@ -165,7 +174,7 @@ class TableWrapper extends Component {
         rowGetter={({index}) => rows[index]}
         rowHeight={itemHeight}
         rowRenderer={props => {
-          return <SortableRowRenderer {...props}/>
+          return <SortableRowRenderer {...props} indexCopy={props.index} headers={this.props.headers}/>
         }}
         width={width}
       >
