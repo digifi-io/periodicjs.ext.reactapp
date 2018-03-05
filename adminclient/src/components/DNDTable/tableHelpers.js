@@ -49,12 +49,13 @@ export default function defaultRowRenderer({
         onRowRightClick({event, indexCopy, rowData});
     }
   }
-  columns = columns.map((column, colIdx) => {
+let columnData = columns.map((column, colIdx) => {
       return (
           <div {...column.props} key={`Row${indexCopy}-Col${colIdx}`}
             {...headers[colIdx].columnProps}></div>
       )
   })
+  
   return (
     <div
       {...a11yProps}
@@ -64,7 +65,7 @@ export default function defaultRowRenderer({
       role="row"
       style={style}
       >
-      {columns}
+      {columnData}
     </div>
   );
 }
