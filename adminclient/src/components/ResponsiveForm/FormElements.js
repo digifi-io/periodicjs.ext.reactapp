@@ -1266,12 +1266,12 @@ function getConfirmModal(options) {
         title: 'Please Confirm',
         text: {
           component: 'div',
-          props: {
+          props: Object.assign({
             style: {
               textAlign: 'center',
             },
             className: '__ra_rf_fe_s_cm',
-          },
+          }, formElemet.confirmModal.contentWrapperProps ),
           children: [
             {
               component: 'div',

@@ -82,11 +82,11 @@ class ResponsiveButton extends Component {
         title: 'Please Confirm',
         text: {
           component: 'div',
-          props: {
+          props: Object.assign({
             style: {
               textAlign: 'center',
             },
-          },
+          }, this.props.confirmModal.contentWrapperProps ),
           children: [
             {
               component: 'div',
