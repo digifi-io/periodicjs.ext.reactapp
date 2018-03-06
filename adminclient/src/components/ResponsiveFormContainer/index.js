@@ -31,7 +31,7 @@ class ResponsiveFormContainer extends Component {
   }
 
   updateFormGroup(options) {
-    let { formgroup, prevState, currState, prop, order} = options;
+    let { formgroup, prevState, currState, order} = options;
     let formElementsQueue = [];
     formElementsQueue.push(...formgroup.formElements.slice());
     formgroup.formElements = (order.length) ? order.map(el => false) : [];
