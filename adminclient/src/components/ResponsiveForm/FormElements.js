@@ -1271,7 +1271,7 @@ function getConfirmModal(options) {
               textAlign: 'center',
             },
             className: '__ra_rf_fe_s_cm',
-          }, formElemet.confirmModal.contentWrapperProps ),
+          }, formElement.confirmModal.contentWrapperProps ),
           children: [
             {
               component: 'div',
