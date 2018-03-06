@@ -496,7 +496,7 @@ var ResponsiveTable = function (_Component) {
         updatedState.isLoading = false;
 
         if (this.props.tableForm) {
-          // console.debug('befroe', {updatedState})
+          // console.debug('before', {updatedState})
           this.props.onChange(updatedState);
         }
         // else {
@@ -582,8 +582,14 @@ var ResponsiveTable = function (_Component) {
     }
   }, {
     key: 'formatValue',
-    value: function formatValue(value, row, options, header) {
+    value: function formatValue(inputs) {
       var _this6 = this;
+
+      var value = inputs.value,
+          row = inputs.row,
+          options = inputs.options,
+          header = inputs.header,
+          uniqueFormOptions = inputs.uniqueFormOptions;
 
       try {
         // console.debug({ value, row, options, header, });
@@ -673,7 +679,7 @@ var ResponsiveTable = function (_Component) {
             value
           );
         } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
-          var selectOptions = header.formoptions || [];
+          var selectOptions = uniqueFormOptions ? header.formoptions[options.rowIndex] || [] : header.formoptions || [];
           return _react2.default.createElement(
             rb.Select,
             (0, _extends3.default)({
@@ -1056,14 +1062,18 @@ var ResponsiveTable = function (_Component) {
                 _react2.default.createElement(
                   _reactRouter.Link,
                   (0, _extends3.default)({}, header.linkProps, { to: _this8.getHeaderLinkURL(header.link, row) }),
-                  _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
-                    idx: rowIndex + calcStartIndex,
-                    momentFormat: header.momentFormat,
-                    numeralFormat: header.numeralFormat,
-                    image: header.image,
-                    imageProps: header.imageProps,
-                    icon: header.icon,
-                    iconProps: header.iconProps
+                  _this8.formatValue({
+                    value: typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value,
+                    row: row,
+                    options: {
+                      idx: rowIndex + calcStartIndex,
+                      momentFormat: header.momentFormat,
+                      numeralFormat: header.numeralFormat,
+                      image: header.image,
+                      imageProps: header.imageProps,
+                      icon: header.icon,
+                      iconProps: header.iconProps
+                    }
                   })
                 )
               );
@@ -1080,13 +1090,17 @@ var ResponsiveTable = function (_Component) {
                       onclickPropObject: row,
                       buttonProps: {}
                     }, button.passProps),
-                    children: _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
-                      idx: rowIndex + calcStartIndex,
-                      momentFormat: header.momentFormat,
-                      image: header.image,
-                      imageProps: header.imageProps,
-                      icon: header.icon,
-                      iconProps: header.iconProps
+                    children: _this8.formatValue({
+                      value: typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value,
+                      row: row,
+                      options: {
+                        idx: rowIndex + calcStartIndex,
+                        momentFormat: header.momentFormat,
+                        image: header.image,
+                        imageProps: header.imageProps,
+                        icon: header.icon,
+                        iconProps: header.iconProps
+                      }
                     }) || ''
                   }, button));
                 }) : null
@@ -1129,13 +1143,17 @@ var ResponsiveTable = function (_Component) {
                       onclickPropObject: row,
                       buttonProps: {}
                     }, button.passProps),
-                    children: _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
-                      idx: rowIndex + calcStartIndex,
-                      momentFormat: header.momentFormat,
-                      image: header.image,
-                      imageProps: header.imageProps,
-                      icon: header.icon,
-                      iconProps: header.iconProps
+                    children: _this8.formatValue({
+                      value: typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value,
+                      row: row,
+                      options: {
+                        idx: rowIndex + calcStartIndex,
+                        momentFormat: header.momentFormat,
+                        image: header.image,
+                        imageProps: header.imageProps,
+                        icon: header.icon,
+                        iconProps: header.iconProps
+                      }
                     }) || ''
                   }, button));
                 })
@@ -1154,16 +1172,22 @@ var ResponsiveTable = function (_Component) {
                     }
                     // console.debug({ event, rowIndex });
                   } }),
-                _this8.formatValue.call(_this8, typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
-                  rowIndex: rowIndex,
-                  idx: rowIndex + calcStartIndex,
-                  momentFormat: header.momentFormat,
-                  numeralFormat: header.numeralFormat,
-                  image: header.image,
-                  imageProps: header.imageProps,
-                  icon: header.icon,
-                  iconProps: header.iconProps
-                }, header)
+                _this8.formatValue.call(_this8, {
+                  value: typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value,
+                  row: row,
+                  options: {
+                    rowIndex: rowIndex,
+                    idx: rowIndex + calcStartIndex,
+                    momentFormat: header.momentFormat,
+                    numeralFormat: header.numeralFormat,
+                    image: header.image,
+                    imageProps: header.imageProps,
+                    icon: header.icon,
+                    iconProps: header.iconProps
+                  },
+                  header: header,
+                  uniqueFormOptions: _this8.props.uniqueFormOptions
+                })
               );
               // return (
               //   <rb.Td>{(row[ header.sortid ] && header.momentFormat)

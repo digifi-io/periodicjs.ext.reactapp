@@ -474,13 +474,14 @@ function getFormDatatable(options) {
     headers: tableHeaders,
     limit: 5000,
     hasPagination: false,
-    tableForm: true
+    tableForm: true,
+    uniqueFormOptions: formElement.uniqueFormOptions
   }, formElement.passProps); // formElement.datalist,
   // console.log({ tableHeaders, useRowButtons,passedProps });
   // console.debug({tableHeaders})
   // let shape ={};// this is the header of of the footer which has elements for new insert
   // let inlineshape ={};// if true, should look like a regular form row, else form below
-  //   // console.debug({formElement,initialValue, },'this.state',this.state);
+  // console.debug({formElement,initialValue, },'this.state',this.state);
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
@@ -499,7 +500,7 @@ function getFormDatatable(options) {
           var onChangeFunc = getFunctionFromProps.call(_this4, { propFunc: formElement.onChangeFilter });
           updatedStateProp = onChangeFunc.call(_this4, (0, _assign2.default)({}, _this4.state, updatedStateProp), updatedStateProp);
         }
-        // console.debug('DATATABLE',updatedStateProp);
+        // console.debug('DATATABLE', updatedStateProp);
         _this4.setState(updatedStateProp);
       },
       value: initialValue })),
