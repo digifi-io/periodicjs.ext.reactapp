@@ -94,6 +94,7 @@ class ResponsiveButton extends Component {
             },
             {
               component: 'div',
+              props: this.props.confirmModal.buttonWrapperProps,
               children: [
                 {
                   component: 'ResponsiveButton',
