@@ -446,8 +446,8 @@ class ResponsiveTable extends Component {
         });
     }
   }
-  formatValue(value, row, options, header, uniqueFormOptions) {
-   
+  formatValue(inputs) {
+    let { value, row, options, header, uniqueFormOptions, } = inputs;
     try {
        // console.debug({ value, row, options, header, });
       // console.debug(options.rowIndex,this.state.selectedRowIndex)
@@ -531,7 +531,7 @@ class ResponsiveTable extends Component {
         >{value}</rb.Input>;
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
         let selectOptions = uniqueFormOptions
-          ? value || []
+          ? header.formoptions[options.rowIndex] || []
           : header.formoptions || [];
         return <rb.Select
           value={value}
@@ -842,12 +842,12 @@ class ResponsiveTable extends Component {
             return (
               <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps}>
                 <Link {...header.linkProps} to={this.getHeaderLinkURL(header.link, row)}>{
-                  this.formatValue(
-                    (typeof row[header.sortid] !== 'undefined')
-                      ? row[header.sortid]
+                  this.formatValue({
+                    value: (typeof row[ header.sortid ] !== 'undefined')
+                      ? row[ header.sortid ]
                       : header.value,
                     row,
-                    {
+                    options: {
                       idx: rowIndex + calcStartIndex,
                       momentFormat: header.momentFormat,
                       numeralFormat: header.numeralFormat,
@@ -855,7 +855,8 @@ class ResponsiveTable extends Component {
                       imageProps: header.imageProps,
                       icon: header.icon,
                       iconProps: header.iconProps,
-                    })
+                    },
+                  })
                 }</Link>
               </rb.Td>
             );
@@ -872,19 +873,20 @@ class ResponsiveTable extends Component {
                         onclickPropObject: row,
                         buttonProps: {},
                       }, button.passProps),
-                      children: this.formatValue(
-                        (typeof row[header.sortid] !== 'undefined')
-                          ? row[header.sortid]
+                      children: this.formatValue({
+                        value: (typeof row[ header.sortid ] !== 'undefined')
+                          ? row[ header.sortid ]
                           : header.value,
                         row,
-                        {
+                        options: {
                           idx: rowIndex + calcStartIndex,
                           momentFormat: header.momentFormat,
                           image: header.image,
                           imageProps: header.imageProps,
                           icon: header.icon,
                           iconProps: header.iconProps,
-                        }) || '',
+                        },
+                      }) || '',
                     }, button));
                   }) : null
                   // Object.assign
@@ -922,19 +924,20 @@ class ResponsiveTable extends Component {
                         onclickPropObject: row,
                         buttonProps: {},
                       }, button.passProps),
-                      children: this.formatValue(
-                        (typeof row[header.sortid] !== 'undefined')
-                          ? row[header.sortid]
+                      children: this.formatValue({
+                        value: (typeof row[ header.sortid ] !== 'undefined')
+                          ? row[ header.sortid ]
                           : header.value,
                         row,
-                        {
+                        options: {
                           idx: rowIndex + calcStartIndex,
                           momentFormat: header.momentFormat,
                           image: header.image,
                           imageProps: header.imageProps,
                           icon: header.icon,
                           iconProps: header.iconProps,
-                        }) || '',
+                        },
+                      }) || '',
                     }, button));
                   })
                   // Object.assign
@@ -955,12 +958,12 @@ class ResponsiveTable extends Component {
                 // console.debug({ event, rowIndex });
               }}>
                 {
-                  this.formatValue.call(this,
-                    (typeof row[header.sortid] !== 'undefined')
-                      ? row[header.sortid]
+                  this.formatValue.call(this, {
+                    value: (typeof row[ header.sortid ] !== 'undefined')
+                      ? row[ header.sortid ]
                       : header.value,
                     row,
-                    {
+                    options: {
                       rowIndex: rowIndex,
                       idx: rowIndex + calcStartIndex,
                       momentFormat: header.momentFormat,
@@ -971,7 +974,8 @@ class ResponsiveTable extends Component {
                       iconProps: header.iconProps,
                     },
                     header,
-                    this.props.uniqueFormOptions)
+                    uniqueFormOptions: this.props.uniqueFormOptions,
+                  })
                 }
               </rb.Td>
             );
