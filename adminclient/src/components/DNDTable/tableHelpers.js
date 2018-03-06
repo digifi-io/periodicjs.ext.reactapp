@@ -1,8 +1,4 @@
-import React, { Component, PropTypes, } from 'react';
-import { getRenderedComponent, } from '../AppLayoutMap';
-import {render} from 'react-dom';
-import {SortableContainer, SortableElement, arrayMove} from '@digifi/react-sortable-hoc';
-import { Table, List, Column, defaultTableRowRenderer } from 'react-virtualized';
+import React from 'react';
 import type {RowRendererParams} from 'react-virtualized';
 
 export default function defaultRowRenderer({
