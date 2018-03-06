@@ -389,7 +389,8 @@ export function getFormDatatable(options){
       headers: tableHeaders,
       limit: 5000,
       hasPagination: false,
-      tableForm:true,
+      tableForm: true,
+      uniqueFormOptions: formElement.uniqueFormOptions,
     },
     formElement.passProps
   );// formElement.datalist,
@@ -397,7 +398,7 @@ export function getFormDatatable(options){
   // console.debug({tableHeaders})
   // let shape ={};// this is the header of of the footer which has elements for new insert
   // let inlineshape ={};// if true, should look like a regular form row, else form below
-  //   // console.debug({formElement,initialValue, },'this.state',this.state);
+    // console.debug({formElement,initialValue, },'this.state',this.state);
   return (<FormItem key={i} {...formElement.layoutProps} >
   {getFormLabel(formElement)}  
     <ResponsiveTable {...passedProps}
@@ -419,9 +420,9 @@ export function getFormDatatable(options){
         }, flattenedData, selectedRowData);
         if (formElement.onChangeFilter) {
           const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-          updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
+          updatedStateProp = onChangeFunc.call(this, Object.assign({}, this.state, updatedStateProp), updatedStateProp);
         }
-        // console.debug('DATATABLE',updatedStateProp);
+        // console.debug('DATATABLE', updatedStateProp);
         this.setState(updatedStateProp);
       }}
       value={initialValue} />
