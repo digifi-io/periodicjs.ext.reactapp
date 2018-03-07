@@ -65,21 +65,7 @@ function getCustomErrorLabel(hasError, state, formelement) {
 }
 
 function getCustomErrorIcon(hasError, isValid, state, formelement) {
-  let iconStyle = Object.assign({
-    display: 'inline-block',
-    fontSize: '1rem',
-    height: '24px',
-    lineHeight: '24px',
-    textAlign: 'center',
-    verticalAlign: 'top',
-    width: '24px',
-    color: '#aeb1b5',
-    pointerEvents: 'none',
-    position: 'absolute',
-    top: '5px',
-    zIndex: '4',
-    right: '24px'
-  }, formelement.customIconStyle);
+  let iconStyle = formelement.customIconStyle;
   let iconVar = (hasError)
     ? formelement.errorIcon || 'fa fa-warning'
     : (isValid)
@@ -489,6 +475,12 @@ export function getFormDropdown(options){
   let wrapperProps= Object.assign({
     className: '__re-bulma_control',
   }, formElement.wrapperProps)
+
+  wrapperProps.className = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ? 
+  wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
+  : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
+  : wrapperProps.className;
+
   let onChange;
   let passedProps = formElement.passProps;
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
@@ -525,6 +517,9 @@ export function getFormDropdown(options){
       customCallbackfunction= window[ formElement.customOnChange.replace('func:window.', '') ].bind(this, formElement);
     } 
   }
+
+  formElement.customIconStyle = Object.assign({},{ right: "24px" },formElement.customIconStyle);
+
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
     {getFormLabel(formElement)}  
     <div {...wrapperProps}>  
@@ -724,8 +719,15 @@ export function getFormTextArea(options) {
     onChange = valueChangeHandler.bind(this, formElement);
   }
 
+ let iconClassNames = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) 
+    ? (formElement.errorIconRight) 
+    ? ' __re-bulma_has-icon __re-bulma_has-icon-right'
+      : ' __re-bulma_has-icon __re-bulma_has-icon-left'
+      : '';
+
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
+    <p className={"__re-bulma_control" + iconClassNames}>
     <Textarea {...passableProps}
       onChange={(event)=>onChange()(event)}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
@@ -734,6 +736,8 @@ export function getFormTextArea(options) {
       hasIconRight={formElement.errorIconRight}
       placeholder={formElement.placeholder||formElement.label}
       value={this.state[ formElement.name ] || initialValue} />
+      {getCustomErrorIcon(hasError, isValid, this.state, formElement)}  
+      </p>
   </FormItem>);
 }
 
@@ -764,9 +768,17 @@ export function getFormSelect(options) {
     } 
   }
 
+ let iconClassNames = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) 
+    ? (formElement.errorIconRight) 
+    ? ' __re-bulma_has-icon __re-bulma_has-icon-right'
+      : ' __re-bulma_has-icon __re-bulma_has-icon-left'
+      : '';
+
+  formElement.customIconStyle = Object.assign({},{ right: "24px" },formElement.customIconStyle);
+
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
-    <span className="__re-bulma_control" style={{ position: 'relative', display: 'block'}}>
+    <span className={"__re-bulma_control" + iconClassNames} style={{ position: 'relative', display: 'block'}}>
       <Select {...formElement.passProps}
         style={Object.assign({}, { flex: 'inherit', marginBottom: 0 }, (formElement.passProps && formElement.passProps.style) ? formElement.passProps.style : {})}  
         help={getFormElementHelp(hasError, this.state, formElement.name)}
