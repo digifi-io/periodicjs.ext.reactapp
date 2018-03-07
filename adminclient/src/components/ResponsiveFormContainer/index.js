@@ -31,19 +31,24 @@ class ResponsiveFormContainer extends Component {
   }
 
   updateFormGroup(options) {
-    let { formgroup, prevState, currState } = options;
+    let { formgroup, prevState, currState, order} = options;
     let formElementsQueue = [];
     formElementsQueue.push(...formgroup.formElements.slice());
-    formgroup.formElements = [];
+    formgroup.formElements = (order.length) ? order.map(el => false) : [];
     while (formElementsQueue.length > 0) {
       let currentElement = formElementsQueue.shift();
       if (currentElement.name && this.props.renderFormElements[ currentElement.name ]) {
         currentElement = window[ this.props.renderFormElements[ currentElement.name ].replace('func:window.', '') ].call(this, currState, formElementsQueue, currentElement, prevState);
-        if(currentElement) formgroup.formElements.push(currentElement);
+        if (currentElement) {
+          if (order.length) formgroup.formElements[ order.indexOf(currentElement.name) ] = currentElement;
+          else formgroup.formElements.push(currentElement);
+        }
       } else {
-        formgroup.formElements.push(currentElement);
+        if (order.length) formgroup.formElements[ order.indexOf(currentElement.name) ] = currentElement;
+        else formgroup.formElements.push(currentElement);
       }
     }
+    formgroup.formElements= formgroup.formElements.filter(el => el !== false);
     return formgroup;
   }
 
@@ -100,7 +105,7 @@ class ResponsiveFormContainer extends Component {
         formgroup = this.updateDoubleCardFormGroup({ formgroup, prevState, currState, prop: 'formGroupElementsRight', order: formgroup.formElements[0].rightOrder });
         return formgroup;
       } else if (formgroup.formElements) {
-        return this.updateFormGroup({formgroup, prevState, currState });
+        return this.updateFormGroup({formgroup, prevState, currState, order: formgroup.order });
       } else {
         return formgroup;
       }
