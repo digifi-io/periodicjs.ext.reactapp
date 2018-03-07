@@ -88,20 +88,28 @@ var ResponsiveFormContainer = function (_Component) {
     value: function updateFormGroup(options) {
       var formgroup = options.formgroup,
           prevState = options.prevState,
-          currState = options.currState;
+          currState = options.currState,
+          order = options.order;
 
       var formElementsQueue = [];
       formElementsQueue.push.apply(formElementsQueue, (0, _toConsumableArray3.default)(formgroup.formElements.slice()));
-      formgroup.formElements = [];
+      formgroup.formElements = order.length ? order.map(function (el) {
+        return false;
+      }) : [];
       while (formElementsQueue.length > 0) {
         var currentElement = formElementsQueue.shift();
         if (currentElement.name && this.props.renderFormElements[currentElement.name]) {
           currentElement = window[this.props.renderFormElements[currentElement.name].replace('func:window.', '')].call(this, currState, formElementsQueue, currentElement, prevState);
-          if (currentElement) formgroup.formElements.push(currentElement);
+          if (currentElement) {
+            if (order.length) formgroup.formElements[order.indexOf(currentElement.name)] = currentElement;else formgroup.formElements.push(currentElement);
+          }
         } else {
-          formgroup.formElements.push(currentElement);
+          if (order.length) formgroup.formElements[order.indexOf(currentElement.name)] = currentElement;else formgroup.formElements.push(currentElement);
         }
       }
+      formgroup.formElements = formgroup.formElements.filter(function (el) {
+        return el !== false;
+      });
       return formgroup;
     }
   }, {
@@ -172,7 +180,7 @@ var ResponsiveFormContainer = function (_Component) {
           formgroup = _this3.updateDoubleCardFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState, prop: 'formGroupElementsRight', order: formgroup.formElements[0].rightOrder });
           return formgroup;
         } else if (formgroup.formElements) {
-          return _this3.updateFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState });
+          return _this3.updateFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState, order: formgroup.order });
         } else {
           return formgroup;
         }
