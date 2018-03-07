@@ -48,14 +48,13 @@ export default function defaultRowRenderer({
 let columnData = columns.map((column, colIdx) => {
       return (
           <div {...column.props} key={`Row${indexCopy}-Col${colIdx}`}
-            {...headers[colIdx].columnProps}></div>
+            {...(headers[colIdx]) ? headers[colIdx].columnProps : {} }></div>
       )
   })
   
   return (
     <div
       {...a11yProps}
-      {...headers[indexCopy].columnProps}
       className={className}
       key={indexCopy}
       role="row"
