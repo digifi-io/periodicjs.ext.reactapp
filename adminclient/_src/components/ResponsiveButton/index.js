@@ -149,16 +149,17 @@ var ResponsiveButton = function (_Component) {
           title: 'Please Confirm',
           text: {
             component: 'div',
-            props: {
+            props: (0, _assign2.default)({
               style: {
                 textAlign: 'center'
               }
-            },
+            }, this.props.confirmModal.contentWrapperProps),
             children: [{
               component: 'div',
               children: this.props.confirmModal.textContent || ''
             }, {
               component: 'div',
+              props: this.props.confirmModal.buttonWrapperProps,
               children: [{
                 component: 'ResponsiveButton',
                 props: (0, _assign2.default)({

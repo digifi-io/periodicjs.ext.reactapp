@@ -186,21 +186,7 @@ function getCustomErrorLabel(hasError, state, formelement) {
 }
 
 function getCustomErrorIcon(hasError, isValid, state, formelement) {
-  var iconStyle = (0, _assign2.default)({
-    display: 'inline-block',
-    fontSize: '1rem',
-    height: '24px',
-    lineHeight: '24px',
-    textAlign: 'center',
-    verticalAlign: 'top',
-    width: '24px',
-    color: '#aeb1b5',
-    pointerEvents: 'none',
-    position: 'absolute',
-    top: '5px',
-    zIndex: '4',
-    right: '24px'
-  }, formelement.customIconStyle);
+  var iconStyle = formelement.customIconStyle;
   var iconVar = hasError ? formelement.errorIcon || 'fa fa-warning' : isValid ? formelement.validIcon || 'fa fa-check' : formelement.initialIcon ? formelement.initialIcon : '';
 
   return formelement.errorIconRight || formelement.errorIconLeft ? _react2.default.createElement('i', { className: '__re-bulma_fa ' + iconVar, style: iconStyle }) : null;
@@ -575,6 +561,9 @@ function getFormDropdown(options) {
   var wrapperProps = (0, _assign2.default)({
     className: '__re-bulma_control'
   }, formElement.wrapperProps);
+
+  wrapperProps.className = (hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft) ? formElement.errorIconRight ? wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right' : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left' : wrapperProps.className;
+
   var _onChange = void 0;
   var passedProps = formElement.passProps;
   var getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
@@ -618,6 +607,9 @@ function getFormDropdown(options) {
       customCallbackfunction = window[formElement.customOnChange.replace('func:window.', '')].bind(this, formElement);
     }
   }
+
+  formElement.customIconStyle = (0, _assign2.default)({}, { right: "24px" }, formElement.customIconStyle);
+
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
@@ -837,20 +829,27 @@ function getFormTextArea(options) {
     _onChange2 = valueChangeHandler.bind(this, formElement);
   }
 
+  var iconClassNames = (hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft) ? formElement.errorIconRight ? ' __re-bulma_has-icon __re-bulma_has-icon-right' : ' __re-bulma_has-icon __re-bulma_has-icon-left' : '';
+
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
     getFormLabel(formElement),
-    _react2.default.createElement(_reBulma.Textarea, (0, _extends3.default)({}, passableProps, {
-      onChange: function onChange(event) {
-        return _onChange2()(event);
-      },
-      help: getFormElementHelp(hasError, this.state, formElement.name),
-      icon: hasError ? formElement.errorIcon || 'fa fa-warning' : isValid ? formElement.validIcon || 'fa fa-check' : formElement.initialIcon ? formElement.initialIcon : undefined,
-      color: hasError ? 'isDanger' : undefined,
-      hasIconRight: formElement.errorIconRight,
-      placeholder: formElement.placeholder || formElement.label,
-      value: this.state[formElement.name] || initialValue }))
+    _react2.default.createElement(
+      'p',
+      { className: "__re-bulma_control" + iconClassNames },
+      _react2.default.createElement(_reBulma.Textarea, (0, _extends3.default)({}, passableProps, {
+        onChange: function onChange(event) {
+          return _onChange2()(event);
+        },
+        help: getFormElementHelp(hasError, this.state, formElement.name),
+        icon: hasError ? formElement.errorIcon || 'fa fa-warning' : isValid ? formElement.validIcon || 'fa fa-check' : formElement.initialIcon ? formElement.initialIcon : undefined,
+        color: hasError ? 'isDanger' : undefined,
+        hasIconRight: formElement.errorIconRight,
+        placeholder: formElement.placeholder || formElement.label,
+        value: this.state[formElement.name] || initialValue })),
+      getCustomErrorIcon(hasError, isValid, this.state, formElement)
+    )
   );
 }
 
@@ -884,13 +883,17 @@ function getFormSelect(options) {
     }
   }
 
+  var iconClassNames = (hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft) ? formElement.errorIconRight ? ' __re-bulma_has-icon __re-bulma_has-icon-right' : ' __re-bulma_has-icon __re-bulma_has-icon-left' : '';
+
+  formElement.customIconStyle = (0, _assign2.default)({}, { right: "24px" }, formElement.customIconStyle);
+
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
     getFormLabel(formElement),
     _react2.default.createElement(
       'span',
-      { className: '__re-bulma_control', style: { position: 'relative', display: 'block' } },
+      { className: "__re-bulma_control" + iconClassNames, style: { position: 'relative', display: 'block' } },
       _react2.default.createElement(
         _reBulma.Select,
         (0, _extends3.default)({}, formElement.passProps, {
@@ -1487,12 +1490,12 @@ function getConfirmModal(options) {
     title: 'Please Confirm',
     text: {
       component: 'div',
-      props: {
+      props: (0, _assign2.default)({
         style: {
           textAlign: 'center'
         },
         className: '__ra_rf_fe_s_cm'
-      },
+      }, formElement.confirmModal.contentWrapperProps),
       children: [{
         component: 'div',
         props: {

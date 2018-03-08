@@ -14,14 +14,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _AppLayoutMap = require('../AppLayoutMap');
-
-var _reactDom = require('react-dom');
-
-var _reactSortableHoc = require('@digifi/react-sortable-hoc');
-
-var _reactVirtualized = require('react-virtualized');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function defaultRowRenderer(_ref) {
@@ -72,12 +64,12 @@ function defaultRowRenderer(_ref) {
   }
   var columnData = columns.map(function (column, colIdx) {
     return _react2.default.createElement('div', (0, _extends3.default)({}, column.props, { key: 'Row' + indexCopy + '-Col' + colIdx
-    }, headers[colIdx].columnProps));
+    }, headers[colIdx] ? headers[colIdx].columnProps : {}));
   });
 
   return _react2.default.createElement(
     'div',
-    (0, _extends3.default)({}, a11yProps, headers[indexCopy].columnProps, {
+    (0, _extends3.default)({}, a11yProps, {
       className: className,
       key: indexCopy,
       role: 'row',

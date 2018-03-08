@@ -42,9 +42,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reBulma = require('re-bulma');
 
-var _AppSectionLoading = require('../AppSectionLoading');
+var _overlay = require('../AppSectionLoading/overlay');
 
-var _AppSectionLoading2 = _interopRequireDefault(_AppSectionLoading);
+var _overlay2 = _interopRequireDefault(_overlay);
 
 var _AppLayoutMap = require('../AppLayoutMap');
 
@@ -213,7 +213,7 @@ var ModalUI = function (_Component2) {
         );
       };
       if (typeof this.props.pathname === 'string') {
-        return this.state.ui_is_loaded === false ? initialize(_react2.default.createElement(_AppSectionLoading2.default, null)) : initialize(this.uiLayout);
+        return this.state.ui_is_loaded === false ? initialize(_react2.default.createElement(_overlay2.default, { display: true, heroProps: { size: "isSmall" } })) : initialize(this.uiLayout);
       } else return initialize();
     }
   }]);
