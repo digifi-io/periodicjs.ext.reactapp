@@ -93,7 +93,7 @@ var ResponsiveFormContainer = function (_Component) {
 
       var formElementsQueue = [];
       formElementsQueue.push.apply(formElementsQueue, (0, _toConsumableArray3.default)(formgroup.formElements.slice()));
-      formgroup.formElements = order.length ? order.map(function (el) {
+      formgroup.formElements = order && order.length ? order.map(function (el) {
         return false;
       }) : [];
       while (formElementsQueue.length > 0) {
@@ -101,10 +101,10 @@ var ResponsiveFormContainer = function (_Component) {
         if (currentElement.name && this.props.renderFormElements[currentElement.name]) {
           currentElement = window[this.props.renderFormElements[currentElement.name].replace('func:window.', '')].call(this, currState, formElementsQueue, currentElement, prevState);
           if (currentElement) {
-            if (order.length) formgroup.formElements[order.indexOf(currentElement.name)] = currentElement;else formgroup.formElements.push(currentElement);
+            if (order && order.length) formgroup.formElements[order.indexOf(currentElement.name)] = currentElement;else formgroup.formElements.push(currentElement);
           }
         } else {
-          if (order.length) formgroup.formElements[order.indexOf(currentElement.name)] = currentElement;else formgroup.formElements.push(currentElement);
+          if (order && order.length) formgroup.formElements[order.indexOf(currentElement.name)] = currentElement;else formgroup.formElements.push(currentElement);
         }
       }
       formgroup.formElements = formgroup.formElements.filter(function (el) {

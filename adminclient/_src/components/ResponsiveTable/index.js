@@ -62,6 +62,8 @@ var _reBulma = require('re-bulma');
 
 var rb = _interopRequireWildcard(_reBulma);
 
+var _semanticUiReact = require('semantic-ui-react');
+
 var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
@@ -699,6 +701,26 @@ var ResponsiveTable = function (_Component) {
               );
             })
           );
+        } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'dropdown') {
+          var _selectOptions = header.formoptions || [];
+          return _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({
+            fluid: true,
+            selection: true,
+            value: value
+          }, header.dropdownProps, {
+            onChange: function onChange(event) {
+              var text = event.target.value;
+              var name = header.sortid;
+              var rowIndex = options.rowIndex;
+              _this6.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+            },
+            onSubmit: function onSubmit() {
+              return;
+            },
+            options: _selectOptions.map(function (opt, k) {
+              return { key: k, disabled: opt.disabled, value: opt.value, text: opt.label ? opt.label : opt.value };
+            })
+          }));
         } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'datalist') {
           var rowdata = Array.isArray(this.props.__tableOptions[header.sortid][options.rowIndex]) ? this.props.__tableOptions[header.sortid][options.rowIndex] : Array.isArray(this.props.__tableOptions[header.sortid]) ? this.props.__tableOptions[header.sortid] : [];
           return _react2.default.createElement(_ResponsiveDatalist2.default, (0, _extends3.default)({
