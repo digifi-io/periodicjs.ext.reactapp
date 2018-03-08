@@ -1,6 +1,7 @@
 import React, { Component, /*PropTypes,*/ } from 'react';
 import { Link, } from 'react-router';
 import * as rb from 're-bulma';
+import { Dropdown } from 'semantic-ui-react';
 import moment from 'moment';
 import numeral from 'numeral';
 import utilities from '../../util';
@@ -544,6 +545,25 @@ class ResponsiveTable extends Component {
             return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
           })}
         </rb.Select>
+    } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'dropdown') {
+      let selectOptions = header.formoptions || [];
+      return <Dropdown
+        fluid
+        selection
+        value={value}
+        {...header.dropdownProps}
+        onChange={(event) => {
+          let text = event.target.value;
+          let name = header.sortid;
+          let rowIndex = options.rowIndex;
+          this.updateInlineRowText({ name, text, rowIndex, });
+        }}
+        onSubmit={() => { return }}
+        options={selectOptions.map((opt, k) => {
+          return {key: k, disabled: opt.disabled, value: opt.value, text: (opt.label) ? opt.label : opt.value, };
+        })}
+        >
+      </Dropdown>
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'datalist') {
         let rowdata = Array.isArray(this.props.__tableOptions[ header.sortid ][ options.rowIndex ]) ? this.props.__tableOptions[ header.sortid ][ options.rowIndex ]
           : Array.isArray(this.props.__tableOptions[ header.sortid ]) ? this.props.__tableOptions[ header.sortid ]
