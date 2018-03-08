@@ -1,8 +1,4 @@
-import React, { Component, PropTypes, } from 'react';
-import { getRenderedComponent, } from '../AppLayoutMap';
-import {render} from 'react-dom';
-import {SortableContainer, SortableElement, arrayMove} from '@digifi/react-sortable-hoc';
-import { Table, List, Column, defaultTableRowRenderer } from 'react-virtualized';
+import React from 'react';
 import type {RowRendererParams} from 'react-virtualized';
 
 export default function defaultRowRenderer({
@@ -51,15 +47,14 @@ export default function defaultRowRenderer({
   }
 let columnData = columns.map((column, colIdx) => {
       return (
-          <div {...column.props} key={`Row${indexCopy}-Col${colIdx}`}
-            {...headers[colIdx].columnProps}></div>
+        <div {...column.props} key={`Row${indexCopy}-Col${colIdx}`}
+          {...(headers[colIdx]) ? headers[colIdx].columnProps : {} }></div>
       )
   })
   
   return (
     <div
       {...a11yProps}
-      {...headers[indexCopy].columnProps}
       className={className}
       key={indexCopy}
       role="row"

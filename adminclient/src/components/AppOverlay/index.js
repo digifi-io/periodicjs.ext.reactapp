@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import { Notification, Modal, Content, } from 're-bulma';
-import AppSectionLoading from '../AppSectionLoading';
+import AppSectionLoading from '../AppSectionLoading/overlay';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
 
@@ -118,12 +118,12 @@ class ModalUI extends Component {
               {modelContent}
           </Content>)
           }
-          
+           
         </Modal>
       </div>);
     };
     if (typeof this.props.pathname === 'string') {
-      return (this.state.ui_is_loaded === false) ? initialize(<AppSectionLoading/>) : initialize(this.uiLayout);
+      return (this.state.ui_is_loaded === false) ? initialize(<AppSectionLoading display heroProps={{size: "isSmall"}}/>) : initialize(this.uiLayout);
     } else return initialize();
   }
 }
