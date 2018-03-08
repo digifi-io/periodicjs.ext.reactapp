@@ -548,7 +548,9 @@ class ResponsiveTable extends Component {
           })}
         </rb.Select>
     } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'dropdown') {
-      let selectOptions = header.formoptions || [];
+      let selectOptions = uniqueFormOptions
+          ? header.formoptions[options.rowIndex] || []
+          : header.formoptions || [];
       return <Dropdown
         fluid
         selection
