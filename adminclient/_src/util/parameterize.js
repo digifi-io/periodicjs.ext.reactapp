@@ -61,9 +61,9 @@ var setParameters = exports.setParameters = function setParameters() {
   var params = options.params && Array.isArray(options.params) ? options.params : parameterize(options.route, options.location);
   var pkeys = (0, _keys2.default)(params);
   for (var i = 0; i < pkeys.length; i++) {
-    if (typeof options.resource === 'string') {
+    if (options && options.resource && typeof options.resource === 'string') {
       options.resource = options.resource.replace(new RegExp(':' + pkeys[i]), params[pkeys[i]]);
-    } else {
+    } else if (options && options.resources && typeof options.resource !== 'string' && options.resource.url) {
       options.resource.url = options.resource.url.replace(new RegExp(':' + pkeys[i]), params[pkeys[i]]);
     }
   }
