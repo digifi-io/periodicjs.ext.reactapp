@@ -702,7 +702,7 @@ var ResponsiveTable = function (_Component) {
             })
           );
         } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'dropdown') {
-          var _selectOptions = header.formoptions || [];
+          var _selectOptions = uniqueFormOptions ? header.formoptions[options.rowIndex] || [] : header.formoptions || [];
           return _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({
             fluid: true,
             selection: true,
