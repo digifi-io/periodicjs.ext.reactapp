@@ -182,7 +182,6 @@ class ResponsiveTable extends Component {
   updateInlineRowDataText(options) {
     let { name, text, rowIndex, } = options;
     let rows = this.state.rows.concat([]);
-    console.log(rows)
     rows[ rowIndex ][ name ] = text;
     // console.debug({ rowIndex, rows, deletedRow }, this.state.rows);
     // this.props.onChange({ rows, });
