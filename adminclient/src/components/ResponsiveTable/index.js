@@ -556,13 +556,12 @@ class ResponsiveTable extends Component {
         selection
         value={value}
         {...header.dropdownProps}
-        onChange={(event) => {
-          let text = event.target.value;
+        onChange={(event, {value}) => {
+          let text = value;
           let name = header.sortid;
           let rowIndex = options.rowIndex;
           this.updateInlineRowText({ name, text, rowIndex, });
         }}
-        onSubmit={() => { return }}
         options={selectOptions.map((opt, k) => {
           return {key: k, disabled: opt.disabled, value: opt.value, text: (opt.label) ? opt.label : opt.value, };
         })}
