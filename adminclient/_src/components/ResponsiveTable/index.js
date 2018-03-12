@@ -708,14 +708,13 @@ var ResponsiveTable = function (_Component) {
             selection: true,
             value: value
           }, header.dropdownProps, {
-            onChange: function onChange(event) {
-              var text = event.target.value;
+            onChange: function onChange(event, _ref) {
+              var value = _ref.value;
+
+              var text = value;
               var name = header.sortid;
               var rowIndex = options.rowIndex;
               _this6.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
-            },
-            onSubmit: function onSubmit() {
-              return;
             },
             options: _selectOptions.map(function (opt, k) {
               return { key: k, disabled: opt.disabled, value: opt.value, text: opt.label ? opt.label : opt.value };
