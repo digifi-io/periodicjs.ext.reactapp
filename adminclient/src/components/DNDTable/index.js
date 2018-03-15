@@ -31,6 +31,8 @@ const LWpropTypes = {
     shouldUseDragHandle: PropTypes.bool,
     headers: PropTypes.array,
     handleRowUpdate: PropTypes.func,
+    toggleRowKeys: PropTypes.array,
+    toggleRowClass: PropTypes.object,
   };
 const LWdefaultProps = {
   className: 'list',
@@ -38,6 +40,8 @@ const LWdefaultProps = {
   width: 400,
   height: 600,
   headers: [],
+  toggleRowClass: {},
+  toggleRowKeys: [],
 };
 
 class ListWrapper extends Component {
@@ -57,6 +61,8 @@ class ListWrapper extends Component {
       headers: props.headers,
       handleRowUpdate: props.handleRowUpdate,
       isSorting: false,
+      toggleRowClass: props.toggleRowClass || '',
+      toggleRowKeys: props.toggleRowKeys || [],
     };
   }
   
@@ -109,6 +115,8 @@ const TWpropTypes = {
   itemHeight: PropTypes.number,
   onSortEnd: PropTypes.func,
   headers: PropTypes.array,
+  toggleRowKeys: PropTypes.array,
+  toggleRowClass: PropTypes.object,
 };
 
 class TableWrapper extends Component {
@@ -126,6 +134,8 @@ class TableWrapper extends Component {
       itemHeight: props.itemHeight,
       onSortEnd: props.onSortEnd,
       headers: props.headers,
+      toggleRowClass: props.toggleRowClass || {},
+      toggleRowKeys: props.toggleRowKeys || [],
     }
   }
 
@@ -148,10 +158,12 @@ class TableWrapper extends Component {
       headers,
       onSortEnd,
       width,
+      toggleRowKeys,
+      toggleRowClass
     } = this.props;
     const SortableTable = SortableContainer(Table, { withRef: true });
     const SortableRowRenderer = SortableElement(defaultTableRowRenderer);
-    
+
     let tableheaders = headers.map((header, idx) => (
       <Column content={idx} 
         cellRenderer={this.cellRenderer} 
@@ -174,10 +186,15 @@ class TableWrapper extends Component {
         rowGetter={({index}) => rows[index]}
         rowHeight={itemHeight}
         rowRenderer={props => {
-          return <SortableRowRenderer {...props} indexCopy={props.index} headers={this.props.headers}/>
+          return <SortableRowRenderer 
+            {...props} 
+            toggleRowKeys={toggleRowKeys} 
+            toggleRowClass={toggleRowClass} 
+            indexCopy={props.index} 
+            headers={this.props.headers}/>
         }}
         width={width}
-      >
+      > 
       {tableheaders}
       </SortableTable>
     );
