@@ -464,7 +464,6 @@ var ResponsiveForm = function (_Component) {
     value: function render() {
       var _this5 = this;
 
-      // console.debug('form render', this.state);
       var keyValue = 0;
       var formGroupData = this.props.formgroups.map(function (formgroup, i) {
         var gridProps = (0, _assign2.default)({

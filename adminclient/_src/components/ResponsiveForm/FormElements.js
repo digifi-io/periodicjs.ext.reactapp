@@ -384,7 +384,9 @@ function getFormDNDTable(options) {
   });
   var passedProps = (0, _assign2.default)({}, this.props, {
     rows: initialValue,
-    headers: tableHeaders
+    headers: tableHeaders,
+    toggleRowKeys: formElement.toggleRowKeys,
+    toggleRowClass: formElement.toggleRowClass
   }, formElement.passProps);
   return _react2.default.createElement(
     _FormItem2.default,
@@ -409,7 +411,6 @@ function getFormDatatable(options) {
   var getTableHeaders = function getTableHeaders(row) {
     return row.map(function (rowkey) {
       var selectOptions = _this4.state.__formOptions && _this4.state.__formOptions[rowkey] ? _this4.state.__formOptions[rowkey] : [];
-      // console.log({ selectOptions });
       return {
         label: (0, _capitalize2.default)(rowkey),
         sortid: rowkey,
@@ -618,13 +619,10 @@ function getFormDropdown(options) {
       'div',
       wrapperProps,
       _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({}, passedProps, {
-        defaultValue: initialValue,
+        value: initialValue,
         onChange: function onChange(event, newvalue) {
           _onChange.call(_this6, event, newvalue);
           if (customCallbackfunction) customCallbackfunction(event);
-        },
-        onSubmit: function onSubmit() {
-          return;
         }
       })),
       getCustomErrorIcon(hasError, isValid, this.state, formElement),

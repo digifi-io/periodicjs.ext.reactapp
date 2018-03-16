@@ -99,14 +99,18 @@ var LWpropTypes = {
   component: _react.PropTypes.func,
   shouldUseDragHandle: _react.PropTypes.bool,
   headers: _react.PropTypes.array,
-  handleRowUpdate: _react.PropTypes.func
+  handleRowUpdate: _react.PropTypes.func,
+  toggleRowKeys: _react.PropTypes.array,
+  toggleRowClass: _react.PropTypes.object
 };
 var LWdefaultProps = {
   className: 'list',
   itemClass: 'item',
   width: 400,
   height: 600,
-  headers: []
+  headers: [],
+  toggleRowClass: {},
+  toggleRowKeys: []
 };
 
 var ListWrapper = function (_Component) {
@@ -130,7 +134,9 @@ var ListWrapper = function (_Component) {
       shouldUseDragHandle: props.shouldUseDragHandle,
       headers: props.headers,
       handleRowUpdate: props.handleRowUpdate,
-      isSorting: false
+      isSorting: false,
+      toggleRowClass: props.toggleRowClass || '',
+      toggleRowKeys: props.toggleRowKeys || []
     };
     return _this;
   }
@@ -199,7 +205,9 @@ var TWpropTypes = {
   height: _react.PropTypes.number,
   itemHeight: _react.PropTypes.number,
   onSortEnd: _react.PropTypes.func,
-  headers: _react.PropTypes.array
+  headers: _react.PropTypes.array,
+  toggleRowKeys: _react.PropTypes.array,
+  toggleRowClass: _react.PropTypes.object
 };
 
 var TableWrapper = function (_Component2) {
@@ -221,7 +229,9 @@ var TableWrapper = function (_Component2) {
       height: props.height,
       itemHeight: props.itemHeight,
       onSortEnd: props.onSortEnd,
-      headers: props.headers
+      headers: props.headers,
+      toggleRowClass: props.toggleRowClass || {},
+      toggleRowKeys: props.toggleRowKeys || []
     };
     return _this3;
   }
@@ -256,7 +266,9 @@ var TableWrapper = function (_Component2) {
           rows = _props.rows,
           headers = _props.headers,
           onSortEnd = _props.onSortEnd,
-          width = _props.width;
+          width = _props.width,
+          toggleRowKeys = _props.toggleRowKeys,
+          toggleRowClass = _props.toggleRowClass;
 
       var SortableTable = (0, _reactSortableHoc.SortableContainer)(_reactVirtualized.Table, { withRef: true });
       var SortableRowRenderer = (0, _reactSortableHoc.SortableElement)(_tableHelpers2.default);
@@ -290,7 +302,11 @@ var TableWrapper = function (_Component2) {
           },
           rowHeight: itemHeight,
           rowRenderer: function rowRenderer(props) {
-            return _react2.default.createElement(SortableRowRenderer, (0, _extends3.default)({}, props, { indexCopy: props.index, headers: _this5.props.headers }));
+            return _react2.default.createElement(SortableRowRenderer, (0, _extends3.default)({}, props, {
+              toggleRowKeys: toggleRowKeys,
+              toggleRowClass: toggleRowClass,
+              indexCopy: props.index,
+              headers: _this5.props.headers }));
           },
           width: width
         },

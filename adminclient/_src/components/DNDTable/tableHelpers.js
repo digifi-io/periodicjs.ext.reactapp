@@ -28,7 +28,9 @@ function defaultRowRenderer(_ref) {
       onRowMouseOver = _ref.onRowMouseOver,
       onRowRightClick = _ref.onRowRightClick,
       rowData = _ref.rowData,
-      style = _ref.style;
+      style = _ref.style,
+      toggleRowKeys = _ref.toggleRowKeys,
+      toggleRowClass = _ref.toggleRowClass;
 
   var a11yProps = {};
 
@@ -62,15 +64,24 @@ function defaultRowRenderer(_ref) {
       };
     }
   }
+
+  var rowToggleClass = '';
+
   var columnData = columns.map(function (column, colIdx) {
     return _react2.default.createElement('div', (0, _extends3.default)({}, column.props, { key: 'Row' + indexCopy + '-Col' + colIdx
     }, headers[colIdx] ? headers[colIdx].columnProps : {}));
   });
 
+  toggleRowKeys.map(function (key) {
+    if (rowData.hasOwnProperty(key) && toggleRowClass[key] && typeof toggleRowClass[key][rowData[key]] === "string") {
+      rowToggleClass = rowToggleClass + ' ' + toggleRowClass[key][rowData[key]];
+    }
+  });
+
   return _react2.default.createElement(
     'div',
     (0, _extends3.default)({}, a11yProps, {
-      className: className,
+      className: className + rowToggleClass,
       key: indexCopy,
       role: 'row',
       style: style
