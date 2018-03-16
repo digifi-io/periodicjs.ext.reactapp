@@ -2,8 +2,8 @@ import React from 'react';
 import type {RowRendererParams} from 'react-virtualized';
 
 export default function defaultRowRenderer({
-    headers,
-    columns,
+  headers,
+  columns,
   className,
   indexCopy,
   key,
@@ -14,6 +14,8 @@ export default function defaultRowRenderer({
   onRowRightClick,
   rowData,
   style,
+  toggleRowKeys,
+  toggleRowClass,
 }: RowRendererParams) {
   const a11yProps = {};
 
@@ -45,6 +47,9 @@ export default function defaultRowRenderer({
         onRowRightClick({event, indexCopy, rowData});
     }
   }
+
+let rowToggleClass = '';
+
 let columnData = columns.map((column, colIdx) => {
       return (
         <div {...column.props} key={`Row${indexCopy}-Col${colIdx}`}
@@ -52,10 +57,16 @@ let columnData = columns.map((column, colIdx) => {
       )
   })
   
+  toggleRowKeys.map(key => {
+    if (rowData.hasOwnProperty(key) && toggleRowClass[key] && typeof toggleRowClass[key][rowData[key]] === "string" ) {
+      rowToggleClass =  rowToggleClass + ' ' + toggleRowClass[key][rowData[key]];
+    }
+  })
+
   return (
     <div
       {...a11yProps}
-      className={className}
+      className={className + rowToggleClass }
       key={indexCopy}
       role="row"
       style={style}

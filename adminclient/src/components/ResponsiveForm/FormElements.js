@@ -284,6 +284,8 @@ export function getFormDNDTable(options){
     {
       rows: initialValue,
       headers: tableHeaders,
+      toggleRowKeys: formElement.toggleRowKeys,
+      toggleRowClass: formElement.toggleRowClass,
     },
     formElement.passProps
   );
@@ -307,7 +309,6 @@ export function getFormDatatable(options){
       let selectOptions = (this.state.__formOptions && this.state.__formOptions[ rowkey ])
         ? this.state.__formOptions[ rowkey ]
         : [];
-      // console.log({ selectOptions });
       return {
         label: capitalize(rowkey),
         sortid: rowkey,
@@ -509,7 +510,7 @@ export function getFormDropdown(options){
         this.validateFormElement({ formElement, });
       }});
     }
-  }  
+  }
   let customCallbackfunction;
   if (formElement.customOnChange) {
     if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
@@ -525,12 +526,11 @@ export function getFormDropdown(options){
     {getFormLabel(formElement)}  
     <div {...wrapperProps}>  
       <Dropdown {...passedProps}
-        defaultValue={initialValue} 
+        value={initialValue} 
         onChange={(event, newvalue)=>{
           onChange.call(this, event, newvalue);
           if(customCallbackfunction) customCallbackfunction(event);
         }}
-        onSubmit={() => { return }}
       />
        {getCustomErrorIcon(hasError, isValid, this.state, formElement)}  
       {getCustomErrorLabel(hasError, this.state, formElement)}
