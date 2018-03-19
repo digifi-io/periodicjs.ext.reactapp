@@ -501,7 +501,29 @@ export function getFormDropdown(options){
   passedProps.options = dropdowndata;
   if (formElement.disableOnChange) {
     onChange = () => { return () => {}};
-  } else if (!onChange) {
+  }
+  else if (!onChange && formElement.passProps.multiple && formElement.passProps.search) {
+    onChange = (event, newvalue) => {
+      let updatedStateProp = {};
+      let changedVal = newvalue.value;
+      if (event.target.tagName === 'I') {
+        //deletion
+        let id;
+        newvalue.options.forEach(val => {
+          if (val.text === event.target.parentElement.textContent) id = val.value;
+        });
+        changedVal = newvalue.value.filter(valId => {
+          return valId !== id;
+        });
+      }
+      updatedStateProp[ formElement.name ] = changedVal;
+      this.setState(updatedStateProp, () => {
+        if(formElement.validateOnChange){
+        this.validateFormElement({ formElement, });
+      }});
+    }
+  }
+  else if (!onChange) {
     onChange = (event, newvalue)=>{
       let updatedStateProp = {};
       updatedStateProp[ formElement.name ] = newvalue.value;
@@ -526,7 +548,7 @@ export function getFormDropdown(options){
     {getFormLabel(formElement)}  
     <div {...wrapperProps}>  
       <Dropdown {...passedProps}
-        value={initialValue} 
+        defaultValue={initialValue}
         onChange={(event, newvalue)=>{
           onChange.call(this, event, newvalue);
           if(customCallbackfunction) customCallbackfunction(event);
