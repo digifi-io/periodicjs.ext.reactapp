@@ -501,6 +501,18 @@ export function getFormDropdown(options){
   passedProps.options = dropdowndata;
   if (formElement.disableOnChange) {
     onChange = () => { return () => {}};
+  } else if (!onChange && formElement.passProps.multiple && formElement.passProps.search) {
+    onChange = (event, newvalue)=>{
+      let updatedStateProp = {};
+      newvalue.options.forEach((val, idx) => {
+        if (newvalue.value[ idx ]) updatedStateProp[ `${formElement.name}.${idx}` ] = newvalue.value[ idx ];
+        else updatedStateProp[ `${formElement.name}.${idx}` ] = undefined;
+      });
+      this.setState(updatedStateProp, () => {
+        if(formElement.validateOnChange){
+        this.validateFormElement({ formElement, });
+      }});
+    }
   } else if (!onChange) {
     onChange = (event, newvalue)=>{
       let updatedStateProp = {};
@@ -520,7 +532,11 @@ export function getFormDropdown(options){
     } 
   }
 
-  formElement.customIconStyle = Object.assign({},{ right: "24px" },formElement.customIconStyle);
+  formElement.customIconStyle = Object.assign({}, { right: "24px" }, formElement.customIconStyle);
+
+  if (formElement.passProps.multiple && formElement.passProps.search) {
+    initialValue = unflatten(this.state)[ formElement.name ].filter(i => i !== undefined);
+  }
 
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
     {getFormLabel(formElement)}  
