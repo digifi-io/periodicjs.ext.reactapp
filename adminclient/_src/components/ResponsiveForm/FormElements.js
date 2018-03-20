@@ -589,6 +589,18 @@ function getFormDropdown(options) {
     _onChange = function onChange() {
       return function () {};
     };
+  } else if (!_onChange && formElement.passProps.multiple && formElement.passProps.search) {
+    _onChange = function onChange(event, newvalue) {
+      var updatedStateProp = {};
+      newvalue.options.forEach(function (val, idx) {
+        if (newvalue.value[idx]) updatedStateProp[formElement.name + '.' + idx] = newvalue.value[idx];else updatedStateProp[formElement.name + '.' + idx] = undefined;
+      });
+      _this6.setState(updatedStateProp, function () {
+        if (formElement.validateOnChange) {
+          _this6.validateFormElement({ formElement: formElement });
+        }
+      });
+    };
   } else if (!_onChange) {
     _onChange = function onChange(event, newvalue) {
       var updatedStateProp = {};
@@ -610,6 +622,12 @@ function getFormDropdown(options) {
   }
 
   formElement.customIconStyle = (0, _assign2.default)({}, { right: "24px" }, formElement.customIconStyle);
+
+  if (formElement.passProps.multiple && formElement.passProps.search) {
+    initialValue = (0, _flat.unflatten)(this.state)[formElement.name].filter(function (i) {
+      return i !== undefined;
+    });
+  }
 
   return _react2.default.createElement(
     _FormItem2.default,
