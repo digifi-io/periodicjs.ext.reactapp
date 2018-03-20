@@ -210,7 +210,7 @@ class ResponsiveButton extends Component {
         }
       </Button>;
     } else if (this.props.aProps){ 
-      return <a className="__ra_rb" {...this.props.aProps} href={this.getHref.call(this, getPropsForOnClick())}>{this.props.children}</a>;
+      return <a className="__ra_rb" {...this.props.aProps} onClick={this.handleOnClick.bind(this, getPropsForOnClick())} href={this.getHref.call(this, getPropsForOnClick())}>{this.props.children}</a>;
     } else {
       return <span className="__ra_rb"
         {...this.props.spanProps}
