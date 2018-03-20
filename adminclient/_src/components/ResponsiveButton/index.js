@@ -279,7 +279,7 @@ var ResponsiveButton = function (_Component) {
       } else if (this.props.aProps) {
         return _react2.default.createElement(
           'a',
-          (0, _extends3.default)({ className: '__ra_rb' }, this.props.aProps, { href: this.getHref.call(this, getPropsForOnClick()) }),
+          (0, _extends3.default)({ className: '__ra_rb' }, this.props.aProps, { onClick: this.handleOnClick.bind(this, getPropsForOnClick()), href: this.getHref.call(this, getPropsForOnClick()) }),
           this.props.children
         );
       } else {
