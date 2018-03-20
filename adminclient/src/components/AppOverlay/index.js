@@ -133,24 +133,33 @@ class ModalWrapper extends Component {
   constructor(props) {
     super(props);
     this.getRenderedComponent = getRenderedComponent.bind(this);
+    this.state = {
+      modals: this.props.notification.modals,
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      modals: nextProps.notification.modals,
+    })
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.notification.modals === this.props.notification.modals) {
+    if (nextProps.notification.modals === this.props.modals) {
       return false;
     } else {
       return true;
     }
   }
   render() {
-    let modal = (this.props.notification.modals && this.props.notification.modals.length > 0)
+    let modal = (this.state.modals && this.state.modals.length > 0)
       ?
-      this.props.notification.modals.map((modal, index) => {
-        return (<ModalUI {...this.props.notification.modals[ index ]}
+      this.state.modals.map((modal, index) => {
+        return (<ModalUI {...this.state.modals[ index ]}
           getState={this.props.getState}
           key={index}  
         hide={() => {
-          this.props.hideModal(this.props.notification.modals[index].id);
+          this.props.hideModal(this.state.modals[index].id);
         } }  
         dynamicRenderComponent={this.getRenderedComponent} />)  
       })
@@ -189,7 +198,6 @@ class Overlay extends Component {
   }
 
   render() {
-    // console.log('Overlay this.props.notification', this.props.notification);
     window.overlayProps = this.props;
     let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
       
