@@ -128,22 +128,21 @@ class ModalUI extends Component {
   }
 }
 
-class Overlay extends Component {
+
+class ModalWrapper extends Component {
   constructor(props) {
     super(props);
     this.getRenderedComponent = getRenderedComponent.bind(this);
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.notification.modals === this.props.notification.modals) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   render() {
-    // console.log('Overlay this.props.notification', this.props.notification);
-    window.overlayProps = this.props;
-    let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
-    let notices = (this.props.notification.notifications && this.props.notification.notifications.length > 0)
-      ? this.props.notification.notifications.map((notice, key) => <NotificationUI dynamicRenderComponent={this.getRenderedComponent} hide={{
-        onClick: () => {
-          this.props.hideNotification(notice.id);
-        },
-      }} key={key} {...notice} />)
-      : null;
     let modal = (this.props.notification.modals && this.props.notification.modals.length > 0)
       ?
       this.props.notification.modals.map((modal, index) => {
@@ -162,10 +161,50 @@ class Overlay extends Component {
       //   } }  
       //   dynamicRenderComponent={this.getRenderedComponent} />
       : null;
+      return <div>{modal}</div>;
+  }
+}
+class NotificationWrapper extends Component {
+  constructor(props) {
+    super(props);
+    this.getRenderedComponent = getRenderedComponent.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.notification.notifications === this.props.notification.notifications) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  render() {
+    let notices = (this.props.notification.notifications && this.props.notification.notifications.length > 0)
+      ? this.props.notification.notifications.map((notice, key) => <NotificationUI dynamicRenderComponent={this.getRenderedComponent} hide={{
+        onClick: () => {
+          this.props.hideNotification(notice.id);
+        },
+      }} key={key} {...notice} />)
+      : null;
+      return <div>{notices}</div>;
+  }
+}
+
+class Overlay extends Component {
+  constructor(props) {
+    super(props);
+    this.getRenderedComponent = getRenderedComponent.bind(this);
+  }
+
+  render() {
+    // console.log('Overlay this.props.notification', this.props.notification);
+    window.overlayProps = this.props;
+    let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
+      
     return (
       <div className="__reactapp_overlay" {...overlayStyleOverrides} style={{ position: 'fixed', bottom: 0, width: 'auto', zIndex:100000, }}>
-        {modal}
-        {notices}
+        <ModalWrapper {...this.props}/>
+        <NotificationWrapper {...this.props}/>
       </div>
     );
   }
