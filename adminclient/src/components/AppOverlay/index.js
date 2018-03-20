@@ -170,14 +170,6 @@ class NotificationWrapper extends Component {
     this.getRenderedComponent = getRenderedComponent.bind(this);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.notification.notifications === this.props.notification.notifications) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   render() {
     let notices = (this.props.notification.notifications && this.props.notification.notifications.length > 0)
       ? this.props.notification.notifications.map((notice, key) => <NotificationUI dynamicRenderComponent={this.getRenderedComponent} hide={{
