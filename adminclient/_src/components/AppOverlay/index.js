@@ -220,39 +220,48 @@ var ModalUI = function (_Component2) {
   return ModalUI;
 }(_react.Component);
 
-var Overlay = function (_Component3) {
-  (0, _inherits3.default)(Overlay, _Component3);
+var ModalWrapper = function (_Component3) {
+  (0, _inherits3.default)(ModalWrapper, _Component3);
 
-  function Overlay(props) {
-    (0, _classCallCheck3.default)(this, Overlay);
+  function ModalWrapper(props) {
+    (0, _classCallCheck3.default)(this, ModalWrapper);
 
-    var _this5 = (0, _possibleConstructorReturn3.default)(this, (Overlay.__proto__ || (0, _getPrototypeOf2.default)(Overlay)).call(this, props));
+    var _this5 = (0, _possibleConstructorReturn3.default)(this, (ModalWrapper.__proto__ || (0, _getPrototypeOf2.default)(ModalWrapper)).call(this, props));
 
     _this5.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this5);
+    _this5.state = {
+      modals: _this5.props.notification.modals
+    };
     return _this5;
   }
 
-  (0, _createClass3.default)(Overlay, [{
+  (0, _createClass3.default)(ModalWrapper, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      this.setState({
+        modals: nextProps.notification.modals
+      });
+    }
+  }, {
+    key: 'shouldComponentUpdate',
+    value: function shouldComponentUpdate(nextProps, nextState) {
+      if (nextProps.notification.modals === this.props.modals) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this6 = this;
 
-      // console.log('Overlay this.props.notification', this.props.notification);
-      window.overlayProps = this.props;
-      var overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
-      var notices = this.props.notification.notifications && this.props.notification.notifications.length > 0 ? this.props.notification.notifications.map(function (notice, key) {
-        return _react2.default.createElement(NotificationUI, (0, _extends3.default)({ dynamicRenderComponent: _this6.getRenderedComponent, hide: {
-            onClick: function onClick() {
-              _this6.props.hideNotification(notice.id);
-            }
-          }, key: key }, notice));
-      }) : null;
-      var modal = this.props.notification.modals && this.props.notification.modals.length > 0 ? this.props.notification.modals.map(function (modal, index) {
-        return _react2.default.createElement(ModalUI, (0, _extends3.default)({}, _this6.props.notification.modals[index], {
+      var modal = this.state.modals && this.state.modals.length > 0 ? this.state.modals.map(function (modal, index) {
+        return _react2.default.createElement(ModalUI, (0, _extends3.default)({}, _this6.state.modals[index], {
           getState: _this6.props.getState,
           key: index,
           hide: function hide() {
-            _this6.props.hideModal(_this6.props.notification.modals[index].id);
+            _this6.props.hideModal(_this6.state.modals[index].id);
           },
           dynamicRenderComponent: _this6.getRenderedComponent }));
       })
@@ -265,9 +274,71 @@ var Overlay = function (_Component3) {
       : null;
       return _react2.default.createElement(
         'div',
-        (0, _extends3.default)({ className: '__reactapp_overlay' }, overlayStyleOverrides, { style: { position: 'fixed', bottom: 0, width: 'auto', zIndex: 100000 } }),
-        modal,
+        null,
+        modal
+      );
+    }
+  }]);
+  return ModalWrapper;
+}(_react.Component);
+
+var NotificationWrapper = function (_Component4) {
+  (0, _inherits3.default)(NotificationWrapper, _Component4);
+
+  function NotificationWrapper(props) {
+    (0, _classCallCheck3.default)(this, NotificationWrapper);
+
+    var _this7 = (0, _possibleConstructorReturn3.default)(this, (NotificationWrapper.__proto__ || (0, _getPrototypeOf2.default)(NotificationWrapper)).call(this, props));
+
+    _this7.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this7);
+    return _this7;
+  }
+
+  (0, _createClass3.default)(NotificationWrapper, [{
+    key: 'render',
+    value: function render() {
+      var _this8 = this;
+
+      var notices = this.props.notification.notifications && this.props.notification.notifications.length > 0 ? this.props.notification.notifications.map(function (notice, key) {
+        return _react2.default.createElement(NotificationUI, (0, _extends3.default)({ dynamicRenderComponent: _this8.getRenderedComponent, hide: {
+            onClick: function onClick() {
+              _this8.props.hideNotification(notice.id);
+            }
+          }, key: key }, notice));
+      }) : null;
+      return _react2.default.createElement(
+        'div',
+        null,
         notices
+      );
+    }
+  }]);
+  return NotificationWrapper;
+}(_react.Component);
+
+var Overlay = function (_Component5) {
+  (0, _inherits3.default)(Overlay, _Component5);
+
+  function Overlay(props) {
+    (0, _classCallCheck3.default)(this, Overlay);
+
+    var _this9 = (0, _possibleConstructorReturn3.default)(this, (Overlay.__proto__ || (0, _getPrototypeOf2.default)(Overlay)).call(this, props));
+
+    _this9.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this9);
+    return _this9;
+  }
+
+  (0, _createClass3.default)(Overlay, [{
+    key: 'render',
+    value: function render() {
+      window.overlayProps = this.props;
+      var overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
+
+      return _react2.default.createElement(
+        'div',
+        (0, _extends3.default)({ className: '__reactapp_overlay' }, overlayStyleOverrides, { style: { position: 'fixed', bottom: 0, width: 'auto', zIndex: 100000 } }),
+        _react2.default.createElement(ModalWrapper, this.props),
+        _react2.default.createElement(NotificationWrapper, this.props)
       );
     }
   }]);
