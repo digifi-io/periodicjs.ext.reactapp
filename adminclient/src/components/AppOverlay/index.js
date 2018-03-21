@@ -133,42 +133,40 @@ class ModalWrapper extends Component {
   constructor(props) {
     super(props);
     this.getRenderedComponent = getRenderedComponent.bind(this);
-    this.state = {
-      modals: this.props.notification.modals,
-    }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      modals: nextProps.notification.modals,
-    })
+  _isEqual(arr1, arr2) {
+    let isEqual = false;
+    if (arr1.length === arr2.length) {
+      arr1.forEach((e, idx) => {
+        if (arr1[idx].id === arr2[idx].id ) {
+          isEqual = true;
+        }
+      })
+    } 
+    return isEqual;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.notification.modals === this.props.modals) {
+    if (this._isEqual(nextProps.notification.modals, this.props.notification.modals)) {
       return false;
     } else {
       return true;
     }
   }
   render() {
-    let modal = (this.state.modals && this.state.modals.length > 0)
+    let modalProp = this.props.notification.modals;
+    let modal = (modalProp && modalProp.length > 0)
       ?
-      this.state.modals.map((modal, index) => {
-        return (<ModalUI {...this.state.modals[ index ]}
+      modalProp.map((modal, index) => {
+        return (<ModalUI {...modalProp[ index ]}
           getState={this.props.getState}
           key={index}  
         hide={() => {
-          this.props.hideModal(this.state.modals[index].id);
+          this.props.hideModal(modalProp[index].id);
         } }  
         dynamicRenderComponent={this.getRenderedComponent} />)  
       })
-      // <ModalUI {...this.props.notification.modals[ this.props.notification.modals.length - 1 ]}
-      //   getState={this.props.getState}
-      //   hide={() => {
-      //     this.props.hideModal(this.props.notification.modals[0].id);
-      //   } }  
-      //   dynamicRenderComponent={this.getRenderedComponent} />
       : null;
       return <div>{modal}</div>;
   }
@@ -198,6 +196,7 @@ class Overlay extends Component {
   }
 
   render() {
+  
     window.overlayProps = this.props;
     let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
       
