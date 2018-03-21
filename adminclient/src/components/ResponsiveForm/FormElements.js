@@ -534,7 +534,7 @@ export function getFormDropdown(options){
 
   formElement.customIconStyle = Object.assign({}, { right: "24px" }, formElement.customIconStyle);
 
-  if (formElement.passProps.multiple && formElement.passProps.search) {
+  if (formElement.passProps.multiple && formElement.passProps.search && Array.isArray(unflatten(this.state)[formElement.name])) {
     initialValue = unflatten(this.state)[ formElement.name ].filter(i => i !== undefined);
   }
 
