@@ -270,9 +270,13 @@ var TableWrapper = function (_Component2) {
           toggleRowKeys = _props.toggleRowKeys,
           toggleRowClass = _props.toggleRowClass;
 
-      var SortableTable = (0, _reactSortableHoc.SortableContainer)(_reactVirtualized.Table, { withRef: true });
+      var SortableTable = (0, _reactSortableHoc.SortableContainer)(_reactVirtualized.Table, { withRef: true, shouldCancelStart: function shouldCancelStart(e) {
+          var disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
+          if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.paraentNode.tagName.toLowerCase()) !== -1) {
+            return true; // Return true to cancel sorting
+          }
+        } });
       var SortableRowRenderer = (0, _reactSortableHoc.SortableElement)(_tableHelpers2.default);
-
       var tableheaders = headers.map(function (header, idx) {
         return _react2.default.createElement(_reactVirtualized.Column, { content: idx,
           cellRenderer: _this5.cellRenderer,
