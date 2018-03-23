@@ -589,7 +589,7 @@ function getFormDropdown(options) {
     _onChange = function onChange() {
       return function () {};
     };
-  } else if (!_onChange && formElement.passProps.multiple && formElement.passProps.search) {
+  } else if (!_onChange && formElement.passProps.multiple) {
     _onChange = function onChange(event, newvalue) {
       var updatedStateProp = {};
       newvalue.options.forEach(function (val, idx) {
@@ -623,7 +623,7 @@ function getFormDropdown(options) {
 
   formElement.customIconStyle = (0, _assign2.default)({}, { right: "24px" }, formElement.customIconStyle);
 
-  if (formElement.passProps.multiple && formElement.passProps.search && Array.isArray((0, _flat.unflatten)(this.state)[formElement.name])) {
+  if (formElement.passProps.multiple && Array.isArray((0, _flat.unflatten)(this.state)[formElement.name])) {
     initialValue = (0, _flat.unflatten)(this.state)[formElement.name].filter(function (i) {
       return i !== undefined;
     });

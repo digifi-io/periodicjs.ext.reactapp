@@ -306,6 +306,14 @@ var ResponsiveForm = function (_Component) {
       validationErrors = validatedFormData.validationErrors;
       formdata = validatedFormData.formdata;
 
+      var multipleDropdownFormData = {};
+      (0, _keys2.default)(formdata).forEach(function (key) {
+        var name = key.split('.')[0];
+        if (updatedFormFieldsAndData.multipleDropdowns[name] && formdata[key] !== undefined) multipleDropdownFormData[key] = formdata[key];
+      });
+      multipleDropdownFormData = (0, _flat.unflatten)(multipleDropdownFormData);
+      formdata = (0, _assign2.default)({}, multipleDropdownFormData, formdata);
+
       if (formElementFields && formElementFields.length) {
         formElementFields.forEach(function (formElmField) {
           submitFormData[formElmField] = formdata[formElmField];
