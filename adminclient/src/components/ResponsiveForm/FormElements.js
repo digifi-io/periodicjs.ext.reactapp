@@ -501,7 +501,7 @@ export function getFormDropdown(options){
   passedProps.options = dropdowndata;
   if (formElement.disableOnChange) {
     onChange = () => { return () => {}};
-  } else if (!onChange && formElement.passProps.multiple && formElement.passProps.search) {
+  } else if (!onChange && formElement.passProps.multiple) {
     onChange = (event, newvalue)=>{
       let updatedStateProp = {};
       newvalue.options.forEach((val, idx) => {
@@ -534,7 +534,7 @@ export function getFormDropdown(options){
 
   formElement.customIconStyle = Object.assign({}, { right: "24px" }, formElement.customIconStyle);
 
-  if (formElement.passProps.multiple && formElement.passProps.search && Array.isArray(unflatten(this.state)[formElement.name])) {
+  if (formElement.passProps.multiple && Array.isArray(unflatten(this.state)[formElement.name])) {
     initialValue = unflatten(this.state)[ formElement.name ].filter(i => i !== undefined);
   }
 

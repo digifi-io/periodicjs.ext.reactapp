@@ -5,7 +5,7 @@ import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, } from './FormHelpers';
-import flatten from 'flat';
+import flatten, { unflatten, } from 'flat';
 import qs from 'querystring';
 // function getCallbackFromString(fetchOptions.successCallback) {
 
@@ -238,6 +238,14 @@ class ResponsiveForm extends Component{
     let validatedFormData = getFormValidations({ formdata, validationErrors, });
     validationErrors = validatedFormData.validationErrors;
     formdata = validatedFormData.formdata;
+
+    let multipleDropdownFormData = {};
+    Object.keys(formdata).forEach(key => {
+      let name = key.split('.')[ 0 ];
+      if (updatedFormFieldsAndData.multipleDropdowns[ name ] && formdata[ key ] !== undefined ) multipleDropdownFormData[ key ] = formdata[ key ];
+    });
+    multipleDropdownFormData = unflatten(multipleDropdownFormData);
+    formdata = Object.assign({}, multipleDropdownFormData, formdata);
 
     if (formElementFields && formElementFields.length) {
       formElementFields.forEach(formElmField => {

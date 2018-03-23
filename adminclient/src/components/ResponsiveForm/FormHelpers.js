@@ -115,7 +115,7 @@ export function getCallbackFromString(successCBProp, multiArgs=false) {
 }
 
 export function setAddNameToName(options) {
-  let { formdata, formElementFields, formElm, } = options;
+  let { formdata, formElementFields, formElm, multipleDropdowns, } = options;
   let recursiveSetAddNameToName = setAddNameToName.bind(this);
   // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
   // skip if null, or disabled
@@ -152,12 +152,16 @@ export function setAddNameToName(options) {
       }
       // console.debug('after',{formElm,formdata});
     }
+    if (formElm.type === 'dropdown' && formElm.passProps && formElm.passProps.multiple) {
+      multipleDropdowns[formElm.name] = true;
+    }
   }
-  return { formdata, formElementFields, formElement: formElm, };
+  return { formdata, formElementFields, formElement: formElm, multipleDropdowns, };
 }
 
 export function setFormNameFields(options) {
   let { formElementFields, formdata, } = options;
+  let multipleDropdowns = {};
   const addNameToName = setAddNameToName.bind(this);
 
   if (this.props.formgroups && this.props.formgroups.length) {
@@ -169,13 +173,13 @@ export function setFormNameFields(options) {
           let formGroupLeft = (formElement.formGroupCardLeft && formElement.formGroupCardLeft.length) ? formElement.formGroupCardLeft : false;
           let formGroupRight = (formElement.formGroupCardRight && formElement.formGroupCardRight.length) ? formElement.formGroupCardRight : false;
           if (formElementsLeft || formElementsRight) {
-            if (formElementsLeft) formElementsLeft.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, }));
-            if (formElementsRight) formElementsRight.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, }));
+            if (formElementsLeft) formElementsLeft.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
+            if (formElementsRight) formElementsRight.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
           } else if (formGroupLeft || formGroupRight) {
-            if (formGroupLeft) formGroupLeft.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, }));
-            if (formGroupRight) formGroupRight.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, }));
+            if (formGroupLeft) formGroupLeft.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
+            if (formGroupRight) formGroupRight.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
           } else if (formElement.type === 'group') {
-            if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, }));
+            if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
           } else if (!formElement ||
             formElement.disabled ||
             (formElement.passProps && formElement.passProps.state === 'isDisabled')
@@ -185,7 +189,7 @@ export function setFormNameFields(options) {
 
           } else {
             if (formElement.name) {
-              addNameToName({ formElementFields, formdata, formElm: formElement, });
+              addNameToName({ formElementFields, formdata, formElm: formElement, multipleDropdowns, });
               // formElementFields.push(formElement.name);
             }
           }
@@ -193,7 +197,7 @@ export function setFormNameFields(options) {
       }
     });
   }
-  return { formElementFields, formdata, };
+  return { formElementFields, formdata, multipleDropdowns, };
 }
 
 export function assignFormBody(options) {
