@@ -161,16 +161,20 @@ class TableWrapper extends Component {
       toggleRowKeys,
       toggleRowClass
     } = this.props;
-    const SortableTable = SortableContainer(Table, { withRef: true });
+    const SortableTable = SortableContainer(Table, { withRef: true, shouldCancelStart: function(e) {
+        const disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
+        if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.paraentNode.tagName.toLowerCase()) !== -1) {
+          return true; // Return true to cancel sorting
+        }
+      }, });
     const SortableRowRenderer = SortableElement(defaultTableRowRenderer);
-
     let tableheaders = headers.map((header, idx) => (
-      <Column content={idx} 
-        cellRenderer={this.cellRenderer} 
-        label={header.label} 
-        key={idx} 
-        dataKey={header.sortid} 
-        width={width} 
+      <Column content={idx}
+        cellRenderer={this.cellRenderer}
+        label={header.label}
+        key={idx}
+        dataKey={header.sortid}
+        width={width}
         headerStyle={(header.columnProps && header.columnProps.style)? header.columnProps.style : null}/>))
     return (
       <SortableTable
@@ -187,7 +191,7 @@ class TableWrapper extends Component {
         rowHeight={itemHeight}
         rowRenderer={props => {
           return <SortableRowRenderer 
-            {...props} 
+            {...props}
             toggleRowKeys={toggleRowKeys} 
             toggleRowClass={toggleRowClass} 
             indexCopy={props.index} 
