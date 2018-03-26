@@ -94,13 +94,13 @@ class ResponsiveNavBar extends Component {
         <div 
           {...this.props.itemProps}
           key={idx + '-' + linkIdx}
-          className={activeClass} >
-          <Link 
-              to={link.linkURL}
-              {...this.props.linkProps}
-              >
-            {link.name}
-          </Link>
+          className={activeClass}>
+          { (link.linkUrl) ?
+              <Link
+                to={link.linkURL}
+                {...this.props.linkProps}>
+                {link.name}
+              </Link> : null }
           {(section.buttons) ? section.buttons.map(button => {
               return this.getRenderedComponent(Object.assign({
                 component: 'ResponsiveButton',
@@ -127,7 +127,7 @@ class ResponsiveNavBar extends Component {
             content={section.title} 
             {...this.props.titleProps}>
           </Accordion.Title>
-          <Accordion.Content 
+          <Accordion.Content
             active={activeIndex.indexOf(idx) !== -1}
             {...this.props.contentProps}>
             {subMenu}
@@ -136,8 +136,8 @@ class ResponsiveNavBar extends Component {
      )
     })
     return (
-      <Accordion 
-        as={Menu} 
+      <Accordion
+        as={Menu}
         vertical
         {...this.props.accordionProps}
         >
