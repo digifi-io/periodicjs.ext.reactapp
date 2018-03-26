@@ -163,7 +163,7 @@ class TableWrapper extends Component {
     } = this.props;
     const SortableTable = SortableContainer(Table, { withRef: true, shouldCancelStart: function(e) {
         const disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
-        if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.paraentNode.tagName.toLowerCase()) !== -1) {
+        if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1) {
           return true; // Return true to cancel sorting
         }
       }, });
