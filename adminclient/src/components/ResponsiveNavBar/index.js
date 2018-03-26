@@ -32,7 +32,7 @@ class ResponsiveNavBar extends Component {
     this.state = {
       initialActiveIndex: -1,
       activeIndex: this.props.navSections.map((section, idx) => {
-      if (this.props.navData[idx]) {
+        if (this.props.navData && this.props.navData[idx]) {
         this.props.navData[idx].map((link, linkIdx) => {
           let linkURL = this.getBaseUrl(section.baseURL, this.props.params, this.props, linkIdx);
           link.linkURL = linkURL;
@@ -114,6 +114,9 @@ class ResponsiveNavBar extends Component {
                 }
               ),
               }))
+            }) : null }
+          {(link.customComponents) ? link.customComponents.map(component => {
+              return this.getRenderedComponent(component)
             }) : null }
         </div>
         )
