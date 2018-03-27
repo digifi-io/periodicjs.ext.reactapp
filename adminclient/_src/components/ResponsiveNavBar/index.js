@@ -59,7 +59,8 @@ var propTypes = {
   navSections: _react.PropTypes.array,
   params: _react.PropTypes.array,
   active: _react.PropTypes.boolean,
-  navType: _react.PropTypes.string
+  navType: _react.PropTypes.string,
+  customComponents: _react.PropTypes.array
 };
 
 var defaultProps = {
@@ -68,7 +69,8 @@ var defaultProps = {
   navSections: [],
   params: [],
   linkProps: {},
-  toggleData: {}
+  toggleData: {},
+  customComponents: []
 };
 
 var ResponsiveNavBar = function (_Component) {
@@ -250,16 +252,16 @@ var ResponsiveNavBar = function (_Component) {
         } else if (link.navButton && link.navButton.component !== 'ResponsiveButton') {
           navLink = _this2.getRenderedComponent(link.navButton);
         }
-
-        if (link.customComponents && typeof link.customComponents === 'array') {
+        if (link.customComponents && Array.isArray(link.customComponents)) {
           customComponents = _react2.default.createElement(
             'div',
             null,
             link.customComponents.map(function (component) {
-              _this2.getRenderedComponent(component);
+              return _this2.getRenderedComponent(component);
             })
           );
         }
+
         return _react2.default.createElement(
           'div',
           (0, _extends3.default)({}, _this2.props.itemProps, {
