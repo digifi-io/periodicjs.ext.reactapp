@@ -264,7 +264,7 @@ var ResponsiveButton = function (_Component) {
             } }),
           options
         );
-      } else if (this.props.buttonProps) {
+      } else if (this.props.buttonProps && (0, _keys2.default)(this.props.buttonProps).length) {
         return _react2.default.createElement(
           _reBulma.Button,
           (0, _extends3.default)({ className: '__ra_rb'

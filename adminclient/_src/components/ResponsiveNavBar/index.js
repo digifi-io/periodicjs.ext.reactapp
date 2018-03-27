@@ -4,13 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
 var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
+
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
 
 var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
 
@@ -46,6 +46,10 @@ var _AppLayoutMap = require('../AppLayoutMap');
 
 var _semanticUiReact = require('semantic-ui-react');
 
+var _ResponsiveButton = require('../ResponsiveButton');
+
+var _ResponsiveButton2 = _interopRequireDefault(_ResponsiveButton);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var propTypes = {
@@ -54,7 +58,8 @@ var propTypes = {
   navData: _react.PropTypes.array,
   navSections: _react.PropTypes.array,
   params: _react.PropTypes.array,
-  active: _react.PropTypes.boolean
+  active: _react.PropTypes.boolean,
+  navType: _react.PropTypes.string
 };
 
 var defaultProps = {
@@ -79,19 +84,25 @@ var ResponsiveNavBar = function (_Component) {
     var params = props.params || [];
     var linkProps = props.linkProps || {};
     var toggleData = props.toggleData || {};
+    var navType = props.navType;
     _this.state = {
       initialActiveIndex: -1,
       activeIndex: _this.props.navSections.map(function (section, idx) {
-        if (_this.props.navData[idx]) {
+        if (_this.props.navData && _this.props.navData[idx]) {
           _this.props.navData[idx].map(function (link, linkIdx) {
             var linkURL = _this.getBaseUrl(section.baseURL, _this.props.params, _this.props, linkIdx);
             link.linkURL = linkURL;
           });
           return idx;
         }
-      })
+      }),
+      activeSinglePageIndex: [0, 0]
     };
+    _this.getSinglePageNav = _this.getSinglePageNav.bind(_this);
+    _this.updateSinglePageIndex = _this.updateSinglePageIndex.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
+    _this.getPropsForOnClick = _this.getPropsForOnClick.bind(_this);
+    _this.getButtonLink = _this.getButtonLink.bind(_this);
     _this.getBaseUrl = _this.getBaseUrl.bind(_this);
     _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
     return _this;
@@ -134,60 +145,197 @@ var ResponsiveNavBar = function (_Component) {
       }
     }
   }, {
-    key: 'render',
-    value: function render() {
+    key: 'updateSinglePageIndex',
+    value: function updateSinglePageIndex(indexArr) {
+      this.setState({
+        activeSinglePageIndex: indexArr
+      });
+    }
+  }, {
+    key: 'getPropsForOnClick',
+    value: function getPropsForOnClick(component) {
+      return {
+        clickprop: component.props.onClick,
+        clickThisProp: component.props.onclickThisProp,
+        clickAddPropObject: component.props.onclickAddProp,
+        clickPropObject: component.props.onclickPropObject,
+        clickBaseUrl: component.props.onclickBaseUrl,
+        clickLinkParams: component.props.onclickLinkParams,
+        clickPassProps: component.props.onclickProps,
+        clickFetchProps: component.props.fetchProps,
+        clickSuccessProps: component.props.successProps,
+        thisDotProp: component.props
+      };
+    }
+  }, {
+    key: 'getButtonLink',
+    value: function getButtonLink(baseurl, params, prop) {
+      var returnLink = baseurl;
+      try {
+        if (params && params.length > 0) {
+          params.forEach(function (param) {
+            returnLink = returnLink.replace(param.key, prop[param.val]);
+          });
+        }
+      } catch (e) {
+        console.debug(e, { baseurl: baseurl, params: params, prop: prop });
+      }
+      return returnLink;
+    }
+  }, {
+    key: 'getSinglePageNav',
+    value: function getSinglePageNav(section, sectionIdx) {
       var _this2 = this;
 
-      var activeIndex = this.state.activeIndex;
+      var onclickFunction = function onclickFunction(data) {
+        console.debug('ResponsiveButton', { data: data });
+      };
 
-      var navMenu = this.props.navSections.map(function (section, idx) {
-        if (section.toggle && !_this2.props.toggleData[section.toggle]) {
+      var itemProps = this.props.linkProps && this.props.linkProps.className ? this.props.linkProps.className : '';
+      var subMenu = this.props.navData[sectionIdx].map(function (link, linkIdx) {
+        var itemProps = _this2.props.linkProps && _this2.props.linkProps.className ? _this2.props.linkProps.className : '';
+        var activeClass = _this2.state.activeSinglePageIndex[0] === sectionIdx && _this2.state.activeSinglePageIndex[1] === linkIdx ? 'active-nav-link nav-link' + itemProps : 'nav-link' + itemProps;
+        var navLink = void 0;
+        var customComponents = void 0;
+
+        if (link.navButton && link.navButton.component === 'ResponsiveButton') {
+          var _getPropsForOnClick = _this2.getPropsForOnClick(link.navButton),
+              thisDotProp = _getPropsForOnClick.thisDotProp,
+              clickThisProp = _getPropsForOnClick.clickThisProp,
+              clickPropObject = _getPropsForOnClick.clickPropObject,
+              clickBaseUrl = _getPropsForOnClick.clickBaseUrl,
+              clickLinkParams = _getPropsForOnClick.clickLinkParams,
+              clickPassProps = _getPropsForOnClick.clickPassProps,
+              clickprop = _getPropsForOnClick.clickprop,
+              clickFetchProps = _getPropsForOnClick.clickFetchProps,
+              clickSuccessProps = _getPropsForOnClick.clickSuccessProps,
+              clickAddPropObject = _getPropsForOnClick.clickAddPropObject;
+
+          var linkSelectionProp = clickThisProp ? thisDotProp[clickThisProp] : clickPropObject || _this2.props;
+          var onclickProp = clickBaseUrl ? _this2.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp) : clickPassProps || clickPropObject;
+
+          if (clickAddPropObject && linkSelectionProp) {
+            linkSelectionProp[clickAddPropObject] = _this2.props[clickAddPropObject];
+          }
+          if (clickAddPropObject && onclickProp) {
+            onclickProp[clickAddPropObject] = _this2.props[clickAddPropObject];
+          }
+
+          if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props.reduxRouter') !== -1) {
+            onclickFunction = _this2.props.reduxRouter[clickprop.replace('func:this.props.reduxRouter.', '')];
+          } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.funcs') !== -1) {
+            onclickFunction = _this2.funcs[clickprop.replace('func:this.funcs.', '')];
+          } else if (typeof clickprop === 'string' && clickprop.indexOf('func:window') !== -1) {
+            onclickFunction = window[clickprop.replace('func:window.', '')].bind(_this2);
+          } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props') !== -1) {
+
+            onclickFunction = _this2.props[clickprop.replace('func:this.props.', '')];
+          } else if (typeof clickprop === 'function') {
+            onclickFunction = clickprop;
+          }
+
+          navLink = _this2.getRenderedComponent({
+            component: 'ResponsiveButton',
+            children: link.navButton.children,
+            props: (0, _assign2.default)({}, {
+              onClick: function onClick() {
+                _this2.updateSinglePageIndex([sectionIdx, linkIdx]);
+                onclickFunction.call(_this2, onclickProp, clickFetchProps, clickSuccessProps);
+              },
+              buttonProps: link.navButton.props && link.navButton.props.buttonProps ? link.navButton.props.buttonProps : undefined,
+              style: link.navButton.style,
+              className: link.navButton.className
+            })
+          });
+        } else if (link.navButton && link.navButton.component !== 'ResponsiveButton') {
+          navLink = _this2.getRenderedComponent(link.navButton);
+        }
+
+        if (link.customComponents && typeof link.customComponents === 'array') {
+          customComponents = _react2.default.createElement(
+            'div',
+            null,
+            link.customComponents.map(function (component) {
+              _this2.getRenderedComponent(component);
+            })
+          );
+        }
+        return _react2.default.createElement(
+          'div',
+          (0, _extends3.default)({}, _this2.props.itemProps, {
+            key: sectionIdx + '-' + linkIdx,
+            className: activeClass }),
+          navLink,
+          customComponents
+        );
+      });
+      return subMenu;
+    }
+  }, {
+    key: 'getMultipageNav',
+    value: function getMultipageNav(section, sectionIdx) {
+      var _this3 = this;
+
+      var subMenu = this.props.navData[sectionIdx].map(function (link, linkIdx) {
+        var itemProps = _this3.props.linkProps && _this3.props.linkProps.className ? _this3.props.linkProps.className : '';
+        var activeClass = link.linkURL === _this3.props.location.pathname ? 'active-nav-link nav-link' + itemProps : 'nav-link' + itemProps;
+        return _react2.default.createElement(
+          'div',
+          (0, _extends3.default)({}, _this3.props.itemProps, {
+            key: sectionIdx + '-' + linkIdx,
+            className: activeClass }),
+          link.linkUrl ? _react2.default.createElement(
+            _reactRouter.Link,
+            (0, _extends3.default)({
+              to: link.linkURL
+            }, _this3.props.linkProps),
+            link.name
+          ) : null,
+          section.buttons ? section.buttons.map(function (button) {
+            return _this3.getRenderedComponent((0, _assign2.default)({
+              component: 'ResponsiveButton',
+              props: (0, _assign2.default)({
+                buttonProps: {}
+              }, button.passProps, {
+                onclickProps: _this3.getBaseUrl(button.passProps.onclickBaseUrl, button.passProps.onclickLinkParams, _this3.props, linkIdx),
+                onclickBaseUrl: null,
+                onclickLinkParams: null
+              })
+            }));
+          }) : null
+        );
+      });
+      return subMenu;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this4 = this;
+
+      var _state = this.state,
+          activeIndex = _state.activeIndex,
+          activeSinglePageIndex = _state.activeSinglePageIndex;
+
+      var navMenu = this.props.navSections.map(function (section, sectionIdx) {
+        if (section.toggle && !_this4.props.toggleData[section.toggle]) {
           return;
         }
 
-        var subMenu = _this2.props.navData[idx].map(function (link, linkIdx) {
-          var itemProps = _this2.props.linkProps && _this2.props.linkProps.className ? _this2.props.linkProps.className : '';
-          var activeClass = link.linkURL === _this2.props.location.pathname ? 'active-nav-link nav-link' + itemProps : 'nav-link' + itemProps;
-          return _react2.default.createElement(
-            'div',
-            (0, _extends3.default)({}, _this2.props.itemProps, {
-              key: idx + '-' + linkIdx,
-              className: activeClass }),
-            _react2.default.createElement(
-              _reactRouter.Link,
-              (0, _extends3.default)({
-                to: link.linkURL
-              }, _this2.props.linkProps),
-              link.name
-            ),
-            section.buttons ? section.buttons.map(function (button) {
-              return _this2.getRenderedComponent((0, _assign2.default)({
-                component: 'ResponsiveButton',
-                props: (0, _assign2.default)({
-                  buttonProps: {}
-                }, button.passProps, {
-                  onclickProps: _this2.getBaseUrl(button.passProps.onclickBaseUrl, button.passProps.onclickLinkParams, _this2.props, linkIdx),
-                  onclickBaseUrl: null,
-                  onclickLinkParams: null
-                })
-              }));
-            }) : null
-          );
-        });
+        var subMenu = _this4.props.navType === 'singlePage' ? _this4.getSinglePageNav(section, sectionIdx) : _this4.getMultipageNav(section, sectionIdx);
 
         return _react2.default.createElement(
           _semanticUiReact.Menu.Item,
-          _this2.props.sectionProps,
+          _this4.props.sectionProps,
           _react2.default.createElement(_semanticUiReact.Accordion.Title, (0, _extends3.default)({
-            active: activeIndex.indexOf(idx) !== -1,
-            index: idx, onClick: _this2.handleClick,
+            active: activeIndex.indexOf(sectionIdx) !== -1,
+            index: sectionIdx, onClick: _this4.handleClick,
             content: section.title
-          }, _this2.props.titleProps)),
+          }, _this4.props.titleProps)),
           _react2.default.createElement(
             _semanticUiReact.Accordion.Content,
             (0, _extends3.default)({
-              active: activeIndex.indexOf(idx) !== -1
-            }, _this2.props.contentProps),
+              active: activeIndex.indexOf(sectionIdx) !== -1
+            }, _this4.props.contentProps),
             subMenu
           )
         );
