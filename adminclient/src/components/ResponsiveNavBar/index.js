@@ -49,6 +49,7 @@ class ResponsiveNavBar extends Component {
     };
     this.getSinglePageNav = this.getSinglePageNav.bind(this);
     this.updateSinglePageIndex = this.updateSinglePageIndex.bind(this);
+    this.getMultipageNav = this.getMultipageNav.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.getPropsForOnClick = this.getPropsForOnClick.bind(this);
     this.getButtonLink = this.getButtonLink.bind(this);
