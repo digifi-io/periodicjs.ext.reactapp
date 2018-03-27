@@ -215,12 +215,11 @@ class ResponsiveNavBar extends Component {
           {...this.props.itemProps}
           key={sectionIdx + '-' + linkIdx}
           className={activeClass}>
-          {(link.linkUrl) ?
-            <Link
+          {<Link
               to={link.linkURL}
               {...this.props.linkProps}>
               {link.name}
-            </Link> : null}
+            </Link>}
           {(section.buttons) ? section.buttons.map(button => {
             return this.getRenderedComponent(Object.assign({
               component: 'ResponsiveButton',
