@@ -102,6 +102,7 @@ var ResponsiveNavBar = function (_Component) {
     };
     _this.getSinglePageNav = _this.getSinglePageNav.bind(_this);
     _this.updateSinglePageIndex = _this.updateSinglePageIndex.bind(_this);
+    _this.getMultipageNav = _this.getMultipageNav.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
     _this.getPropsForOnClick = _this.getPropsForOnClick.bind(_this);
     _this.getButtonLink = _this.getButtonLink.bind(_this);
