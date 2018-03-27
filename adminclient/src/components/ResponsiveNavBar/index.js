@@ -12,6 +12,7 @@ const propTypes = {
   params: PropTypes.array,
   active: PropTypes.boolean,
   navType: PropTypes.string,
+  customComponents: PropTypes.array,
 };
 
 const defaultProps = {
@@ -21,6 +22,7 @@ const defaultProps = {
   params: [],
   linkProps: {},
   toggleData: {},
+  customComponents: [],
 };
 
 class ResponsiveNavBar extends Component {
@@ -179,16 +181,16 @@ class ResponsiveNavBar extends Component {
     } else if (link.navButton && link.navButton.component !== 'ResponsiveButton') {
       navLink = this.getRenderedComponent(link.navButton)
     }
-
-    if (link.customComponents && typeof link.customComponents === 'array') {
+      if (link.customComponents && Array.isArray(link.customComponents)) {
       customComponents = (
         <div>
           {link.customComponents.map(component => {
-            this.getRenderedComponent(component)
+            return this.getRenderedComponent(component)
           })}
         </div>
       )
     }
+    
     return (
       <div
         {...this.props.itemProps}
