@@ -96,6 +96,7 @@ var LWpropTypes = {
   height: _react.PropTypes.number,
   onSortStart: _react.PropTypes.func,
   onSortEnd: _react.PropTypes.func,
+  shouldCancelStart: _react.PropTypes.func,
   component: _react.PropTypes.func,
   shouldUseDragHandle: _react.PropTypes.bool,
   headers: _react.PropTypes.array,
@@ -122,6 +123,7 @@ var ListWrapper = function (_Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (ListWrapper.__proto__ || (0, _getPrototypeOf2.default)(ListWrapper)).call(this, props));
 
     _this.onSortEnd = _this.onSortEnd.bind(_this);
+    _this.shouldCancelStart = _this.shouldCancelStart.bind(_this);
     _this.state = {
       rows: props.rows,
       className: props.className,
@@ -130,6 +132,7 @@ var ListWrapper = function (_Component) {
       height: props.height,
       onSortStart: props.onSortStart,
       onSortEnd: props.onSortEnd,
+      shouldCancelStart: props.shouldCancelStart,
       component: props.component,
       shouldUseDragHandle: props.shouldUseDragHandle,
       headers: props.headers,
@@ -171,6 +174,14 @@ var ListWrapper = function (_Component) {
       }
     }
   }, {
+    key: 'shouldCancelStart',
+    value: function shouldCancelStart(e) {
+      var disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
+      if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1) {
+        return true; // Return true to cancel sorting
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       var Component = this.props.component;
@@ -182,6 +193,7 @@ var ListWrapper = function (_Component) {
         isSorting: isSorting,
         rows: rows,
         onSortEnd: this.onSortEnd,
+        shouldCancelStart: this.shouldCancelStart,
         onSortStart: this.onSortStart,
         ref: 'component',
         useDragHandle: this.props.shouldUseDragHandle
@@ -205,6 +217,7 @@ var TWpropTypes = {
   height: _react.PropTypes.number,
   itemHeight: _react.PropTypes.number,
   onSortEnd: _react.PropTypes.func,
+  shouldCancelStart: _react.PropTypes.func,
   headers: _react.PropTypes.array,
   toggleRowKeys: _react.PropTypes.array,
   toggleRowClass: _react.PropTypes.object
@@ -229,6 +242,7 @@ var TableWrapper = function (_Component2) {
       height: props.height,
       itemHeight: props.itemHeight,
       onSortEnd: props.onSortEnd,
+      shouldCancelStart: props.shouldCancelStart,
       headers: props.headers,
       toggleRowClass: props.toggleRowClass || {},
       toggleRowKeys: props.toggleRowKeys || []
@@ -266,16 +280,12 @@ var TableWrapper = function (_Component2) {
           rows = _props.rows,
           headers = _props.headers,
           onSortEnd = _props.onSortEnd,
+          shouldCancelStart = _props.shouldCancelStart,
           width = _props.width,
           toggleRowKeys = _props.toggleRowKeys,
           toggleRowClass = _props.toggleRowClass;
 
-      var SortableTable = (0, _reactSortableHoc.SortableContainer)(_reactVirtualized.Table, { withRef: true, shouldCancelStart: function shouldCancelStart(e) {
-          var disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
-          if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1) {
-            return true; // Return true to cancel sorting
-          }
-        } });
+      var SortableTable = (0, _reactSortableHoc.SortableContainer)(_reactVirtualized.Table, { withRef: true });
       var SortableRowRenderer = (0, _reactSortableHoc.SortableElement)(_tableHelpers2.default);
       var tableheaders = headers.map(function (header, idx) {
         return _react2.default.createElement(_reactVirtualized.Column, { content: idx,
@@ -297,6 +307,7 @@ var TableWrapper = function (_Component2) {
           height: height,
           helperClass: helperClass,
           onSortEnd: onSortEnd,
+          shouldCancelStart: shouldCancelStart,
           transitionDuration: 0,
           rowClassName: itemClass,
           rowCount: rows.length,

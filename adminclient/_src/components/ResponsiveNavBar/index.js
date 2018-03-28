@@ -86,7 +86,7 @@ var ResponsiveNavBar = function (_Component) {
     var params = props.params || [];
     var linkProps = props.linkProps || {};
     var toggleData = props.toggleData || {};
-    var navType = props.navType;
+    var navType = props.navType || '';
     _this.state = {
       initialActiveIndex: -1,
       activeIndex: _this.props.navSections.map(function (section, idx) {
@@ -287,13 +287,13 @@ var ResponsiveNavBar = function (_Component) {
           (0, _extends3.default)({}, _this3.props.itemProps, {
             key: sectionIdx + '-' + linkIdx,
             className: activeClass }),
-          link.linkUrl ? _react2.default.createElement(
+          _react2.default.createElement(
             _reactRouter.Link,
             (0, _extends3.default)({
               to: link.linkURL
             }, _this3.props.linkProps),
             link.name
-          ) : null,
+          ),
           section.buttons ? section.buttons.map(function (button) {
             return _this3.getRenderedComponent((0, _assign2.default)({
               component: 'ResponsiveButton',
