@@ -137,7 +137,7 @@ var AppHeader = function (_Component) {
       var dropdownLinks = this.props.settings.ui.header.productHeader.productLinks.length > 0 ? this.props.settings.ui.header.productHeader.productLinks.map(function (link) {
         return _react2.default.createElement(_semanticUiReact.Dropdown.Item, {
           text: link.text,
-          style: { display: link.type && _this2.props.user.userdata.entitytype !== link.type ? 'none' : undefined },
+          style: { display: link.type && _this2.props.user.userdata.userroles[0].name !== link.type ? 'none' : undefined },
           onClick: function onClick() {
             link.location ? _this2.props.reduxRouter.push(link.location) : link.logoutUser ? _this2.props.logoutUser() : null;
           },
