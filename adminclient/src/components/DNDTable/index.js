@@ -27,6 +27,7 @@ const LWpropTypes = {
     height: PropTypes.number,
     onSortStart: PropTypes.func,
     onSortEnd: PropTypes.func,
+    shouldCancelStart: PropTypes.func,
     component: PropTypes.func,
     shouldUseDragHandle: PropTypes.bool,
     headers: PropTypes.array,
@@ -48,6 +49,7 @@ class ListWrapper extends Component {
   constructor(props) {
     super(props);
     this.onSortEnd = this.onSortEnd.bind(this);
+    this.shouldCancelStart = this.shouldCancelStart.bind(this);
     this.state = {
       rows: props.rows,
       className: props.className,
@@ -56,6 +58,7 @@ class ListWrapper extends Component {
       height: props.height,
       onSortStart: props.onSortStart,
       onSortEnd: props.onSortEnd,
+      shouldCancelStart: props.shouldCancelStart,
       component: props.component,
       shouldUseDragHandle: props.shouldUseDragHandle,
       headers: props.headers,
@@ -86,6 +89,12 @@ class ListWrapper extends Component {
       onSortEnd(this.refs.component);
     }
   };
+  shouldCancelStart(e){
+    const disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
+    if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1) {
+      return true; // Return true to cancel sorting
+    }
+  }
   render() {
     const Component = this.props.component;
     let { rows, isSorting } = this.state;
@@ -93,6 +102,7 @@ class ListWrapper extends Component {
       isSorting,
       rows,
       onSortEnd: this.onSortEnd,
+      shouldCancelStart: this.shouldCancelStart,
       onSortStart: this.onSortStart,
       ref: 'component',
       useDragHandle: this.props.shouldUseDragHandle,
@@ -114,6 +124,7 @@ const TWpropTypes = {
   height: PropTypes.number,
   itemHeight: PropTypes.number,
   onSortEnd: PropTypes.func,
+  shouldCancelStart: PropTypes.func,
   headers: PropTypes.array,
   toggleRowKeys: PropTypes.array,
   toggleRowClass: PropTypes.object,
@@ -133,6 +144,7 @@ class TableWrapper extends Component {
       height: props.height,
       itemHeight: props.itemHeight,
       onSortEnd: props.onSortEnd,
+      shouldCancelStart: props.shouldCancelStart,
       headers: props.headers,
       toggleRowClass: props.toggleRowClass || {},
       toggleRowKeys: props.toggleRowKeys || [],
@@ -157,16 +169,12 @@ class TableWrapper extends Component {
       rows,
       headers,
       onSortEnd,
+      shouldCancelStart,
       width,
       toggleRowKeys,
       toggleRowClass
     } = this.props;
-    const SortableTable = SortableContainer(Table, { withRef: true, shouldCancelStart: function(e) {
-        const disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
-        if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1) {
-          return true; // Return true to cancel sorting
-        }
-      }, });
+    const SortableTable = SortableContainer(Table, { withRef: true, });
     const SortableRowRenderer = SortableElement(defaultTableRowRenderer);
     let tableheaders = headers.map((header, idx) => (
       <Column content={idx}
@@ -184,6 +192,7 @@ class TableWrapper extends Component {
         height={height}
         helperClass={helperClass}
         onSortEnd={onSortEnd}
+        shouldCancelStart={shouldCancelStart}
         transitionDuration={0}
         rowClassName={itemClass}
         rowCount={rows.length}

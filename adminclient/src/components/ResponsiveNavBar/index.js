@@ -33,7 +33,7 @@ class ResponsiveNavBar extends Component {
     let params = props.params || [];
     let linkProps = props.linkProps || {};
     let toggleData = props.toggleData || {};
-    let navType = props.navType;
+    let navType = props.navType || '';
     this.state = {
       initialActiveIndex: -1,
       activeIndex: this.props.navSections.map((section, idx) => {
@@ -215,22 +215,22 @@ class ResponsiveNavBar extends Component {
           {...this.props.itemProps}
           key={sectionIdx + '-' + linkIdx}
           className={activeClass}>
-          {<Link
+          <Link
               to={link.linkURL}
               {...this.props.linkProps}>
               {link.name}
-            </Link>}
+            </Link>
           {(section.buttons) ? section.buttons.map(button => {
             return this.getRenderedComponent(Object.assign({
               component: 'ResponsiveButton',
               props: Object.assign({
                 buttonProps: {},
               }, button.passProps,
-                {
-                  onclickProps: this.getBaseUrl(button.passProps.onclickBaseUrl, button.passProps.onclickLinkParams, this.props, linkIdx),
-                  onclickBaseUrl: null,
-                  onclickLinkParams: null,
-                }
+              {
+                onclickProps: this.getBaseUrl(button.passProps.onclickBaseUrl, button.passProps.onclickLinkParams, this.props, linkIdx),
+                onclickBaseUrl: null,
+                onclickLinkParams: null,
+              }
               ),
             }))
           }) : null}
