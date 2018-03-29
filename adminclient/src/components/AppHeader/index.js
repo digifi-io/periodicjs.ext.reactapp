@@ -73,13 +73,15 @@ class AppHeader extends Component {
         return (
           <Dropdown.Item
             text={link.text}
-            style={{display: (link.type && this.props.user.userdata.userroles[0].name !== link.type) ? 'none' : undefined}}
+            style={{ display: (link.type && this.props.user.userdata && this.props.user.userdata.userroles && this.props.user.userdata.userroles[0] && this.props.user.userdata.userroles[0].name !== link.type) ? 'none' : undefined }}
             onClick={() => {
               (link.location)
                 ? this.props.reduxRouter.push(link.location)
                 : (link.logoutUser)
                   ? this.props.logoutUser()
-                  : null
+                  : (link.reroute)
+                    ? window.location.href = link.reroute
+                    : null
             }}
             className={(link.className) ? link.className : ''}
           />
