@@ -1311,7 +1311,7 @@ class ResponsiveTable extends Component {
                       ? (<a style={{
                         cursor: 'pointer',
                       }} {...this.props.headerLinkProps} onClick={() => {
-                        this.updateTableData({ sort: header.sortid, });
+                        this.updateTableData({ sort: header.sortid, search: this.searchInputTextVal, });
                       }}>{header.label}</a>)
                       : header.label
                       }</rb.Th>
