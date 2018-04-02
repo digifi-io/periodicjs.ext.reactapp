@@ -677,7 +677,7 @@ export function getFormTextInputArea(options) {
     onChange = (event) => {
       let text = event.target.value;
       let updatedStateProp = {};
-      let customCallbackfunction = () => { return; }
+      let customCallbackfunction;
       if (passableProps && passableProps.multiple) {
         document.querySelector(`.${fileClassname} input`).setAttribute('multiple', true);
       }
@@ -703,7 +703,7 @@ export function getFormTextInputArea(options) {
         } 
       }
       this.setState(updatedStateProp);
-      customCallbackfunction();
+      if (typeof customCallbackfunction === 'function') customCallbackfunction();
     };
   }
   passableProps = getPassablePropkeyevents(passableProps, formElement);
