@@ -890,8 +890,8 @@ var ResponsiveTable = function (_Component) {
       // console.debug('render this.state', this.state);
       var maxFormRowLength = 0;
       var calcStartIndex = (this.state.currentPage - 1) * this.state.limit;
-      var startIndex = !this.props.baseUrl ? calcStartIndex : 0;
-      var endIndex = !this.props.baseUrl ? this.state.limit * this.state.currentPage : this.state.limit;
+      var startIndex = !this.props.baseUrl ? calcStartIndex : this.searchInputTextVal ? this.state.limit * (this.state.currentPage - 1) : 0;
+      var endIndex = !this.props.baseUrl ? this.state.limit * this.state.currentPage : this.searchInputTextVal ? this.state.limit * this.state.currentPage : this.state.limit;
       var displayRows = this.state.rows.slice(startIndex, endIndex);
       var mergedCustomLayout = this.props.customLayout && displayRows && displayRows.length ? _react2.default.createElement(
         'div',
@@ -1011,7 +1011,7 @@ var ResponsiveTable = function (_Component) {
         rb.Pagination,
         null,
         this.state.currentPage < 2 ? _react2.default.createElement(rb.Button, { icon: 'fa fa-angle-left', state: 'isDisabled' }) : _react2.default.createElement(rb.Button, { icon: 'fa fa-angle-left', onClick: function onClick() {
-            return _this8.updateTableData({ pagenum: _this8.state.currentPage - 1 });
+            return _this8.updateTableData({ pagenum: _this8.state.currentPage - 1, search: _this8.searchInputTextVal });
           } }),
         _react2.default.createElement(
           'span',
@@ -1022,7 +1022,7 @@ var ResponsiveTable = function (_Component) {
           this.state.numPages
         ),
         this.state.currentPage >= this.state.numPages ? _react2.default.createElement(rb.Button, { icon: 'fa fa-angle-right', state: 'isDisabled' }) : _react2.default.createElement(rb.Button, { icon: 'fa fa-angle-right', onClick: function onClick() {
-            return _this8.updateTableData({ pagenum: _this8.state.currentPage + 1 });
+            return _this8.updateTableData({ pagenum: _this8.state.currentPage + 1, search: _this8.searchInputTextVal });
           } })
       ) : _react2.default.createElement(
         rb.Pagination,
@@ -1712,7 +1712,7 @@ var ResponsiveTable = function (_Component) {
                       (0, _extends3.default)({ style: {
                           cursor: 'pointer'
                         } }, _this8.props.headerLinkProps, { onClick: function onClick() {
-                          _this8.updateTableData({ sort: header.sortid });
+                          _this8.updateTableData({ sort: header.sortid, search: _this8.searchInputTextVal });
                         } }),
                       header.label
                     ) : header.label
