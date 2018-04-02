@@ -660,7 +660,8 @@ export function getFormTextInputArea(options) {
   let fileClassname = `__reactapp_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
   let isValid = getValidStatus(this.state, formElement.name);
-  let hasValue = (formElement.name && this.state[formElement.name])? true : false;
+  let hasValue = (formElement.name && this.state[ formElement.name ]) ? true : false;
+  let submitMultipartForm;
   let passableProps = Object.assign({
     type: formElement.type || 'text',
   }, formElement.passProps);
@@ -676,6 +677,7 @@ export function getFormTextInputArea(options) {
     onChange = (event) => {
       let text = event.target.value;
       let updatedStateProp = {};
+      let customCallbackfunction = () => { return; }
       if (passableProps && passableProps.multiple) {
         document.querySelector(`.${fileClassname} input`).setAttribute('multiple', true);
       }
@@ -684,14 +686,24 @@ export function getFormTextInputArea(options) {
         updatedStateProp.formDataFiles = Object.assign({}, this.state.formDataFiles, {
           [ formElement.name ]: document.querySelector(`.${fileClassname} input`),
         });
+        if (formElement.submitOnChange) {
+          submitMultipartForm = setTimeout(this.submitForm.bind(this), 0);
+        }
       } else {
         updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength): text;
       }
       if (formElement.onChangeFilter) {
         const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
         updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
+      } else if (formElement.customOnChange) {
+        if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
+          customCallbackfunction= this.props[ formElement.customOnChange.replace('func:this.props.', '') ];
+        } else if (formElement.customOnChange.indexOf('func:window') !== -1 && typeof window[ formElement.customOnChange.replace('func:window.', '') ] ==='function') {
+          customCallbackfunction = window[ formElement.customOnChange.replace('func:window.', '') ].bind(this, formElement);
+        } 
       }
       this.setState(updatedStateProp);
+      customCallbackfunction();
     };
   }
   passableProps = getPassablePropkeyevents(passableProps, formElement);
@@ -703,6 +715,7 @@ export function getFormTextInputArea(options) {
       clearImmediate(t);
     });
   }
+  if (submitMultipartForm) clearTimeout(submitMultipartForm);
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <Input {...passableProps}
