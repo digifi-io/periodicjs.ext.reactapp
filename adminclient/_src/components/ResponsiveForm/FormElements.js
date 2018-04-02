@@ -766,6 +766,7 @@ function getFormTextInputArea(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var isValid = getValidStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
+  var submitMultipartForm = void 0;
   var passableProps = (0, _assign2.default)({
     type: formElement.type || 'text'
   }, formElement.passProps);
@@ -781,20 +782,31 @@ function getFormTextInputArea(options) {
     onChange = function onChange(event) {
       var text = event.target.value;
       var updatedStateProp = {};
+      var customCallbackfunction = void 0;
       if (passableProps && passableProps.multiple) {
         document.querySelector('.' + fileClassname + ' input').setAttribute('multiple', true);
       }
 
       if (passableProps && passableProps.type === 'file') {
         updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this8.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
+        if (formElement.submitOnChange) {
+          submitMultipartForm = setTimeout(_this8.submitForm.bind(_this8), 0);
+        }
       } else {
         updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength) : text;
       }
       if (formElement.onChangeFilter) {
         var onChangeFunc = getFunctionFromProps.call(_this8, { propFunc: formElement.onChangeFilter });
         updatedStateProp = onChangeFunc.call(_this8, (0, _assign2.default)({}, _this8.state, updatedStateProp), updatedStateProp);
+      } else if (formElement.customOnChange) {
+        if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
+          customCallbackfunction = _this8.props[formElement.customOnChange.replace('func:this.props.', '')];
+        } else if (formElement.customOnChange.indexOf('func:window') !== -1 && typeof window[formElement.customOnChange.replace('func:window.', '')] === 'function') {
+          customCallbackfunction = window[formElement.customOnChange.replace('func:window.', '')].bind(_this8, formElement);
+        }
       }
       _this8.setState(updatedStateProp);
+      if (typeof customCallbackfunction === 'function') customCallbackfunction();
     };
   }
   passableProps = getPassablePropkeyevents(passableProps, formElement);
@@ -806,6 +818,7 @@ function getFormTextInputArea(options) {
       (0, _clearImmediate3.default)(t);
     });
   }
+  if (submitMultipartForm) clearTimeout(submitMultipartForm);
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
