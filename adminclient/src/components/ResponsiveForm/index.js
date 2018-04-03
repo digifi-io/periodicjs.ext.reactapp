@@ -3,7 +3,7 @@ import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, Ca
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormSingleDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
+import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, } from './FormHelpers';
 import flatten, { unflatten, } from 'flat';
 import qs from 'querystring';
@@ -115,7 +115,7 @@ class ResponsiveForm extends Component{
     this.getFormSubmit = getFormSubmit.bind(this);
     this.getFormDatalist = getFormDatalist.bind(this);
     this.getFormCode = getFormCode.bind(this);
-    this.getFormSingleDatePicker = getFormSingleDatePicker.bind(this);
+    this.getFormDatePicker = getFormDatePicker.bind(this);
     this.getFormTextInputArea = getFormTextInputArea.bind(this);
     this.getFormMaskedInput = getFormMaskedInput.bind(this);
     this.getFormDropdown = getFormDropdown.bind(this);
@@ -462,8 +462,8 @@ class ResponsiveForm extends Component{
           </Column>);
         } else if (formElement.type === 'code') {
           return this.getFormCode({ formElement,  i:j, formgroup, }); 
-        } else if (formElement.type === 'singleDatePicker') {
-          return this.getFormSingleDatePicker({ formElement, i:j, formgroup, });
+        } else if (formElement.type === 'singleDatePicker' || formElement.type === 'rangeDatePicker') {
+          return this.getFormDatePicker({ formElement, i:j, formgroup, });
         } else if (formElement.type === 'editor') {
           return this.getFormEditor({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'link') {

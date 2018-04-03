@@ -6,6 +6,7 @@ import ResponsiveDatalist from '../ResponsiveDatalist';
 import ResponsiveTable from '../ResponsiveTable';
 import DNDTable from '../DNDTable';
 import SingleDatePickerWrapper from '../SingleDatePickerWrapper';
+import DateRangePickerWrapper from '../DateRangePickerWrapper';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import capitalize from 'capitalize';
 // import RAEditor from '../RAEditor';
@@ -1223,23 +1224,38 @@ export function getFormCode(options) {
   );
 }
 
-export function getFormSingleDatePicker(options) {
+export function getFormDatePicker(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
   let initialVal = getInitialValue(formElement, this.state);
-  let customOnChange = function({date}) {
+  let singleCustomOnChange = function({date}) {
     this.setState({ [formElement.name]: date.toISOString() });
   };
+  let rangeCustomOnChange = function({ startDate, endDate}) {
+    let combined_date = `${startDate.toISOString()};${endDate.toISOString()}`
+    this.setState({ [formElement.name]: combined_date})
+  };
   let SingleDatePickerProps = Object.assign({}, {
-    customOnChange: customOnChange.bind(this)
-  },
-  formElement.passProps);
-  return (<FormItem key={i} {...formElement.layoutProps} >
-    {getFormLabel(formElement)}  
-    <SingleDatePickerWrapper key={i} {...SingleDatePickerProps}  />
-    {getCustomErrorLabel(hasError, this.state, formElement)}
-  </FormItem>
-  );
+    customOnChange: singleCustomOnChange.bind(this)
+  }, formElement.passProps);
+  let RangeDatePickerProps = Object.assign({}, {
+    customOnChange: rangeCustomOnChange.bind(this)
+  }, formElement.passProps);
+  if (formElement.type === 'singleDatePicker') {
+    return (<FormItem key={i} {...formElement.layoutProps} >
+      {getFormLabel(formElement)}  
+      <SingleDatePickerWrapper key={i} {...SingleDatePickerProps}  />
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </FormItem>
+    );
+  } else if (formElement.type === 'rangeDatePicker') {
+    return (<FormItem key={i} {...formElement.layoutProps} >
+      {getFormLabel(formElement)}  
+      <DateRangePickerWrapper key={i} {...RangeDatePickerProps}  />
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </FormItem>
+    );
+  }
 }
 
 export function getFormEditor(options) {

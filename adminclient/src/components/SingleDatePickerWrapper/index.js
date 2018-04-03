@@ -6,7 +6,7 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { getRenderedComponent, } from '../AppLayoutMap';
 
-import { DateRangePicker, SingleDatePicker, DayPickerRangeController, SingleDatePickerShape } from 'react-dates';
+import { SingleDatePicker, SingleDatePickerShape } from 'react-dates';
 
 const propTypes = {
   // example props for the demo
