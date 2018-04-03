@@ -799,7 +799,12 @@ function getFormTextInputArea(options) {
       if (passableProps && passableProps.type === 'file') {
         updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this8.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
         if (formElement.submitOnChange) {
-          submitMultipartForm = setTimeout(_this8.submitForm.bind(_this8), 0);
+          submitMultipartForm = setTimeout(function () {
+            _this8.submitForm();
+          }, 0);
+          setTimeout(function () {
+            window.location.reload();
+          }, 1000);
         }
       } else {
         updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength) : text;
