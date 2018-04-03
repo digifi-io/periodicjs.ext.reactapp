@@ -690,11 +690,11 @@ export function getFormTextInputArea(options) {
         });
         if (formElement.submitOnChange) {
           submitMultipartForm = setTimeout(() => {
-            this.submitForm.call(this);
+            this.submitForm();
           }, 0);
           setTimeout(() => {
             window.location.reload();
-          }, 0);
+          }, 1000);
         }
       } else {
         updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength): text;
