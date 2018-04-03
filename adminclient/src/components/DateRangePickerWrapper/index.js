@@ -14,14 +14,6 @@ const propTypes = {
   autoFocusEndDate: PropTypes.bool,
   initialStartDate: momentPropTypes.momentObj,
   initialEndDate: momentPropTypes.momentObj,
-
-  ...omit(DateRangePickerShape, [
-    'startDate',
-    'endDate',
-    'onDatesChange',
-    'focusedInput',
-    'onFocusChange',
-  ]),
 };
 
 const defaultProps = {

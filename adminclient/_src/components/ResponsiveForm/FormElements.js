@@ -56,6 +56,7 @@ exports.getImage = getImage;
 exports.getFormLink = getFormLink;
 exports.getFormGroup = getFormGroup;
 exports.getFormCode = getFormCode;
+exports.getFormDatePicker = getFormDatePicker;
 exports.getFormEditor = getFormEditor;
 exports.getFormSubmit = getFormSubmit;
 exports.getCardFooterItem = getCardFooterItem;
@@ -87,6 +88,14 @@ var _ResponsiveTable2 = _interopRequireDefault(_ResponsiveTable);
 var _DNDTable = require('../DNDTable');
 
 var _DNDTable2 = _interopRequireDefault(_DNDTable);
+
+var _SingleDatePickerWrapper = require('../SingleDatePickerWrapper');
+
+var _SingleDatePickerWrapper2 = _interopRequireDefault(_SingleDatePickerWrapper);
+
+var _DateRangePickerWrapper = require('../DateRangePickerWrapper');
+
+var _DateRangePickerWrapper2 = _interopRequireDefault(_DateRangePickerWrapper);
 
 var _createNumberMask = require('text-mask-addons/dist/createNumberMask');
 
@@ -1418,6 +1427,50 @@ function getFormCode(options) {
     _react2.default.createElement(_RACodeMirror2.default, (0, _extends3.default)({ key: i }, CodeMirrorProps)),
     getCustomErrorLabel(hasError, this.state, formElement)
   );
+}
+
+function getFormDatePicker(options) {
+  var formElement = options.formElement,
+      i = options.i,
+      onValueChange = options.onValueChange;
+
+  var hasError = getErrorStatus(this.state, formElement.name);
+  var initialVal = getInitialValue(formElement, this.state);
+  var singleCustomOnChange = function singleCustomOnChange(_ref3) {
+    var date = _ref3.date;
+
+    this.setState((0, _defineProperty3.default)({}, formElement.name, date.toISOString()));
+  };
+  var rangeCustomOnChange = function rangeCustomOnChange(_ref4) {
+    var startDate = _ref4.startDate,
+        endDate = _ref4.endDate;
+
+    var combined_date = startDate.toISOString() + ';' + endDate.toISOString();
+    this.setState((0, _defineProperty3.default)({}, formElement.name, combined_date));
+  };
+  var SingleDatePickerProps = (0, _assign2.default)({}, {
+    customOnChange: singleCustomOnChange.bind(this)
+  }, formElement.passProps);
+  var RangeDatePickerProps = (0, _assign2.default)({}, {
+    customOnChange: rangeCustomOnChange.bind(this)
+  }, formElement.passProps);
+  if (formElement.type === 'singleDatePicker') {
+    return _react2.default.createElement(
+      _FormItem2.default,
+      (0, _extends3.default)({ key: i }, formElement.layoutProps),
+      getFormLabel(formElement),
+      _react2.default.createElement(_SingleDatePickerWrapper2.default, (0, _extends3.default)({ key: i }, SingleDatePickerProps)),
+      getCustomErrorLabel(hasError, this.state, formElement)
+    );
+  } else if (formElement.type === 'rangeDatePicker') {
+    return _react2.default.createElement(
+      _FormItem2.default,
+      (0, _extends3.default)({ key: i }, formElement.layoutProps),
+      getFormLabel(formElement),
+      _react2.default.createElement(_DateRangePickerWrapper2.default, (0, _extends3.default)({ key: i }, RangeDatePickerProps)),
+      getCustomErrorLabel(hasError, this.state, formElement)
+    );
+  }
 }
 
 function getFormEditor(options) {
