@@ -5,6 +5,7 @@ import PreviewEditor from '../PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 import ResponsiveTable from '../ResponsiveTable';
 import DNDTable from '../DNDTable';
+import SingleDatePickerWrapper from '../SingleDatePickerWrapper';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import capitalize from 'capitalize';
 // import RAEditor from '../RAEditor';
@@ -1217,6 +1218,25 @@ export function getFormCode(options) {
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
     <RACodeMirror key={i} {...CodeMirrorProps}  />
+    {getCustomErrorLabel(hasError, this.state, formElement)}
+  </FormItem>
+  );
+}
+
+export function getFormSingleDatePicker(options) {
+  let { formElement, i, onValueChange, } = options;
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let initialVal = getInitialValue(formElement, this.state);
+  let customOnChange = function({date}) {
+    this.setState({ [formElement.name]: date.toISOString() });
+  };
+  let SingleDatePickerProps = Object.assign({}, {
+    customOnChange: customOnChange.bind(this)
+  },
+  formElement.passProps);
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {getFormLabel(formElement)}  
+    <SingleDatePickerWrapper key={i} {...SingleDatePickerProps}  />
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>
   );
