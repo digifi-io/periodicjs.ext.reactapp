@@ -46,8 +46,6 @@ var _omit2 = _interopRequireDefault(_omit);
 
 require('react-dates/initialize');
 
-require('react-dates/lib/css/_datepicker.css');
-
 var _AppLayoutMap = require('../AppLayoutMap');
 
 var _reactDates = require('react-dates');
