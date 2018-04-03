@@ -689,7 +689,12 @@ export function getFormTextInputArea(options) {
           [ formElement.name ]: document.querySelector(`.${fileClassname} input`),
         });
         if (formElement.submitOnChange) {
-          submitMultipartForm = setTimeout(this.submitForm.bind(this), 0);
+          submitMultipartForm = setTimeout(() => {
+            this.submitForm();
+          }, 0);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
       } else {
         updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength): text;
