@@ -58,7 +58,7 @@ const defaultProps = {
   renderDayContents: null,
   enableOutsideDays: false,
   isDayBlocked: () => false,
-  // isOutsideRange: day => !isInclusivelyAfterDay(day, moment()),
+  isOutsideRange() {},
   isDayHighlighted: () => {},
 
   // internationalization props
@@ -83,7 +83,7 @@ class SingleDatePickerWrapper extends Component {
     this.setState({ date }, () => {
       if (this.props.customOnChange) {
         this.props.customOnChange({ date });
-      }
+      } 
     });
   }
 

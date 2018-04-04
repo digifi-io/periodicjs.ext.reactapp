@@ -1234,22 +1234,32 @@ export function getFormDatePicker(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let initialVal = getInitialValue(formElement, this.state);
   let singleCustomOnChange = function({date}) {
-    this.setState({ [formElement.name]: date.toISOString() });
+    this.setState({ [formElement.name]: (date) ? date.toISOString() : null }, () => {
+      if(formElement.validateOnChange){
+        this.validateFormElement({ formElement, })
+      }
+    });
   };
   let rangeCustomOnChange = function({ startDate, endDate}) {
     let combined_date = `${startDate.toISOString()};${endDate.toISOString()}`
-    this.setState({ [formElement.name]: combined_date})
+    this.setState({ [formElement.name]: combined_date}, () => {
+      if(formElement.validateOnChange){
+        this.validateFormElement({ formElement, })
+      }
+    })
   };
   let SingleDatePickerProps = Object.assign({}, {
-    customOnChange: singleCustomOnChange.bind(this)
+    customOnChange: singleCustomOnChange.bind(this),
+    initialDate: (initialVal) ? new moment(initialVal) : null
   }, formElement.passProps);
   let RangeDatePickerProps = Object.assign({}, {
-    customOnChange: rangeCustomOnChange.bind(this)
+    customOnChange: rangeCustomOnChange.bind(this),
+    initialDate: (initialVal) ? new moment(initialVal) : null
   }, formElement.passProps);
   if (formElement.type === 'singleDatePicker') {
     return (<FormItem key={i} {...formElement.layoutProps} >
       {getFormLabel(formElement)}  
-      <SingleDatePickerWrapper key={i} {...SingleDatePickerProps}  />
+      <SingleDatePickerWrapper key={i} {...SingleDatePickerProps} />
       {getCustomErrorLabel(hasError, this.state, formElement)}
     </FormItem>
     );
