@@ -1442,22 +1442,36 @@ function getFormDatePicker(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var initialVal = getInitialValue(formElement, this.state);
   var singleCustomOnChange = function singleCustomOnChange(_ref3) {
+    var _this14 = this;
+
     var date = _ref3.date;
 
-    this.setState((0, _defineProperty3.default)({}, formElement.name, date.toISOString()));
+    this.setState((0, _defineProperty3.default)({}, formElement.name, date ? date.toISOString() : null), function () {
+      if (formElement.validateOnChange) {
+        _this14.validateFormElement({ formElement: formElement });
+      }
+    });
   };
   var rangeCustomOnChange = function rangeCustomOnChange(_ref4) {
+    var _this15 = this;
+
     var startDate = _ref4.startDate,
         endDate = _ref4.endDate;
 
     var combined_date = startDate.toISOString() + ';' + endDate.toISOString();
-    this.setState((0, _defineProperty3.default)({}, formElement.name, combined_date));
+    this.setState((0, _defineProperty3.default)({}, formElement.name, combined_date), function () {
+      if (formElement.validateOnChange) {
+        _this15.validateFormElement({ formElement: formElement });
+      }
+    });
   };
   var SingleDatePickerProps = (0, _assign2.default)({}, {
-    customOnChange: singleCustomOnChange.bind(this)
+    customOnChange: singleCustomOnChange.bind(this),
+    initialDate: initialVal ? new _moment2.default(initialVal) : null
   }, formElement.passProps);
   var RangeDatePickerProps = (0, _assign2.default)({}, {
-    customOnChange: rangeCustomOnChange.bind(this)
+    customOnChange: rangeCustomOnChange.bind(this),
+    initialDate: initialVal ? new _moment2.default(initialVal) : null
   }, formElement.passProps);
   if (formElement.type === 'singleDatePicker') {
     return _react2.default.createElement(
@@ -1479,7 +1493,7 @@ function getFormDatePicker(options) {
 }
 
 function getFormEditor(options) {
-  var _this14 = this;
+  var _this16 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -1492,10 +1506,10 @@ function getFormEditor(options) {
       var updatedStateProp = {};
       updatedStateProp[formElement.name] = newvalue.target.value;
       if (formElement.onChangeFilter) {
-        var onChangeFunc = getFunctionFromProps.call(_this14, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(_this14, (0, _assign2.default)({}, _this14.state, updatedStateProp), updatedStateProp);
+        var onChangeFunc = getFunctionFromProps.call(_this16, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(_this16, (0, _assign2.default)({}, _this16.state, updatedStateProp), updatedStateProp);
       }
-      _this14.setState(updatedStateProp);
+      _this16.setState(updatedStateProp);
     };
   }
   // console.debug({ initialVal });
@@ -1531,7 +1545,7 @@ function getFormEditor(options) {
 }
 
 function getConfirmModal(options) {
-  var _this15 = this;
+  var _this17 = this;
 
   var formElement = options.formElement;
 
@@ -1541,15 +1555,15 @@ function getConfirmModal(options) {
   if (formElement.confirmModal.type === 'comment') {
     var name = formElement.confirmModal.name || 'comment';
     onSubmit = function onSubmit(e) {
-      if (_this15.props.formgroups[_this15.props.formgroups.length - 1] && _this15.props.formgroups[_this15.props.formgroups.length - 1].formElements) {
-        _this15.props.formgroups[_this15.props.formgroups.length - 1].formElements.push({ name: name });
-        _this15.props.hideModal('last');
-        _this15.submitForm.call(_this15);
-        _this15.props.formgroups[_this15.props.formgroups.length - 1].formElements = _this15.props.formgroups[_this15.props.formgroups.length - 1].formElements.filter(function (formElement) {
+      if (_this17.props.formgroups[_this17.props.formgroups.length - 1] && _this17.props.formgroups[_this17.props.formgroups.length - 1].formElements) {
+        _this17.props.formgroups[_this17.props.formgroups.length - 1].formElements.push({ name: name });
+        _this17.props.hideModal('last');
+        _this17.submitForm.call(_this17);
+        _this17.props.formgroups[_this17.props.formgroups.length - 1].formElements = _this17.props.formgroups[_this17.props.formgroups.length - 1].formElements.filter(function (formElement) {
           return formElement.name !== name;
         });
       } else {
-        _this15.submitForm.call(_this15);
+        _this17.submitForm.call(_this17);
       }
     };
     var comment_box = (0, _assign2.default)({}, {
@@ -1557,7 +1571,7 @@ function getConfirmModal(options) {
       type: 'commentbox',
       props: {
         onChange: function onChange(e) {
-          return _this15.setState((0, _defineProperty3.default)({}, name, e.target.value));
+          return _this17.setState((0, _defineProperty3.default)({}, name, e.target.value));
         }
       }
     }, formElement.confirmModal.comment);
@@ -1569,8 +1583,8 @@ function getConfirmModal(options) {
     }
   } else {
     onSubmit = function onSubmit() {
-      _this15.props.hideModal('last');
-      _this15.submitForm.call(_this15);
+      _this17.props.hideModal('last');
+      _this17.submitForm.call(_this17);
     };
   }
   confirmModal = (0, _assign2.default)({
@@ -1630,7 +1644,7 @@ function getConfirmModal(options) {
 }
 
 function getFormSubmit(options) {
-  var _this16 = this;
+  var _this18 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -1648,15 +1662,15 @@ function getFormSubmit(options) {
       _reBulma.Button,
       (0, _extends3.default)({}, passableProps, {
         onClick: function onClick() {
-          var validated_formdata = _FormHelpers.validateForm.call(_this16, { formdata: _this16.state, validationErrors: {} });
+          var validated_formdata = _FormHelpers.validateForm.call(_this18, { formdata: _this18.state, validationErrors: {} });
           var updateStateData = {
             formDataErrors: validated_formdata.validationErrors
           };
-          if (_this16.props.sendSubmitButtonVal) {
+          if (_this18.props.sendSubmitButtonVal) {
             updateStateData['submitButtonVal'] = formElement.value;
           }
-          _this16.setState(updateStateData, function () {
-            formElement.confirmModal && (0, _keys2.default)(_this16.state.formDataErrors).length < 1 ? getConfirmModal.call(_this16, { formElement: formElement }) : _this16.submitForm.call(_this16);
+          _this18.setState(updateStateData, function () {
+            formElement.confirmModal && (0, _keys2.default)(_this18.state.formDataErrors).length < 1 ? getConfirmModal.call(_this18, { formElement: formElement }) : _this18.submitForm.call(_this18);
           });
         } }),
       formElement.value
