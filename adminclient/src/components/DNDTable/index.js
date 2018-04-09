@@ -39,7 +39,6 @@ const LWdefaultProps = {
   className: 'list',
   itemClass: 'item',
   width: 400,
-  height: 600,
   headers: [],
   toggleRowClass: {},
   toggleRowKeys: [],
@@ -55,7 +54,7 @@ class ListWrapper extends Component {
       className: props.className,
       itemClass: props.itemClass,
       width: props.width,
-      height: props.height,
+      height: props.itemHeight * props.rows.length,
       onSortStart: props.onSortStart,
       onSortEnd: props.onSortEnd,
       shouldCancelStart: props.shouldCancelStart,
@@ -97,10 +96,11 @@ class ListWrapper extends Component {
   }
   render() {
     const Component = this.props.component;
-    let { rows, isSorting } = this.state;
+    let { rows, isSorting, height } = this.state;
     const props = {
       isSorting,
       rows,
+      height,
       onSortEnd: this.onSortEnd,
       shouldCancelStart: this.shouldCancelStart,
       onSortStart: this.onSortStart,
