@@ -724,10 +724,14 @@ class ResponsiveTable extends Component {
     let calcStartIndex = ((this.state.currentPage - 1) * this.state.limit);
     let startIndex = (!this.props.baseUrl)
       ? calcStartIndex
-      :0 ;
+      : (this.searchInputTextVal)
+        ? this.state.limit * (this.state.currentPage - 1)
+        : 0;
     let endIndex = (!this.props.baseUrl)
       ? ((this.state.limit * this.state.currentPage))
-      : this.state.limit;
+      : (this.searchInputTextVal)
+        ? this.state.limit * (this.state.currentPage)
+        : this.state.limit;
     let displayRows = this.state.rows.slice(startIndex, endIndex);
     let mergedCustomLayout = (this.props.customLayout && displayRows && displayRows.length)
       ? (<div style={
@@ -819,13 +823,13 @@ class ResponsiveTable extends Component {
         <rb.Pagination>
           {(this.state.currentPage < 2)
           ? (<rb.Button icon="fa fa-angle-left" state="isDisabled"></rb.Button>)
-            : (<rb.Button icon="fa fa-angle-left" onClick={() => this.updateTableData({ pagenum: (this.state.currentPage - 1), })}></rb.Button>)}  
+            : (<rb.Button icon="fa fa-angle-left" onClick={() => this.updateTableData({ pagenum: (this.state.currentPage - 1), search: this.searchInputTextVal, })}></rb.Button>)}  
           
           <span style={{margin: '0 20px'}}>Page {this.state.currentPage} of {this.state.numPages}</span>
           
           {(this.state.currentPage >= this.state.numPages)
           ? (<rb.Button icon="fa fa-angle-right" state="isDisabled"></rb.Button>)
-          : (<rb.Button icon="fa fa-angle-right" onClick={()=>this.updateTableData({ pagenum: (this.state.currentPage+1), })}></rb.Button>)}  
+          : (<rb.Button icon="fa fa-angle-right" onClick={()=>this.updateTableData({ pagenum: (this.state.currentPage+1), search: this.searchInputTextVal, })}></rb.Button>)}  
         </rb.Pagination>
       )
       : (
@@ -1307,7 +1311,7 @@ class ResponsiveTable extends Component {
                       ? (<a style={{
                         cursor: 'pointer',
                       }} {...this.props.headerLinkProps} onClick={() => {
-                        this.updateTableData({ sort: header.sortid, });
+                        this.updateTableData({ sort: header.sortid, search: this.searchInputTextVal, });
                       }}>{header.label}</a>)
                       : header.label
                       }</rb.Th>

@@ -175,6 +175,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormSubmit = _FormElements.getFormSubmit.bind(_this);
     _this.getFormDatalist = _FormElements.getFormDatalist.bind(_this);
     _this.getFormCode = _FormElements.getFormCode.bind(_this);
+    _this.getFormDatePicker = _FormElements.getFormDatePicker.bind(_this);
     _this.getFormTextInputArea = _FormElements.getFormTextInputArea.bind(_this);
     _this.getFormMaskedInput = _FormElements.getFormMaskedInput.bind(_this);
     _this.getFormDropdown = _FormElements.getFormDropdown.bind(_this);
@@ -524,6 +525,8 @@ var ResponsiveForm = function (_Component) {
             );
           } else if (formElement.type === 'code') {
             return _this5.getFormCode({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'singleDatePicker' || formElement.type === 'rangeDatePicker') {
+            return _this5.getFormDatePicker({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'editor') {
             return _this5.getFormEditor({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'link') {
