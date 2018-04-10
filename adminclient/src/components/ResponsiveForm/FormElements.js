@@ -214,7 +214,7 @@ function getFunctionFromProps(options) {
   }
 }
 
-export function getFormDNDTable(options){
+export function getFormDNDTable(options) {
   let { formElement, i, } = options;
   // let initialValue = getInitialValue(formElement,
   // (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true })));
@@ -223,14 +223,14 @@ export function getFormDNDTable(options){
   let hasError = getErrorStatus(this.state, formElement.name);
   const getTableHeaders = (row) => {
     return row.map(rowkey => {
-      let selectOptions = (this.state.__formOptions && this.state.__formOptions[ rowkey ])
-        ? this.state.__formOptions[ rowkey ]
+      let selectOptions = (this.state.__formOptions && this.state.__formOptions[rowkey])
+        ? this.state.__formOptions[rowkey]
         : [];
       // console.log({ selectOptions });
       return {
         label: capitalize(rowkey),
         sortid: rowkey,
-        sortable: (typeof formElement.sortable !=='undefined')
+        sortable: (typeof formElement.sortable !== 'undefined')
           ? formElement.sortable
           : true,
         formtype: (formElement.tableHeaderType && formElement.tableHeaderType[rowkey])
@@ -239,7 +239,7 @@ export function getFormDNDTable(options){
         defaultValue: (formElement.tableHeaderDefaultValue && formElement.tableHeaderDefaultValue[rowkey])
           ? formElement.tableHeaderDefaultValue[rowkey]
           : (selectOptions.length)
-            ? selectOptions[ 0 ].value
+            ? selectOptions[0].value
             : undefined,
         formoptions: selectOptions,
         footerFormElementPassProps: Object.assign({
@@ -248,7 +248,7 @@ export function getFormDNDTable(options){
       };
     });
   };
-  let handleRowUpdate;
+  let handleRowUpdate = () => { console.debug('Error handleRowUpdate function does not exists') };
   if (formElement.handleRowUpdate && formElement.handleRowUpdate.indexOf('func:window') !== -1 && typeof window[ formElement.handleRowUpdate.replace('func:window.', '') ] ==='function') {
     handleRowUpdate = window[ formElement.handleRowUpdate.replace('func:window.', '') ].bind(this, formElement); 
   }
