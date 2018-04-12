@@ -108,7 +108,6 @@ var LWdefaultProps = {
   className: 'list',
   itemClass: 'item',
   width: 400,
-  height: 600,
   headers: [],
   toggleRowClass: {},
   toggleRowKeys: []
@@ -129,7 +128,7 @@ var ListWrapper = function (_Component) {
       className: props.className,
       itemClass: props.itemClass,
       width: props.width,
-      height: props.height,
+      height: props.itemHeight * props.rows.length,
       onSortStart: props.onSortStart,
       onSortEnd: props.onSortEnd,
       shouldCancelStart: props.shouldCancelStart,
@@ -187,11 +186,13 @@ var ListWrapper = function (_Component) {
       var Component = this.props.component;
       var _state = this.state,
           rows = _state.rows,
-          isSorting = _state.isSorting;
+          isSorting = _state.isSorting,
+          height = _state.height;
 
       var props = {
         isSorting: isSorting,
         rows: rows,
+        height: height,
         onSortEnd: this.onSortEnd,
         shouldCancelStart: this.shouldCancelStart,
         onSortStart: this.onSortStart,

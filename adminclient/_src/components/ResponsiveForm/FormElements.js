@@ -365,7 +365,9 @@ function getFormDNDTable(options) {
       };
     });
   };
-  var handleRowUpdate = void 0;
+  var handleRowUpdate = function handleRowUpdate() {
+    console.debug('Error handleRowUpdate function does not exists');
+  };
   if (formElement.handleRowUpdate && formElement.handleRowUpdate.indexOf('func:window') !== -1 && typeof window[formElement.handleRowUpdate.replace('func:window.', '')] === 'function') {
     handleRowUpdate = window[formElement.handleRowUpdate.replace('func:window.', '')].bind(this, formElement);
   }
