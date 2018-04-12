@@ -54,7 +54,7 @@ class ListWrapper extends Component {
       className: props.className,
       itemClass: props.itemClass,
       width: props.width,
-      height: props.itemHeight * props.rows.length + props.itemHeight,
+      height: props.itemHeight * (props.rows.length + 1),
       onSortStart: props.onSortStart,
       onSortEnd: props.onSortEnd,
       shouldCancelStart: props.shouldCancelStart,
