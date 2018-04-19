@@ -110,6 +110,17 @@ function getFormLabel(formElement) {
         : formElement.label}</Label>)
     : null;
 }
+function getCustomFormLabel(formElement) {
+  return (formElement.label)
+    ? (<label {...formElement.labelProps}>
+      {(this && this.state && this.state[formElement.formdata_label])
+        ? this.state[formElement.formdata_label]
+        : (formElement.label && !Array.isArray(formElement.label) && typeof formElement.label === 'object')
+          ? this.getRenderedComponent(formElement.label)
+          : formElement.label }
+      </label>)
+    : null;
+}
 
 function getInitialValue(formElement, state) {
   // console.debug({formElement, state})
@@ -839,7 +850,7 @@ export function getFormCheckbox(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
-  let getFormDataLabel = getFormLabel.bind(this);
+  let getFormDataLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = () => {};
   } else if (!onValueChange) {
@@ -867,16 +878,16 @@ export function getFormCheckbox(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
-    {getFormDataLabel(formElement)}  
     <input {...formElement.passProps}
       type={formElement.type || 'checkbox'}
       name={this.state[ formElement.formdata_name] || formElement.name}
       checked={(formElement.type === 'radio')
-        ? this.state[ formElement.name ] === formElement.value
-        : this.state[ formElement.name ]}
+      ? this.state[ formElement.name ] === formElement.value
+      : this.state[ formElement.name ]}
       onChange={onValueChange}
-    >
+      >
     </input>
+    {getFormDataLabel(formElement)}  
     <span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder] || formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
