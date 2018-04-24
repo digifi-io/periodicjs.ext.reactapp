@@ -128,7 +128,7 @@ var ListWrapper = function (_Component) {
       className: props.className,
       itemClass: props.itemClass,
       width: props.width,
-      height: props.itemHeight * props.rows.length,
+      height: props.itemHeight * (props.rows.length + 1),
       onSortStart: props.onSortStart,
       onSortEnd: props.onSortEnd,
       shouldCancelStart: props.shouldCancelStart,

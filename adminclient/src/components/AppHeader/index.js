@@ -1,5 +1,5 @@
 import React, { Component, } from 'react'; 
-import { Nav, NavGroup, NavItem, Button, Container, Input, Hero, HeroHead, } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
+import { Nav, NavGroup, NavItem, Button, Container, Input, Hero, HeroHead, Icon } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
 import { Link, } from 'react-router';
 // import ResponsiveLink from '../ResponsiveLink';;;
 import 'font-awesome/css/font-awesome.css';
@@ -67,21 +67,21 @@ class AppHeader extends Component {
       backgroundRepeat: 'no-repeat',
     }, this.props.settings.ui.header.profileImageStyle, {
         backgroundImage: 'url(' + (this.props.user.profile_image_preview || this.props.settings.default_user_image || '/favicon.png') + ')',
-    })
+      })
+    let getRerouteLink = (link) => { return (<a href={(link.reroute) ? link.reroute : ''} target="_blank"><span>{link.text}</span><Icon icon="fa fa-external-link"/></a>)};
     let dropdownLinks = (this.props.settings.ui.header.productHeader.productLinks.length > 0)
       ? this.props.settings.ui.header.productHeader.productLinks.map(link => {
         return (
           <Dropdown.Item
-            text={link.text}
-            style={{ display: (link.type && this.props.user.userdata && this.props.user.userdata.userroles && this.props.user.userdata.userroles[0] && this.props.user.userdata.userroles[0].name !== link.type) ? 'none' : undefined }}
-            onClick={() => {
+          style={{ display: (link.type && this.props.user.userdata && this.props.user.userdata.userroles && this.props.user.userdata.userroles[0] && this.props.user.userdata.userroles[0].name !== link.type) ? 'none' : undefined }}
+          children={(link.reroute) ? getRerouteLink(link) : null}
+          text={(link.reroute) ? null : link.text}
+          onClick={() => {
               (link.location)
                 ? this.props.reduxRouter.push(link.location)
                 : (link.logoutUser)
                   ? this.props.logoutUser()
-                  : (link.reroute)
-                    ? window.location.href = link.reroute
-                    : null
+                  : null
             }}
             className={(link.className) ? link.className : ''}
           />
