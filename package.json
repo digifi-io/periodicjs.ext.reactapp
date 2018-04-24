@@ -153,7 +153,7 @@
     "build_ie": "webpack --config adminclient/config/webpack.config.ie.js --debug --progress",
     "build_ie_full": "webpack --config adminclient/config/webpack.config.ie.js && cp -r public/ ../../../public/themes/periodicjs.theme.cis/",
     "package": "cd adminclient && npm run build && cd .. && rm -rf public/static/* && npm run ssr && grunt copy",
-    "postinstall": "cd ../../../ && periodicjs aex periodicjs.ext.reactapp && cp -R node_modules/@digifi/periodicjs.ext.reactapp/public/* public/extensions/periodicjs.ext.reactapp",
+    "postinstall": "cd ../../../ && periodicjs aex periodicjs.ext.reactapp && cp -R node_modules/@digifi/periodicjs.ext.reactapp/public/ public/extensions/periodicjs.ext.reactapp",
     "postuninstall": "cd ../../../ && periodicjs rex periodicjs.ext.reactapp",
     "ssr": "babel utilities/ssr_manifest_es6.js > utilities/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/,adminclient/src/index.js",
     "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
