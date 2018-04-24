@@ -4,10 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _typeof2 = require('babel-runtime/helpers/typeof');
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
 var _clearImmediate2 = require('babel-runtime/core-js/clear-immediate');
 
 var _clearImmediate3 = _interopRequireDefault(_clearImmediate2);
@@ -31,6 +27,10 @@ var _extends3 = _interopRequireDefault(_extends2);
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
 
 var _assign = require('babel-runtime/core-js/object/assign');
 
@@ -230,6 +230,13 @@ function getFormLabel(formElement) {
     _reBulma.Label,
     formElement.labelProps,
     this && this.state && this.state[formElement.formdata_label] ? this.state[formElement.formdata_label] : formElement.label
+  ) : null;
+}
+function getCustomFormLabel(formElement) {
+  return formElement.customLabel ? _react2.default.createElement(
+    'label',
+    formElement.customLabelProps,
+    this && this.state && this.state[formElement.formdata_label] ? this.state[formElement.formdata_label] : formElement.customLabel && !Array.isArray(formElement.customLabel) && (0, _typeof3.default)(formElement.customLabel) === 'object' ? this.getRenderedComponent(formElement.customLabel) : formElement.customLabel
   ) : null;
 }
 
@@ -651,7 +658,7 @@ function getFormDropdown(options) {
         value: initialValue,
         onChange: function onChange(event, newvalue) {
           _onChange.call(_this6, event, newvalue);
-          if (customCallbackfunction) customCallbackfunction(event);
+          if (customCallbackfunction) customCallbackfunction(event, newvalue);
         }
       })),
       getCustomErrorIcon(hasError, isValid, this.state, formElement),
@@ -974,6 +981,7 @@ function getFormCheckbox(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var getFormDataLabel = getFormLabel.bind(this);
+  var getCustomFormDataLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = function onValueChange() {};
   } else if (!onValueChange) {
@@ -1003,13 +1011,14 @@ function getFormCheckbox(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
-    getFormDataLabel(formElement),
+    !formElement.customLabel ? getFormDataLabel(formElement) : null,
     _react2.default.createElement('input', (0, _extends3.default)({}, formElement.passProps, {
       type: formElement.type || 'checkbox',
       name: this.state[formElement.formdata_name] || formElement.name,
       checked: formElement.type === 'radio' ? this.state[formElement.name] === formElement.value : this.state[formElement.name],
       onChange: onValueChange
     })),
+    getCustomFormDataLabel(formElement),
     _react2.default.createElement(
       'span',
       formElement.placeholderProps,
