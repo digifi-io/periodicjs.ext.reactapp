@@ -110,6 +110,17 @@ function getFormLabel(formElement) {
         : formElement.label}</Label>)
     : null;
 }
+function getCustomFormLabel(formElement) {
+  return (formElement.customLabel)
+    ? (<label {...formElement.customLabelProps}>
+      {(this && this.state && this.state[formElement.formdata_label])
+        ? this.state[formElement.formdata_label]
+        : (formElement.customLabel && !Array.isArray(formElement.customLabel) && typeof formElement.customLabel === 'object')
+          ? this.getRenderedComponent(formElement.customLabel)
+          : formElement.customLabel }
+      </label>)
+    : null;
+}
 
 function getInitialValue(formElement, state) {
   // console.debug({formElement, state})
@@ -840,6 +851,7 @@ export function getFormCheckbox(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let getFormDataLabel = getFormLabel.bind(this);
+  let getCustomFormDataLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = () => {};
   } else if (!onValueChange) {
@@ -867,16 +879,17 @@ export function getFormCheckbox(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
-    {getFormDataLabel(formElement)}  
+    {(!formElement.customLabel) ? getFormDataLabel(formElement) : null}    
     <input {...formElement.passProps}
       type={formElement.type || 'checkbox'}
       name={this.state[ formElement.formdata_name] || formElement.name}
       checked={(formElement.type === 'radio')
-        ? this.state[ formElement.name ] === formElement.value
-        : this.state[ formElement.name ]}
+      ? this.state[ formElement.name ] === formElement.value
+      : this.state[ formElement.name ]}
       onChange={onValueChange}
-    >
+      >
     </input>
+    {getCustomFormDataLabel(formElement)}  
     <span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder] || formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);

@@ -134,7 +134,9 @@ export function setAddNameToName(options) {
     formElementFields.push(formElm.name);
     if (formElm.type === 'hidden' || (this.props && this.props.setInitialValues)) {
       if (formElm.type === 'radio') {
-        if (this.state || (formElm.checked || (formElm.passProps && formElm.passProps.checked))) {
+        if (this.state && formElm.name && this.state[formElm.name]) {
+          formdata[formElm.name] = this.state[formElm.name];
+        } else if (this.state || formElm.checked || (formElm.passProps && formElm.passProps.checked)) {
           formdata[formElm.name] = formElm.value;
         }
       } else {
