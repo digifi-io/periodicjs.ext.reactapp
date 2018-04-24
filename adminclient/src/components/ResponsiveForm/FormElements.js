@@ -558,7 +558,7 @@ export function getFormDropdown(options){
         value={initialValue} 
         onChange={(event, newvalue)=>{
           onChange.call(this, event, newvalue);
-          if(customCallbackfunction) customCallbackfunction(event);
+          if(customCallbackfunction) customCallbackfunction(event, newvalue);
         }}
       />
        {getCustomErrorIcon(hasError, isValid, this.state, formElement)}  
