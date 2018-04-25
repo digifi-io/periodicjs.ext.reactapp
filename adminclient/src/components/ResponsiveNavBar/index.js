@@ -36,15 +36,7 @@ class ResponsiveNavBar extends Component {
     let navType = props.navType || '';
     this.state = {
       initialActiveIndex: -1,
-      activeIndex: this.props.navSections.map((section, idx) => {
-          if (this.props.navData && this.props.navData[idx]) {
-          this.props.navData[idx].map((link, linkIdx) => {
-            let linkURL = this.getBaseUrl(section.baseURL, this.props.params, this.props, linkIdx);
-            link.linkURL = linkURL;
-          })
-          return idx;
-        }
-      }),
+      activeIndex: [0],
       activeSinglePageIndex: [ 0, 0 ],
     };
     this.getSinglePageNav = this.getSinglePageNav.bind(this);
@@ -58,7 +50,20 @@ class ResponsiveNavBar extends Component {
   } 
 
   componentWillMount() {
-
+    this.props.navSections.map((section, idx) => {
+      if (this.props.navData && this.props.navData[idx]) {
+        this.props.navData[idx].map((link, linkIdx) => {
+          let linkURL = this.getBaseUrl(section.baseURL, this.props.params, this.props, linkIdx);
+          link.linkURL = linkURL;
+          if (linkURL === this.props.location.pathname) {
+            this.setState({ 
+              activeIndex: [idx]
+            })
+          }
+        })
+        // return idx;
+      }
+    });
   }
 
   getBaseUrl(baseurl, params, prop, index) {
@@ -216,10 +221,10 @@ class ResponsiveNavBar extends Component {
           key={sectionIdx + '-' + linkIdx}
           className={activeClass}>
           <Link
-              to={link.linkURL}
-              {...this.props.linkProps}>
-              {link.name}
-            </Link>
+            to={link.linkURL}
+            {...this.props.linkProps}>
+            {link.name}
+          </Link>
           {(section.buttons) ? section.buttons.map(button => {
             return this.getRenderedComponent(Object.assign({
               component: 'ResponsiveButton',
