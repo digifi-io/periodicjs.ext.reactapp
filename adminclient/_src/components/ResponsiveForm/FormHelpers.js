@@ -169,7 +169,8 @@ function getCallbackFromString(successCBProp) {
 function setAddNameToName(options) {
   var formdata = options.formdata,
       formElementFields = options.formElementFields,
-      formElm = options.formElm;
+      formElm = options.formElm,
+      multipleDropdowns = options.multipleDropdowns;
 
   var recursiveSetAddNameToName = setAddNameToName.bind(this);
   // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
@@ -188,7 +189,9 @@ function setAddNameToName(options) {
     formElementFields.push(formElm.name);
     if (formElm.type === 'hidden' || this.props && this.props.setInitialValues) {
       if (formElm.type === 'radio') {
-        if (this.state || formElm.checked || formElm.passProps && formElm.passProps.checked) {
+        if (this.state && formElm.name && this.state[formElm.name]) {
+          formdata[formElm.name] = this.state[formElm.name];
+        } else if (this.state || formElm.checked || formElm.passProps && formElm.passProps.checked) {
           formdata[formElm.name] = formElm.value;
         }
       } else {
@@ -206,14 +209,18 @@ function setAddNameToName(options) {
       }
       // console.debug('after',{formElm,formdata});
     }
+    if (formElm.type === 'dropdown' && formElm.passProps && formElm.passProps.multiple) {
+      multipleDropdowns[formElm.name] = true;
+    }
   }
-  return { formdata: formdata, formElementFields: formElementFields, formElement: formElm };
+  return { formdata: formdata, formElementFields: formElementFields, formElement: formElm, multipleDropdowns: multipleDropdowns };
 }
 
 function setFormNameFields(options) {
   var formElementFields = options.formElementFields,
       formdata = options.formdata;
 
+  var multipleDropdowns = {};
   var addNameToName = setAddNameToName.bind(this);
 
   if (this.props.formgroups && this.props.formgroups.length) {
@@ -226,21 +233,21 @@ function setFormNameFields(options) {
           var formGroupRight = formElement.formGroupCardRight && formElement.formGroupCardRight.length ? formElement.formGroupCardRight : false;
           if (formElementsLeft || formElementsRight) {
             if (formElementsLeft) formElementsLeft.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm });
+              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
             });
             if (formElementsRight) formElementsRight.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm });
+              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
             });
           } else if (formGroupLeft || formGroupRight) {
             if (formGroupLeft) formGroupLeft.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm });
+              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
             });
             if (formGroupRight) formGroupRight.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm });
+              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
             });
           } else if (formElement.type === 'group') {
             if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm });
+              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
             });
           } else if (!formElement || formElement.disabled || formElement.passProps && formElement.passProps.state === 'isDisabled') {
             //skip if dsiabled
@@ -248,7 +255,7 @@ function setFormNameFields(options) {
 
           } else {
             if (formElement.name) {
-              addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElement });
+              addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElement, multipleDropdowns: multipleDropdowns });
               // formElementFields.push(formElement.name);
             }
           }
@@ -256,7 +263,7 @@ function setFormNameFields(options) {
       }
     });
   }
-  return { formElementFields: formElementFields, formdata: formdata };
+  return { formElementFields: formElementFields, formdata: formdata, multipleDropdowns: multipleDropdowns };
 }
 
 function assignFormBody(options) {

@@ -128,15 +128,56 @@ class ModalUI extends Component {
   }
 }
 
-class Overlay extends Component {
+
+class ModalWrapper extends Component {
   constructor(props) {
     super(props);
     this.getRenderedComponent = getRenderedComponent.bind(this);
   }
+
+  _isEqual(arr1, arr2) {
+    let isEqual = false;
+    if (arr1.length === arr2.length) {
+      arr1.forEach((e, idx) => {
+        if (arr1[idx].id === arr2[idx].id ) {
+          isEqual = true;
+        }
+      })
+    } 
+    return isEqual;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this._isEqual(nextProps.notification.modals, this.props.notification.modals)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   render() {
-    // console.log('Overlay this.props.notification', this.props.notification);
-    window.overlayProps = this.props;
-    let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
+    let modalProp = this.props.notification.modals;
+    let modal = (modalProp && modalProp.length > 0)
+      ?
+      modalProp.map((modal, index) => {
+        return (<ModalUI {...modalProp[ index ]}
+          getState={this.props.getState}
+          key={index}  
+        hide={() => {
+          this.props.hideModal(modalProp[index].id);
+        } }  
+        dynamicRenderComponent={this.getRenderedComponent} />)  
+      })
+      : null;
+      return <div>{modal}</div>;
+  }
+}
+class NotificationWrapper extends Component {
+  constructor(props) {
+    super(props);
+    this.getRenderedComponent = getRenderedComponent.bind(this);
+  }
+
+  render() {
     let notices = (this.props.notification.notifications && this.props.notification.notifications.length > 0)
       ? this.props.notification.notifications.map((notice, key) => <NotificationUI dynamicRenderComponent={this.getRenderedComponent} hide={{
         onClick: () => {
@@ -144,28 +185,25 @@ class Overlay extends Component {
         },
       }} key={key} {...notice} />)
       : null;
-    let modal = (this.props.notification.modals && this.props.notification.modals.length > 0)
-      ?
-      this.props.notification.modals.map((modal, index) => {
-        return (<ModalUI {...this.props.notification.modals[ index ]}
-          getState={this.props.getState}
-          key={index}  
-        hide={() => {
-          this.props.hideModal(this.props.notification.modals[index].id);
-        } }  
-        dynamicRenderComponent={this.getRenderedComponent} />)  
-      })
-      // <ModalUI {...this.props.notification.modals[ this.props.notification.modals.length - 1 ]}
-      //   getState={this.props.getState}
-      //   hide={() => {
-      //     this.props.hideModal(this.props.notification.modals[0].id);
-      //   } }  
-      //   dynamicRenderComponent={this.getRenderedComponent} />
-      : null;
+      return <div>{notices}</div>;
+  }
+}
+
+class Overlay extends Component {
+  constructor(props) {
+    super(props);
+    this.getRenderedComponent = getRenderedComponent.bind(this);
+  }
+
+  render() {
+  
+    window.overlayProps = this.props;
+    let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
+      
     return (
       <div className="__reactapp_overlay" {...overlayStyleOverrides} style={{ position: 'fixed', bottom: 0, width: 'auto', zIndex:100000, }}>
-        {modal}
-        {notices}
+        <ModalWrapper {...this.props}/>
+        <NotificationWrapper {...this.props}/>
       </div>
     );
   }

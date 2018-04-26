@@ -134,10 +134,23 @@ var AppHeader = function (_Component) {
       }, this.props.settings.ui.header.profileImageStyle, {
         backgroundImage: 'url(' + (this.props.user.profile_image_preview || this.props.settings.default_user_image || '/favicon.png') + ')'
       });
+      var getRerouteLink = function getRerouteLink(link) {
+        return _react2.default.createElement(
+          'a',
+          { href: link.reroute ? link.reroute : '', target: '_blank' },
+          _react2.default.createElement(
+            'span',
+            null,
+            link.text
+          ),
+          _react2.default.createElement(_reBulma.Icon, { icon: 'fa fa-external-link' })
+        );
+      };
       var dropdownLinks = this.props.settings.ui.header.productHeader.productLinks.length > 0 ? this.props.settings.ui.header.productHeader.productLinks.map(function (link) {
         return _react2.default.createElement(_semanticUiReact.Dropdown.Item, {
-          text: link.text,
-          style: { display: link.type && _this2.props.user.userdata.entitytype !== link.type ? 'none' : undefined },
+          style: { display: link.type && _this2.props.user.userdata && _this2.props.user.userdata.userroles && _this2.props.user.userdata.userroles[0] && _this2.props.user.userdata.userroles[0].name !== link.type ? 'none' : undefined },
+          children: link.reroute ? getRerouteLink(link) : null,
+          text: link.reroute ? null : link.text,
           onClick: function onClick() {
             link.location ? _this2.props.reduxRouter.push(link.location) : link.logoutUser ? _this2.props.logoutUser() : null;
           },

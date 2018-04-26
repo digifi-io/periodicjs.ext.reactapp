@@ -175,6 +175,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormSubmit = _FormElements.getFormSubmit.bind(_this);
     _this.getFormDatalist = _FormElements.getFormDatalist.bind(_this);
     _this.getFormCode = _FormElements.getFormCode.bind(_this);
+    _this.getFormDatePicker = _FormElements.getFormDatePicker.bind(_this);
     _this.getFormTextInputArea = _FormElements.getFormTextInputArea.bind(_this);
     _this.getFormMaskedInput = _FormElements.getFormMaskedInput.bind(_this);
     _this.getFormDropdown = _FormElements.getFormDropdown.bind(_this);
@@ -305,6 +306,14 @@ var ResponsiveForm = function (_Component) {
       var validatedFormData = getFormValidations({ formdata: formdata, validationErrors: validationErrors });
       validationErrors = validatedFormData.validationErrors;
       formdata = validatedFormData.formdata;
+
+      var multipleDropdownFormData = {};
+      (0, _keys2.default)(formdata).forEach(function (key) {
+        var name = key.split('.')[0];
+        if (updatedFormFieldsAndData.multipleDropdowns[name] && formdata[key] !== undefined) multipleDropdownFormData[key] = formdata[key];
+      });
+      multipleDropdownFormData = (0, _flat.unflatten)(multipleDropdownFormData);
+      formdata = (0, _assign2.default)({}, multipleDropdownFormData, formdata);
 
       if (formElementFields && formElementFields.length) {
         formElementFields.forEach(function (formElmField) {
@@ -464,7 +473,6 @@ var ResponsiveForm = function (_Component) {
     value: function render() {
       var _this5 = this;
 
-      // console.debug('form render', this.state);
       var keyValue = 0;
       var formGroupData = this.props.formgroups.map(function (formgroup, i) {
         var gridProps = (0, _assign2.default)({
@@ -517,6 +525,8 @@ var ResponsiveForm = function (_Component) {
             );
           } else if (formElement.type === 'code') {
             return _this5.getFormCode({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'singleDatePicker' || formElement.type === 'rangeDatePicker') {
+            return _this5.getFormDatePicker({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'editor') {
             return _this5.getFormEditor({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'link') {

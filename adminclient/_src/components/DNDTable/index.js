@@ -96,17 +96,21 @@ var LWpropTypes = {
   height: _react.PropTypes.number,
   onSortStart: _react.PropTypes.func,
   onSortEnd: _react.PropTypes.func,
+  shouldCancelStart: _react.PropTypes.func,
   component: _react.PropTypes.func,
   shouldUseDragHandle: _react.PropTypes.bool,
   headers: _react.PropTypes.array,
-  handleRowUpdate: _react.PropTypes.func
+  handleRowUpdate: _react.PropTypes.func,
+  toggleRowKeys: _react.PropTypes.array,
+  toggleRowClass: _react.PropTypes.object
 };
 var LWdefaultProps = {
   className: 'list',
   itemClass: 'item',
   width: 400,
-  height: 600,
-  headers: []
+  headers: [],
+  toggleRowClass: {},
+  toggleRowKeys: []
 };
 
 var ListWrapper = function (_Component) {
@@ -118,19 +122,23 @@ var ListWrapper = function (_Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (ListWrapper.__proto__ || (0, _getPrototypeOf2.default)(ListWrapper)).call(this, props));
 
     _this.onSortEnd = _this.onSortEnd.bind(_this);
+    _this.shouldCancelStart = _this.shouldCancelStart.bind(_this);
     _this.state = {
       rows: props.rows,
       className: props.className,
       itemClass: props.itemClass,
       width: props.width,
-      height: props.height,
+      height: props.itemHeight * (props.rows.length + 1),
       onSortStart: props.onSortStart,
       onSortEnd: props.onSortEnd,
+      shouldCancelStart: props.shouldCancelStart,
       component: props.component,
       shouldUseDragHandle: props.shouldUseDragHandle,
       headers: props.headers,
       handleRowUpdate: props.handleRowUpdate,
-      isSorting: false
+      isSorting: false,
+      toggleRowClass: props.toggleRowClass || '',
+      toggleRowKeys: props.toggleRowKeys || []
     };
     return _this;
   }
@@ -165,17 +173,28 @@ var ListWrapper = function (_Component) {
       }
     }
   }, {
+    key: 'shouldCancelStart',
+    value: function shouldCancelStart(e) {
+      var disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
+      if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1) {
+        return true; // Return true to cancel sorting
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       var Component = this.props.component;
       var _state = this.state,
           rows = _state.rows,
-          isSorting = _state.isSorting;
+          isSorting = _state.isSorting,
+          height = _state.height;
 
       var props = {
         isSorting: isSorting,
         rows: rows,
+        height: height,
         onSortEnd: this.onSortEnd,
+        shouldCancelStart: this.shouldCancelStart,
         onSortStart: this.onSortStart,
         ref: 'component',
         useDragHandle: this.props.shouldUseDragHandle
@@ -199,7 +218,10 @@ var TWpropTypes = {
   height: _react.PropTypes.number,
   itemHeight: _react.PropTypes.number,
   onSortEnd: _react.PropTypes.func,
-  headers: _react.PropTypes.array
+  shouldCancelStart: _react.PropTypes.func,
+  headers: _react.PropTypes.array,
+  toggleRowKeys: _react.PropTypes.array,
+  toggleRowClass: _react.PropTypes.object
 };
 
 var TableWrapper = function (_Component2) {
@@ -221,7 +243,10 @@ var TableWrapper = function (_Component2) {
       height: props.height,
       itemHeight: props.itemHeight,
       onSortEnd: props.onSortEnd,
-      headers: props.headers
+      shouldCancelStart: props.shouldCancelStart,
+      headers: props.headers,
+      toggleRowClass: props.toggleRowClass || {},
+      toggleRowKeys: props.toggleRowKeys || []
     };
     return _this3;
   }
@@ -256,11 +281,13 @@ var TableWrapper = function (_Component2) {
           rows = _props.rows,
           headers = _props.headers,
           onSortEnd = _props.onSortEnd,
-          width = _props.width;
+          shouldCancelStart = _props.shouldCancelStart,
+          width = _props.width,
+          toggleRowKeys = _props.toggleRowKeys,
+          toggleRowClass = _props.toggleRowClass;
 
       var SortableTable = (0, _reactSortableHoc.SortableContainer)(_reactVirtualized.Table, { withRef: true });
       var SortableRowRenderer = (0, _reactSortableHoc.SortableElement)(_tableHelpers2.default);
-
       var tableheaders = headers.map(function (header, idx) {
         return _react2.default.createElement(_reactVirtualized.Column, { content: idx,
           cellRenderer: _this5.cellRenderer,
@@ -281,6 +308,7 @@ var TableWrapper = function (_Component2) {
           height: height,
           helperClass: helperClass,
           onSortEnd: onSortEnd,
+          shouldCancelStart: shouldCancelStart,
           transitionDuration: 0,
           rowClassName: itemClass,
           rowCount: rows.length,
@@ -290,7 +318,11 @@ var TableWrapper = function (_Component2) {
           },
           rowHeight: itemHeight,
           rowRenderer: function rowRenderer(props) {
-            return _react2.default.createElement(SortableRowRenderer, (0, _extends3.default)({}, props, { indexCopy: props.index, headers: _this5.props.headers }));
+            return _react2.default.createElement(SortableRowRenderer, (0, _extends3.default)({}, props, {
+              toggleRowKeys: toggleRowKeys,
+              toggleRowClass: toggleRowClass,
+              indexCopy: props.index,
+              headers: _this5.props.headers }));
           },
           width: width
         },

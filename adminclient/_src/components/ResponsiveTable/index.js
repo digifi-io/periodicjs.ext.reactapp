@@ -702,20 +702,19 @@ var ResponsiveTable = function (_Component) {
             })
           );
         } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'dropdown') {
-          var _selectOptions = header.formoptions || [];
+          var _selectOptions = uniqueFormOptions ? header.formoptions[options.rowIndex] || [] : header.formoptions || [];
           return _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({
             fluid: true,
             selection: true,
             value: value
           }, header.dropdownProps, {
-            onChange: function onChange(event) {
-              var text = event.target.value;
+            onChange: function onChange(event, _ref) {
+              var value = _ref.value;
+
+              var text = value;
               var name = header.sortid;
               var rowIndex = options.rowIndex;
               _this6.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
-            },
-            onSubmit: function onSubmit() {
-              return;
             },
             options: _selectOptions.map(function (opt, k) {
               return { key: k, disabled: opt.disabled, value: opt.value, text: opt.label ? opt.label : opt.value };
@@ -891,8 +890,8 @@ var ResponsiveTable = function (_Component) {
       // console.debug('render this.state', this.state);
       var maxFormRowLength = 0;
       var calcStartIndex = (this.state.currentPage - 1) * this.state.limit;
-      var startIndex = !this.props.baseUrl ? calcStartIndex : 0;
-      var endIndex = !this.props.baseUrl ? this.state.limit * this.state.currentPage : this.state.limit;
+      var startIndex = !this.props.baseUrl ? calcStartIndex : this.searchInputTextVal ? this.state.limit * (this.state.currentPage - 1) : 0;
+      var endIndex = !this.props.baseUrl ? this.state.limit * this.state.currentPage : this.searchInputTextVal ? this.state.limit * this.state.currentPage : this.state.limit;
       var displayRows = this.state.rows.slice(startIndex, endIndex);
       var mergedCustomLayout = this.props.customLayout && displayRows && displayRows.length ? _react2.default.createElement(
         'div',
@@ -1012,7 +1011,7 @@ var ResponsiveTable = function (_Component) {
         rb.Pagination,
         null,
         this.state.currentPage < 2 ? _react2.default.createElement(rb.Button, { icon: 'fa fa-angle-left', state: 'isDisabled' }) : _react2.default.createElement(rb.Button, { icon: 'fa fa-angle-left', onClick: function onClick() {
-            return _this8.updateTableData({ pagenum: _this8.state.currentPage - 1 });
+            return _this8.updateTableData({ pagenum: _this8.state.currentPage - 1, search: _this8.searchInputTextVal });
           } }),
         _react2.default.createElement(
           'span',
@@ -1023,7 +1022,7 @@ var ResponsiveTable = function (_Component) {
           this.state.numPages
         ),
         this.state.currentPage >= this.state.numPages ? _react2.default.createElement(rb.Button, { icon: 'fa fa-angle-right', state: 'isDisabled' }) : _react2.default.createElement(rb.Button, { icon: 'fa fa-angle-right', onClick: function onClick() {
-            return _this8.updateTableData({ pagenum: _this8.state.currentPage + 1 });
+            return _this8.updateTableData({ pagenum: _this8.state.currentPage + 1, search: _this8.searchInputTextVal });
           } })
       ) : _react2.default.createElement(
         rb.Pagination,
@@ -1713,7 +1712,7 @@ var ResponsiveTable = function (_Component) {
                       (0, _extends3.default)({ style: {
                           cursor: 'pointer'
                         } }, _this8.props.headerLinkProps, { onClick: function onClick() {
-                          _this8.updateTableData({ sort: header.sortid });
+                          _this8.updateTableData({ sort: header.sortid, search: _this8.searchInputTextVal });
                         } }),
                       header.label
                     ) : header.label

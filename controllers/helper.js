@@ -125,7 +125,13 @@ const handleFileUpload = function (req, res, next) {
         sizeLimit,
         acceptedMIMETypes,
         save_file_to_asset: (typeof req.save_file_to_asset==='boolean')? req.save_file_to_asset: true,
-        send_response: (typeof req.send_response ==='boolean') ? req.send_response : false,
+        send_response: (typeof req.send_response === 'boolean') ? req.send_response : false,
+        pre_asset_create_map: ({ req, res, periodic, }) => {
+          return asset => {
+            asset.attributes.location = asset.attributes.location.replace(/\s/g, '%20');
+            return asset;
+          };
+        },
       })(req, res, next);
     }
     // return assetController.multiupload(req, res, next);

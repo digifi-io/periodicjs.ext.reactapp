@@ -86,7 +86,7 @@ var defaultProps = exports.defaultProps = {
   hasFooter: false,
   tableFooter: false,
   onChange: function onChange(event) {
-    console.debug(event);
+    // console.debug(event);
   },
   limit: 50,
   currentPage: 1,

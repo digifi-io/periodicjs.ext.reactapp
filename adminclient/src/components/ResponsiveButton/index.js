@@ -195,7 +195,7 @@ class ResponsiveButton extends Component {
       }}>
         {options}  
       </Select>;
-    } else if (this.props.buttonProps) {
+    } else if (this.props.buttonProps && Object.keys(this.props.buttonProps).length) {
       return <Button className="__ra_rb"
         {...this.props.buttonProps}
         style={Object.assign({
@@ -209,8 +209,8 @@ class ResponsiveButton extends Component {
           : this.props.children
         }
       </Button>;
-    } else if (this.props.aProps){ 
-      return <a className="__ra_rb" {...this.props.aProps} href={this.getHref.call(this, getPropsForOnClick())}>{this.props.children}</a>;
+    } else if (this.props.aProps) { 
+      return <a className="__ra_rb" {...this.props.aProps} onClick={this.handleOnClick.bind(this, getPropsForOnClick())} href={this.getHref.call(this, getPropsForOnClick())}>{this.props.children}</a>;
     } else {
       return <span className="__ra_rb"
         {...this.props.spanProps}

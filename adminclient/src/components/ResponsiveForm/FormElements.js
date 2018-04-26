@@ -5,6 +5,8 @@ import PreviewEditor from '../PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 import ResponsiveTable from '../ResponsiveTable';
 import DNDTable from '../DNDTable';
+import SingleDatePickerWrapper from '../SingleDatePickerWrapper';
+import DateRangePickerWrapper from '../DateRangePickerWrapper';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import capitalize from 'capitalize';
 // import RAEditor from '../RAEditor';
@@ -106,6 +108,17 @@ function getFormLabel(formElement) {
       : (<Label {...formElement.labelProps}>{(this && this.state && this.state[formElement.formdata_label])
         ? this.state[formElement.formdata_label]
         : formElement.label}</Label>)
+    : null;
+}
+function getCustomFormLabel(formElement) {
+  return (formElement.customLabel)
+    ? (<label {...formElement.customLabelProps}>
+      {(this && this.state && this.state[formElement.formdata_label])
+        ? this.state[formElement.formdata_label]
+        : (formElement.customLabel && !Array.isArray(formElement.customLabel) && typeof formElement.customLabel === 'object')
+          ? this.getRenderedComponent(formElement.customLabel)
+          : formElement.customLabel }
+      </label>)
     : null;
 }
 
@@ -212,7 +225,7 @@ function getFunctionFromProps(options) {
   }
 }
 
-export function getFormDNDTable(options){
+export function getFormDNDTable(options) {
   let { formElement, i, } = options;
   // let initialValue = getInitialValue(formElement,
   // (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true })));
@@ -221,14 +234,14 @@ export function getFormDNDTable(options){
   let hasError = getErrorStatus(this.state, formElement.name);
   const getTableHeaders = (row) => {
     return row.map(rowkey => {
-      let selectOptions = (this.state.__formOptions && this.state.__formOptions[ rowkey ])
-        ? this.state.__formOptions[ rowkey ]
+      let selectOptions = (this.state.__formOptions && this.state.__formOptions[rowkey])
+        ? this.state.__formOptions[rowkey]
         : [];
       // console.log({ selectOptions });
       return {
         label: capitalize(rowkey),
         sortid: rowkey,
-        sortable: (typeof formElement.sortable !=='undefined')
+        sortable: (typeof formElement.sortable !== 'undefined')
           ? formElement.sortable
           : true,
         formtype: (formElement.tableHeaderType && formElement.tableHeaderType[rowkey])
@@ -237,7 +250,7 @@ export function getFormDNDTable(options){
         defaultValue: (formElement.tableHeaderDefaultValue && formElement.tableHeaderDefaultValue[rowkey])
           ? formElement.tableHeaderDefaultValue[rowkey]
           : (selectOptions.length)
-            ? selectOptions[ 0 ].value
+            ? selectOptions[0].value
             : undefined,
         formoptions: selectOptions,
         footerFormElementPassProps: Object.assign({
@@ -246,7 +259,7 @@ export function getFormDNDTable(options){
       };
     });
   };
-  let handleRowUpdate;
+  let handleRowUpdate = () => { console.debug('Error handleRowUpdate function does not exists') };
   if (formElement.handleRowUpdate && formElement.handleRowUpdate.indexOf('func:window') !== -1 && typeof window[ formElement.handleRowUpdate.replace('func:window.', '') ] ==='function') {
     handleRowUpdate = window[ formElement.handleRowUpdate.replace('func:window.', '') ].bind(this, formElement); 
   }
@@ -284,6 +297,8 @@ export function getFormDNDTable(options){
     {
       rows: initialValue,
       headers: tableHeaders,
+      toggleRowKeys: formElement.toggleRowKeys,
+      toggleRowClass: formElement.toggleRowClass,
     },
     formElement.passProps
   );
@@ -307,7 +322,6 @@ export function getFormDatatable(options){
       let selectOptions = (this.state.__formOptions && this.state.__formOptions[ rowkey ])
         ? this.state.__formOptions[ rowkey ]
         : [];
-      // console.log({ selectOptions });
       return {
         label: capitalize(rowkey),
         sortid: rowkey,
@@ -500,6 +514,18 @@ export function getFormDropdown(options){
   passedProps.options = dropdowndata;
   if (formElement.disableOnChange) {
     onChange = () => { return () => {}};
+  } else if (!onChange && formElement.passProps.multiple) {
+    onChange = (event, newvalue)=>{
+      let updatedStateProp = {};
+      newvalue.options.forEach((val, idx) => {
+        if (newvalue.value[ idx ]) updatedStateProp[ `${formElement.name}.${idx}` ] = newvalue.value[ idx ];
+        else updatedStateProp[ `${formElement.name}.${idx}` ] = undefined;
+      });
+      this.setState(updatedStateProp, () => {
+        if(formElement.validateOnChange){
+        this.validateFormElement({ formElement, });
+      }});
+    }
   } else if (!onChange) {
     onChange = (event, newvalue)=>{
       let updatedStateProp = {};
@@ -509,7 +535,7 @@ export function getFormDropdown(options){
         this.validateFormElement({ formElement, });
       }});
     }
-  }  
+  }
   let customCallbackfunction;
   if (formElement.customOnChange) {
     if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
@@ -519,18 +545,21 @@ export function getFormDropdown(options){
     } 
   }
 
-  formElement.customIconStyle = Object.assign({},{ right: "24px" },formElement.customIconStyle);
+  formElement.customIconStyle = Object.assign({}, { right: "24px" }, formElement.customIconStyle);
+
+  if (formElement.passProps.multiple && Array.isArray(unflatten(this.state)[formElement.name])) {
+    initialValue = unflatten(this.state)[ formElement.name ].filter(i => i !== undefined);
+  }
 
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
     {getFormLabel(formElement)}  
     <div {...wrapperProps}>  
       <Dropdown {...passedProps}
-        defaultValue={initialValue} 
+        value={initialValue} 
         onChange={(event, newvalue)=>{
           onChange.call(this, event, newvalue);
-          if(customCallbackfunction) customCallbackfunction(event);
+          if(customCallbackfunction) customCallbackfunction(event, newvalue);
         }}
-        onSubmit={() => { return }}
       />
        {getCustomErrorIcon(hasError, isValid, this.state, formElement)}  
       {getCustomErrorLabel(hasError, this.state, formElement)}
@@ -644,7 +673,8 @@ export function getFormTextInputArea(options) {
   let fileClassname = `__reactapp_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
   let isValid = getValidStatus(this.state, formElement.name);
-  let hasValue = (formElement.name && this.state[formElement.name])? true : false;
+  let hasValue = (formElement.name && this.state[ formElement.name ]) ? true : false;
+  let submitMultipartForm;
   let passableProps = Object.assign({
     type: formElement.type || 'text',
   }, formElement.passProps);
@@ -660,6 +690,7 @@ export function getFormTextInputArea(options) {
     onChange = (event) => {
       let text = event.target.value;
       let updatedStateProp = {};
+      let customCallbackfunction;
       if (passableProps && passableProps.multiple) {
         document.querySelector(`.${fileClassname} input`).setAttribute('multiple', true);
       }
@@ -668,14 +699,29 @@ export function getFormTextInputArea(options) {
         updatedStateProp.formDataFiles = Object.assign({}, this.state.formDataFiles, {
           [ formElement.name ]: document.querySelector(`.${fileClassname} input`),
         });
+        if (formElement.submitOnChange) {
+          submitMultipartForm = setTimeout(() => {
+            this.submitForm();
+          }, 0);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
       } else {
         updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength): text;
       }
       if (formElement.onChangeFilter) {
         const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
         updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
+      } else if (formElement.customOnChange) {
+        if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
+          customCallbackfunction= this.props[ formElement.customOnChange.replace('func:this.props.', '') ];
+        } else if (formElement.customOnChange.indexOf('func:window') !== -1 && typeof window[ formElement.customOnChange.replace('func:window.', '') ] ==='function') {
+          customCallbackfunction = window[ formElement.customOnChange.replace('func:window.', '') ].bind(this, formElement);
+        } 
       }
       this.setState(updatedStateProp);
+      if (typeof customCallbackfunction === 'function') customCallbackfunction();
     };
   }
   passableProps = getPassablePropkeyevents(passableProps, formElement);
@@ -687,6 +733,7 @@ export function getFormTextInputArea(options) {
       clearImmediate(t);
     });
   }
+  if (submitMultipartForm) clearTimeout(submitMultipartForm);
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <Input {...passableProps}
@@ -804,6 +851,7 @@ export function getFormCheckbox(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let getFormDataLabel = getFormLabel.bind(this);
+  let getCustomFormDataLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = () => {};
   } else if (!onValueChange) {
@@ -831,16 +879,17 @@ export function getFormCheckbox(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
-    {getFormDataLabel(formElement)}  
+    {(!formElement.customLabel) ? getFormDataLabel(formElement) : null}    
     <input {...formElement.passProps}
       type={formElement.type || 'checkbox'}
       name={this.state[ formElement.formdata_name] || formElement.name}
       checked={(formElement.type === 'radio')
-        ? this.state[ formElement.name ] === formElement.value
-        : this.state[ formElement.name ]}
+      ? this.state[ formElement.name ] === formElement.value
+      : this.state[ formElement.name ]}
       onChange={onValueChange}
-    >
+      >
     </input>
+    {getCustomFormDataLabel(formElement)}  
     <span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder] || formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
@@ -1191,6 +1240,50 @@ export function getFormCode(options) {
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>
   );
+}
+
+export function getFormDatePicker(options) {
+  let { formElement, i, onValueChange, } = options;
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let initialVal = getInitialValue(formElement, this.state);
+  let singleCustomOnChange = function({date}) {
+    this.setState({ [formElement.name]: (date) ? date.toISOString() : null }, () => {
+      if(formElement.validateOnChange){
+        this.validateFormElement({ formElement, })
+      }
+    });
+  };
+  let rangeCustomOnChange = function({ startDate, endDate}) {
+    let combined_date = `${startDate.toISOString()};${endDate.toISOString()}`
+    this.setState({ [formElement.name]: combined_date}, () => {
+      if(formElement.validateOnChange){
+        this.validateFormElement({ formElement, })
+      }
+    })
+  };
+  let SingleDatePickerProps = Object.assign({}, {
+    customOnChange: singleCustomOnChange.bind(this),
+    initialDate: (initialVal) ? new moment(initialVal) : null
+  }, formElement.passProps);
+  let RangeDatePickerProps = Object.assign({}, {
+    customOnChange: rangeCustomOnChange.bind(this),
+    initialDate: (initialVal) ? new moment(initialVal) : null
+  }, formElement.passProps);
+  if (formElement.type === 'singleDatePicker') {
+    return (<FormItem key={i} {...formElement.layoutProps} >
+      {getFormLabel(formElement)}  
+      <SingleDatePickerWrapper key={i} {...SingleDatePickerProps} />
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </FormItem>
+    );
+  } else if (formElement.type === 'rangeDatePicker') {
+    return (<FormItem key={i} {...formElement.layoutProps} >
+      {getFormLabel(formElement)}  
+      <DateRangePickerWrapper key={i} {...RangeDatePickerProps}  />
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </FormItem>
+    );
+  }
 }
 
 export function getFormEditor(options) {

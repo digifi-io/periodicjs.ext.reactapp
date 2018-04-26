@@ -39,7 +39,7 @@ export const setParameters = function(options = {}) {
   let params = (options.params && Array.isArray(options.params)) ? options.params : parameterize(options.route, options.location);
   let pkeys = Object.keys(params);
   for (let i = 0; i < pkeys.length; i++) {
-    if (typeof options.resource === 'string') {
+    if (options && options.resource && typeof options.resource === 'string') {
       options.resource = options.resource.replace(new RegExp(`:${ pkeys[i] }`), params[pkeys[i]]);
     } else if (options && options.resource && typeof options.resource !== 'string' && options.resource.url) {
       options.resource.url = options.resource.url.replace(new RegExp(`:${pkeys[ i ]}`), params[ pkeys[ i ] ]);
