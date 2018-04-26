@@ -61,7 +61,6 @@ class ResponsiveNavBar extends Component {
             })
           }
         })
-        // return idx;
       }
     });
   }
@@ -136,12 +135,12 @@ class ResponsiveNavBar extends Component {
 
     let itemProps = (this.props.linkProps && this.props.linkProps.className) ? this.props.linkProps.className : '';
     let subMenu = this.props.navData[sectionIdx].map((link, linkIdx) => {
-    let itemProps = (this.props.linkProps && this.props.linkProps.className) ? this.props.linkProps.className : '';  
-      let activeClass = (this.state.activeSinglePageIndex[ 0 ] === sectionIdx && this.state.activeSinglePageIndex[ 1 ] === linkIdx) ? 'active-nav-link nav-link' + itemProps : 'nav-link' + itemProps;
-    let navLink;
-    let customComponents;  
+      let itemProps = (this.props.linkProps && this.props.linkProps.className) ? this.props.linkProps.className : '';  
+        let activeClass = (this.state.activeSinglePageIndex[ 0 ] === sectionIdx && this.state.activeSinglePageIndex[ 1 ] === linkIdx) ? 'active-nav-link nav-link' + itemProps : 'nav-link' + itemProps;
+      let navLink;
+      let customComponents;  
 
-    if (link.navButton && link.navButton.component === 'ResponsiveButton') {
+     if (link.navButton && link.navButton.component === 'ResponsiveButton') {
       let { thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps, clickprop, clickFetchProps, clickSuccessProps, clickAddPropObject } = this.getPropsForOnClick(link.navButton);
 
       let linkSelectionProp = (clickThisProp)
