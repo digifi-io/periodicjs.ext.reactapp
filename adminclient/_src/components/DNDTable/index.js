@@ -176,7 +176,8 @@ var ListWrapper = function (_Component) {
     key: 'shouldCancelStart',
     value: function shouldCancelStart(e) {
       var disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
-      if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1) {
+      var disabledClass = '__ra_rb';
+      if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1 || e.target.classList.contains(disabledClass)) {
         return true; // Return true to cancel sorting
       }
     }
