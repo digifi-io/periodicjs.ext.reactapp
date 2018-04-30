@@ -90,7 +90,8 @@ class ListWrapper extends Component {
   };
   shouldCancelStart(e){
     const disabledElements = ['input', 'textarea', 'select', 'option', 'button', 'a'];
-    if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1) {
+    const disabledClass = '__ra_rb';
+    if (disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1 || disabledElements.indexOf(e.target.parentNode.tagName.toLowerCase()) !== -1 || e.target.classList.contains(disabledClass) ) {
       return true; // Return true to cancel sorting
     }
   }
