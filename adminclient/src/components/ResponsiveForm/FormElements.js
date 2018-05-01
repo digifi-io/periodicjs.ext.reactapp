@@ -887,7 +887,6 @@ export function getFormCheckbox(options) {
       });
     };
   }
-  console.log(formElement.value, formElement.name, this.state, 'CHECK THIS', this.state[formElement.name] === formElement.value, this.state[ formElement.name ] )
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {(!formElement.customLabel) ? getFormDataLabel(formElement) : null}    
     <input {...formElement.passProps}
