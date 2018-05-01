@@ -229,17 +229,20 @@ function getFormLabel(formElement) {
   ) : _react2.default.createElement(
     _reBulma.Label,
     formElement.labelProps,
-    this && this.state && this.state[formElement.formdata_label] ? this.state[formElement.formdata_label] : formElement.label && !Array.isArray(formElement.label) && (0, _typeof3.default)(formElement.label) === 'object' ? this.getRenderedComponent(formElement.label) : formElement.label
+    this && this.state && this.state[formElement.formdata_label] ? this.state[formElement.formdata_label] : formElement.label
   ) : null;
 }
 function getCustomFormLabel(formElement) {
-  return formElement.customLabel ? _react2.default.createElement(
-    'label',
-    formElement.customLabelProps,
-    this && this.state && this.state[formElement.formdata_label] ? this.state[formElement.formdata_label] : formElement.customLabel && !Array.isArray(formElement.customLabel) && (0, _typeof3.default)(formElement.customLabel) === 'object' ? this.getRenderedComponent(formElement.customLabel) : formElement.customLabel
+  return formElement.customLabel ? formElement.layoutProps && formElement.layoutProps.horizontalform ? _react2.default.createElement(
+    _reBulma.ControlLabel,
+    formElement.labelProps,
+    formElement.label && !Array.isArray(formElement.customLabel) && (0, _typeof3.default)(formElement.customLabel) === 'object' ? this.getRenderedComponent(formElement.customLabel) : formElement.customLabel
+  ) : _react2.default.createElement(
+    _reBulma.Label,
+    formElement.labelProps,
+    formElement.label && !Array.isArray(formElement.customLabel) && (0, _typeof3.default)(formElement.customLabel) === 'object' ? this.getRenderedComponent(formElement.customLabel) : formElement.customLabel
   ) : null;
 }
-
 function getInitialValue(formElement, state) {
   // console.debug({formElement, state})
   var formElementValue = formElement.value;
@@ -353,7 +356,6 @@ function getFormDNDTable(options) {
   // (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true })));
 
   var initialValue = this.state[formElement.name];
-  var getFormDataLabel = getFormLabel.bind(this);
   // console.debug({ initialValue },this.state, this.state[formElement.name]);
   var hasError = getErrorStatus(this.state, formElement.name);
   var getTableHeaders = function getTableHeaders(row) {
@@ -410,7 +412,7 @@ function getFormDNDTable(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    getFormLabel(formElement),
     _react2.default.createElement(_DNDTable2.default, (0, _extends3.default)({}, passedProps, {
       handleRowUpdate: handleRowUpdate.bind(this),
       value: initialValue })),
@@ -427,7 +429,6 @@ function getFormDatatable(options) {
   var initialValue = getInitialValue(formElement, (0, _keys2.default)(this.state.formDataTables).length && this.state.formDataTables[formElement.name] ? this.state.formDataTables : (0, _assign2.default)({}, this.state, (0, _flat.unflatten)(this.state, { overwrite: true })));
   // console.debug({ initialValue },this.state, this.state[formElement.name]);
   var hasError = getErrorStatus(this.state, formElement.name);
-  var getFormDataLabel = getFormLabel.bind(this);
   var getTableHeaders = function getTableHeaders(row) {
     return row.map(function (rowkey) {
       var selectOptions = _this4.state.__formOptions && _this4.state.__formOptions[rowkey] ? _this4.state.__formOptions[rowkey] : [];
@@ -492,7 +493,7 @@ function getFormDatatable(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    getFormLabel(formElement),
     _react2.default.createElement(_ResponsiveTable2.default, (0, _extends3.default)({}, passedProps, {
       onChange: function onChange(newvalue) {
         var selectedRowData = formElement.selectEntireRow && (newvalue.selectedRowData || newvalue.selectedRowIndex) ? (0, _defineProperty3.default)({}, formElement.name + '__tabledata', {
@@ -523,7 +524,6 @@ function getFormDatalist(options) {
 
   var initialValue = getInitialValue(formElement, (0, _assign2.default)({}, this.state, (0, _flat.unflatten)(this.state)));
   var hasError = getErrorStatus(this.state, formElement.name);
-  var getFormDataLabel = getFormLabel.bind(this);
   var passedProps = (0, _assign2.default)({}, this.props, {
     wrapperProps: {
       style: {
@@ -559,7 +559,7 @@ function getFormDatalist(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    getFormLabel(formElement),
     _react2.default.createElement(_ResponsiveDatalist2.default, (0, _extends3.default)({}, passedProps, {
       onChange: function onChange(newvalue) {
         var updatedStateProp = {};
@@ -580,7 +580,7 @@ function getFormDropdown(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var isValid = getValidStatus(this.state, formElement.name);
-  var getFormDataLabel = getFormLabel.bind(this);
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var wrapperProps = (0, _assign2.default)({
     className: '__re-bulma_control'
   }, formElement.wrapperProps);
@@ -654,7 +654,7 @@ function getFormDropdown(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'div',
       wrapperProps,
@@ -684,7 +684,7 @@ function getFormMaskedInput(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var isValid = getValidStatus(this.state, formElement.name);
-  var getFormDataLabel = getFormLabel.bind(this);
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var passableProps = (0, _assign2.default)({
     type: 'text',
     className: '__re-bulma_input'
@@ -759,7 +759,7 @@ function getFormMaskedInput(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'span',
       wrapperProps,
@@ -789,8 +789,8 @@ function getFormTextInputArea(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var isValid = getValidStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var submitMultipartForm = void 0;
-  var getFormDataLabel = getFormLabel.bind(this);
   var passableProps = (0, _assign2.default)({
     type: formElement.type || 'text'
   }, formElement.passProps);
@@ -851,7 +851,7 @@ function getFormTextInputArea(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
       help: getFormElementHelp(hasError, this.state, formElement.name),
       color: hasError ? 'isDanger' : undefined,
@@ -872,10 +872,10 @@ function getFormTextArea(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var isValid = getValidStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var passableProps = (0, _assign2.default)({}, formElement.passProps);
   var getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   passableProps = getPassablePropkeyevents(passableProps, formElement);
-  var getFormDataLabel = getFormLabel.bind(this);
 
   if (typeof initialValue !== 'string') {
     initialValue = (0, _stringify2.default)(initialValue, null, 2);
@@ -893,7 +893,7 @@ function getFormTextArea(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'p',
       { className: "__re-bulma_control" + iconClassNames },
@@ -921,8 +921,8 @@ function getFormSelect(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var isValid = getValidStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var selectOptions = this.state.__formOptions && this.state.__formOptions[formElement.name] ? this.state.__formOptions[formElement.name] : formElement.options || [];
-  var getFormDataLabel = getFormLabel.bind(this);
   if (typeof initialValue !== 'string') {
     initialValue = (0, _stringify2.default)(initialValue, null, 2);
   }
@@ -949,7 +949,7 @@ function getFormSelect(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'span',
       { className: "__re-bulma_control" + iconClassNames, style: { position: 'relative', display: 'block' } },
@@ -987,7 +987,6 @@ function getFormCheckbox(options) {
 
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
-  var getFormDataLabel = getFormLabel.bind(this);
   var getCustomFormDataLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = function onValueChange() {};
@@ -1014,11 +1013,10 @@ function getFormCheckbox(options) {
       });
     };
   }
-
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
-    !formElement.customLabel ? getFormDataLabel(formElement) : null,
+    !formElement.customLabel ? getFormLabel(formElement) : null,
     _react2.default.createElement('input', (0, _extends3.default)({}, formElement.passProps, {
       type: formElement.type || 'checkbox',
       name: this.state[formElement.formdata_name] || formElement.name,
@@ -1045,6 +1043,7 @@ function getFormButton(options) {
   }
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var onClickHandler = void 0;
   if (formElement.onClick) {
     if (formElement.onClick.indexOf('func:this.props') !== -1) {
@@ -1058,12 +1057,10 @@ function getFormButton(options) {
     onClickHandler = function onClickHandler() {};
   }
 
-  var getFormDataLabel = getFormLabel.bind(this);
-
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_reBulma.Button, (0, _extends3.default)({}, formElement.passProps, {
       type: formElement.type,
       name: this.state[formElement.formdata_name] || formElement.name,
@@ -1130,7 +1127,7 @@ function getFormSwitch(options) {
 
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
-  var getFormDataLabel = getFormLabel.bind(this);
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = function onValueChange() {};
   } else if (!onValueChange) {
@@ -1160,7 +1157,7 @@ function getFormSwitch(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'div',
       null,
@@ -1191,7 +1188,7 @@ function getRawInput(options) {
       onValueChange = options.onValueChange;
 
   var hasError = getErrorStatus(this.state, formElement.name);
-  var getFormDataLabel = getFormLabel.bind(this);
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var wrapperProps = (0, _assign2.default)({
     style: {
       overflow: 'auto',
@@ -1222,7 +1219,7 @@ function getRawInput(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'div',
       wrapperProps,
@@ -1246,7 +1243,6 @@ function getSliderInput(options) {
   // );
 
   var hasError = getErrorStatus(this.state, formElement.name);
-  var getFormDataLabel = getFormLabel.bind(this);
   var wrapperProps = (0, _assign2.default)({
     style: {
       overflow: 'auto',
@@ -1297,7 +1293,7 @@ function getSliderInput(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    getFormLabel(formElement),
     _react2.default.createElement(
       'div',
       wrapperProps,
@@ -1343,12 +1339,11 @@ function getImage(options) {
       textAlign: 'center'
     }
   }, formElement.passProps);
-  var getFormDataLabel = getFormLabel.bind(this);
   //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    getFormLabel(formElement),
     formElement.link ? _react2.default.createElement(
       'a',
       { href: initialValue, target: '_blank' },
@@ -1362,7 +1357,7 @@ function getFormLink(options) {
       i = options.i,
       button = options.button;
 
-  var getFormDataLabel = getFormLabel.bind(this);
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var wrapperProps = (0, _assign2.default)({
     style: _styles2.default.inputStyle
   }, formElement.wrapperProps);
@@ -1376,7 +1371,7 @@ function getFormLink(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    getFormLabel(formElement),
     _react2.default.createElement(
       'span',
       wrapperProps,
@@ -1394,11 +1389,10 @@ function getFormGroup(options) {
       i = options.i,
       groupElements = options.groupElements;
 
-  var getFormDataLabel = getFormLabel.bind(this);
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       _reBulma.Group,
       formElement.passProps,
@@ -1414,7 +1408,7 @@ function getFormCode(options) {
 
   var hasError = getErrorStatus(this.state, formElement.name);
   var initialVal = getInitialValue(formElement, this.state);
-  var getFormDataLabel = getFormLabel.bind(this);
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var CodeMirrorProps = (0, _assign2.default)({
     codeMirrorProps: (0, _assign2.default)({
       lineNumbers: true,
@@ -1451,20 +1445,20 @@ function getFormCode(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_RACodeMirror2.default, (0, _extends3.default)({ key: i }, CodeMirrorProps)),
     getCustomErrorLabel(hasError, this.state, formElement)
   );
 }
 
 function getFormDatePicker(options) {
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var formElement = options.formElement,
       i = options.i,
       onValueChange = options.onValueChange;
 
   var hasError = getErrorStatus(this.state, formElement.name);
   var initialVal = getInitialValue(formElement, this.state);
-  var getFormDataLabel = getFormLabel.bind(this);
   var singleCustomOnChange = function singleCustomOnChange(_ref3) {
     var _this14 = this;
 
@@ -1501,7 +1495,7 @@ function getFormDatePicker(options) {
     return _react2.default.createElement(
       _FormItem2.default,
       (0, _extends3.default)({ key: i }, formElement.layoutProps),
-      getFormDataLabel(formElement),
+      formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
       _react2.default.createElement(_SingleDatePickerWrapper2.default, (0, _extends3.default)({ key: i }, SingleDatePickerProps)),
       getCustomErrorLabel(hasError, this.state, formElement)
     );
@@ -1509,7 +1503,7 @@ function getFormDatePicker(options) {
     return _react2.default.createElement(
       _FormItem2.default,
       (0, _extends3.default)({ key: i }, formElement.layoutProps),
-      getFormDataLabel(formElement),
+      formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
       _react2.default.createElement(_DateRangePickerWrapper2.default, (0, _extends3.default)({ key: i }, RangeDatePickerProps)),
       getCustomErrorLabel(hasError, this.state, formElement)
     );
@@ -1524,7 +1518,7 @@ function getFormEditor(options) {
       onValueChange = options.onValueChange;
 
   var initialVal = getInitialValue(formElement, this.state);
-  var getFormDataLabel = getFormLabel.bind(this);
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   if (!onValueChange) {
     onValueChange = function onValueChange(newvalue) {
       // console.debug({ newvalue, });
@@ -1564,7 +1558,7 @@ function getFormEditor(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_PreviewEditor2.default, (0, _extends3.default)({ key: i }, EditorProps, { value: initialVal }))
   );
 }
@@ -1674,7 +1668,7 @@ function getFormSubmit(options) {
   var formElement = options.formElement,
       i = options.i;
 
-  var getFormDataLabel = getFormLabel.bind(this);
+  getCustomFormLabel = getCustomFormLabel.bind(this);
   var passableProps = (0, _assign2.default)({
     state: formElement.confirmModal && (0, _keys2.default)(this.state.formDataErrors).length > 0 ? 'isDisabled' : undefined
   }, this.props.useLoadingButtons && this.state.__formIsSubmitting ? {
@@ -1683,7 +1677,7 @@ function getFormSubmit(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    getFormDataLabel(formElement),
+    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       _reBulma.Button,
       (0, _extends3.default)({}, passableProps, {
