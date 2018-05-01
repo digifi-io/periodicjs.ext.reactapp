@@ -101,15 +101,17 @@ function valueChangeHandler(formElement) {
 function getFormLabel(formElement) {
   return (formElement.label)
     ? (formElement.layoutProps && formElement.layoutProps.horizontalform)
-      ? (<ControlLabel {...formElement.labelProps}>{
-        (this && this.state && this.state[formElement.formdata_label])
+      ? (<ControlLabel {...formElement.labelProps}>{(this && this.state && this.state[formElement.formdata_label])
         ? this.state[formElement.formdata_label]
-        : formElement.label}</ControlLabel>)
+        : (formElement.label && !Array.isArray(formElement.label) && typeof formElement.label === 'object')
+          ? this.getRenderedComponent(formElement.label)
+          : formElement.label}
+        </ControlLabel>)
       : (<Label {...formElement.labelProps}>{(this && this.state && this.state[formElement.formdata_label])
         ? this.state[ formElement.formdata_label ]
           : (formElement.label && !Array.isArray(formElement.label) && typeof formElement.label === 'object')
           ? this.getRenderedComponent(formElement.label)
-            : formElement.label}</Label>)
+            : formElement.label}</Label>)  
     : null;
 }
 function getCustomFormLabel(formElement) {
@@ -123,7 +125,6 @@ function getCustomFormLabel(formElement) {
       </label>)
     : null;
 }
-
 function getInitialValue(formElement, state) {
   // console.debug({formElement, state})
   let formElementValue = formElement.value;
@@ -716,7 +717,7 @@ export function getFormTextInputArea(options) {
           }, 1000);
         }
       } else {
-        updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength): text;
+        updatedStateProp[ formElement.name ] =(passableProps.maxLength) ? text.substring(0, passableProps.maxLength): text;
       }
       if (formElement.onChangeFilter) {
         const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
@@ -736,7 +737,7 @@ export function getFormTextInputArea(options) {
 
   // console.debug({ passableProps });
   if (passableProps && passableProps.multiple) {
-    let t = setImmediate(() => { 
+    let t = setImmediate(() => {
       document.querySelector(`.${fileClassname} input`).setAttribute('multiple', true);
       clearImmediate(t);
     });
@@ -886,7 +887,7 @@ export function getFormCheckbox(options) {
       });
     };
   }
-
+  console.log(formElement.value, formElement.name, this.state, 'CHECK THIS', this.state[formElement.name] === formElement.value, this.state[ formElement.name ] )
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {(!formElement.customLabel) ? getFormDataLabel(formElement) : null}    
     <input {...formElement.passProps}
