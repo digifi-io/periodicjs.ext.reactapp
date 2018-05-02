@@ -116,7 +116,7 @@ function getCustomFormLabel(formElement) {
       ? (<ControlLabel {...formElement.labelProps}>{(formElement.label && !Array.isArray(formElement.customLabel) && typeof formElement.customLabel === 'object')
         ? this.getRenderedComponent(formElement.customLabel)
         : formElement.customLabel}</ControlLabel>)
-      : (<Label {...formElement.labelProps}>{(formElement.label && !Array.isArray(formElement.customLabel) && typeof formElement.customLabel === 'object')
+      : (<Label {...formElement.labelProps}>{(formElement.customLabel && !Array.isArray(formElement.customLabel) && typeof formElement.customLabel === 'object')
         ? this.getRenderedComponent(formElement.customLabel)
           : formElement.customLabel}</Label>)
     : null;
