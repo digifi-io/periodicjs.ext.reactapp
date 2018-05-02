@@ -116,7 +116,7 @@ function getCustomFormLabel(formElement) {
       ? (<ControlLabel {...formElement.labelProps}>{(formElement.label && !Array.isArray(formElement.customLabel) && typeof formElement.customLabel === 'object')
         ? this.getRenderedComponent(formElement.customLabel)
         : formElement.customLabel}</ControlLabel>)
-      : (<Label {...formElement.labelProps}>{(formElement.label && !Array.isArray(formElement.customLabel) && typeof formElement.customLabel === 'object')
+      : (<Label {...formElement.labelProps}>{(formElement.customLabel && !Array.isArray(formElement.customLabel) && typeof formElement.customLabel === 'object')
         ? this.getRenderedComponent(formElement.customLabel)
           : formElement.customLabel}</Label>)
     : null;
@@ -486,7 +486,7 @@ export function getFormDropdown(options){
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let isValid = getValidStatus(this.state, formElement.name);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let wrapperProps= Object.assign({
     className: '__re-bulma_control',
   }, formElement.wrapperProps)
@@ -552,7 +552,7 @@ export function getFormDropdown(options){
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div {...wrapperProps}>  
       <Dropdown {...passedProps}
         value={initialValue} 
@@ -575,7 +575,7 @@ export function getFormMaskedInput(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let isValid = getValidStatus(this.state, formElement.name);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let passableProps = Object.assign({
     type: 'text',
     className: '__re-bulma_input',
@@ -651,7 +651,7 @@ export function getFormMaskedInput(options) {
     : wrapperProps.className;
   
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <span {...wrapperProps}>
       <MaskedInput
       {...passableProps}
@@ -675,7 +675,7 @@ export function getFormTextInputArea(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let isValid = getValidStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name]) ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let submitMultipartForm;
   let passableProps = Object.assign({
     type: formElement.type || 'text',
@@ -737,7 +737,7 @@ export function getFormTextInputArea(options) {
   }
   if (submitMultipartForm) clearTimeout(submitMultipartForm);
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <Input {...passableProps}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
       color={(hasError)?'isDanger':undefined}
@@ -755,7 +755,7 @@ export function getFormTextArea(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let isValid = getValidStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name]) ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let passableProps = Object.assign({
   }, formElement.passProps);
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
@@ -777,7 +777,7 @@ export function getFormTextArea(options) {
       : '';
 
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)} 
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)} 
     <p className={"__re-bulma_control" + iconClassNames}>
     <Textarea {...passableProps}
       onChange={(event)=>onChange()(event)}
@@ -798,7 +798,7 @@ export function getFormSelect(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let isValid = getValidStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name]) ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let selectOptions = (this.state.__formOptions && this.state.__formOptions[ formElement.name ])
     ? this.state.__formOptions[ formElement.name ]
     : formElement.options || [];
@@ -828,7 +828,7 @@ export function getFormSelect(options) {
   formElement.customIconStyle = Object.assign({},{ right: "24px" },formElement.customIconStyle);
 
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)} 
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)} 
     <span className={"__re-bulma_control" + iconClassNames} style={{ position: 'relative', display: 'block'}}>
       <Select {...formElement.passProps}
         style={Object.assign({}, { flex: 'inherit', marginBottom: 0 }, (formElement.passProps && formElement.passProps.style) ? formElement.passProps.style : {})}  
@@ -853,7 +853,7 @@ export function getFormCheckbox(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
-  let getCustomFormDataLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = () => {};
   } else if (!onValueChange) {
@@ -890,7 +890,7 @@ export function getFormCheckbox(options) {
       onChange={onValueChange}
       >
     </input>
-    {getCustomFormDataLabel(formElement)}  
+    {customLabel(formElement)}  
     <span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder] || formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
@@ -903,7 +903,7 @@ export function getFormButton(options) {
   }
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name]) ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let onClickHandler;
   if (formElement.onClick) {
     if (formElement.onClick.indexOf('func:this.props') !== -1) {
@@ -919,7 +919,7 @@ export function getFormButton(options) {
 
   
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <Button {...formElement.passProps}
       type={formElement.type}
       name={this.state[ formElement.formdata_name ] || formElement.name}
@@ -978,7 +978,7 @@ export function getFormSwitch(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name]) ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = () => {};
   } else if (!onValueChange) {
@@ -1006,7 +1006,7 @@ export function getFormSwitch(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}  
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}  
     <div>
       <RCSwitch
         {...formElement.passProps}
@@ -1027,7 +1027,7 @@ export function getFormSwitch(options) {
 export function getRawInput(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let wrapperProps = Object.assign({
     style: {
       overflow: 'auto',
@@ -1056,7 +1056,7 @@ export function getRawInput(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}  
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}  
     <div {...wrapperProps}>
       <input {...passableProps}
         type={formElement.type}
@@ -1167,11 +1167,11 @@ export function getImage(options) {
 
 export function getFormLink(options) {
   let { formElement, i, button, } = options;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  
   let wrapperProps = Object.assign({
     style:styles.inputStyle,
   }, formElement.wrapperProps);
-  let linkWrapperProps = Object.assign({
+  let linkWrapperProps =   Object.assign({
     style: {
       padding: '0 5px',
     },
@@ -1189,9 +1189,10 @@ export function getFormLink(options) {
 }
 
 export function getFormGroup(options) {
+  let customLabel = getCustomFormLabel.bind(this);
   let { formElement, i, groupElements, } = options;
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}  
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}  
     <Group {...formElement.passProps}
     >
       {groupElements}  
@@ -1203,7 +1204,7 @@ export function getFormCode(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
   let initialVal = getInitialValue(formElement, this.state);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let CodeMirrorProps = Object.assign({
     codeMirrorProps: Object.assign({
       lineNumbers: true,
@@ -1238,7 +1239,7 @@ export function getFormCode(options) {
   }, formElement.passProps);
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <RACodeMirror key={i} {...CodeMirrorProps}  />
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>
@@ -1246,7 +1247,7 @@ export function getFormCode(options) {
 }
 
 export function getFormDatePicker(options) {
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
   let initialVal = getInitialValue(formElement, this.state);
@@ -1275,14 +1276,14 @@ export function getFormDatePicker(options) {
   }, formElement.passProps);
   if (formElement.type === 'singleDatePicker') {
     return (<FormItem key={i} {...formElement.layoutProps} >
-      {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}
+      {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
       <SingleDatePickerWrapper key={i} {...SingleDatePickerProps} />
       {getCustomErrorLabel(hasError, this.state, formElement)}
     </FormItem>
     );
   } else if (formElement.type === 'rangeDatePicker') {
     return (<FormItem key={i} {...formElement.layoutProps} >
-      {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}
+      {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
       <DateRangePickerWrapper key={i} {...RangeDatePickerProps}  />
       {getCustomErrorLabel(hasError, this.state, formElement)}
     </FormItem>
@@ -1293,7 +1294,7 @@ export function getFormDatePicker(options) {
 export function getFormEditor(options) {
   let { formElement, i, onValueChange, } = options;
   let initialVal = getInitialValue(formElement, this.state);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   if (!onValueChange) {
     onValueChange = (newvalue) => {
       // console.debug({ newvalue, });
@@ -1331,7 +1332,7 @@ export function getFormEditor(options) {
   }, formElement.passProps);
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <PreviewEditor key={i} {...EditorProps} value={initialVal} />
   </FormItem>
   );
@@ -1437,7 +1438,7 @@ function getConfirmModal(options) {
 
 export function getFormSubmit(options) {
   let { formElement, i, } = options;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  let customLabel = getCustomFormLabel.bind(this);
   let passableProps = Object.assign({
     state: (formElement.confirmModal && Object.keys(this.state.formDataErrors).length>0)
       ? 'isDisabled'
@@ -1449,7 +1450,7 @@ export function getFormSubmit(options) {
       : {},
     formElement.passProps);
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement)}
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <Button {...passableProps}
       onClick={() => { 
         let validated_formdata = validateForm.call(this, { formdata: this.state, validationErrors: {} });
