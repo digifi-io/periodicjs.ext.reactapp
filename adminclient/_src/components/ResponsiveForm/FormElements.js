@@ -240,7 +240,7 @@ function getCustomFormLabel(formElement) {
   ) : _react2.default.createElement(
     _reBulma.Label,
     formElement.labelProps,
-    formElement.label && !Array.isArray(formElement.customLabel) && (0, _typeof3.default)(formElement.customLabel) === 'object' ? this.getRenderedComponent(formElement.customLabel) : formElement.customLabel
+    formElement.customLabel && !Array.isArray(formElement.customLabel) && (0, _typeof3.default)(formElement.customLabel) === 'object' ? this.getRenderedComponent(formElement.customLabel) : formElement.customLabel
   ) : null;
 }
 function getInitialValue(formElement, state) {
@@ -580,7 +580,7 @@ function getFormDropdown(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var isValid = getValidStatus(this.state, formElement.name);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var wrapperProps = (0, _assign2.default)({
     className: '__re-bulma_control'
   }, formElement.wrapperProps);
@@ -654,7 +654,7 @@ function getFormDropdown(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'div',
       wrapperProps,
@@ -684,7 +684,7 @@ function getFormMaskedInput(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var isValid = getValidStatus(this.state, formElement.name);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var passableProps = (0, _assign2.default)({
     type: 'text',
     className: '__re-bulma_input'
@@ -759,7 +759,7 @@ function getFormMaskedInput(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'span',
       wrapperProps,
@@ -789,7 +789,7 @@ function getFormTextInputArea(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var isValid = getValidStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var submitMultipartForm = void 0;
   var passableProps = (0, _assign2.default)({
     type: formElement.type || 'text'
@@ -851,7 +851,7 @@ function getFormTextInputArea(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
       help: getFormElementHelp(hasError, this.state, formElement.name),
       color: hasError ? 'isDanger' : undefined,
@@ -872,7 +872,7 @@ function getFormTextArea(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var isValid = getValidStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var passableProps = (0, _assign2.default)({}, formElement.passProps);
   var getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   passableProps = getPassablePropkeyevents(passableProps, formElement);
@@ -893,7 +893,7 @@ function getFormTextArea(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'p',
       { className: "__re-bulma_control" + iconClassNames },
@@ -921,7 +921,7 @@ function getFormSelect(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var isValid = getValidStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var selectOptions = this.state.__formOptions && this.state.__formOptions[formElement.name] ? this.state.__formOptions[formElement.name] : formElement.options || [];
   if (typeof initialValue !== 'string') {
     initialValue = (0, _stringify2.default)(initialValue, null, 2);
@@ -949,7 +949,7 @@ function getFormSelect(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'span',
       { className: "__re-bulma_control" + iconClassNames, style: { position: 'relative', display: 'block' } },
@@ -987,7 +987,7 @@ function getFormCheckbox(options) {
 
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
-  var getCustomFormDataLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = function onValueChange() {};
   } else if (!onValueChange) {
@@ -1023,7 +1023,7 @@ function getFormCheckbox(options) {
       checked: formElement.type === 'radio' ? this.state[formElement.name] === formElement.value : this.state[formElement.name],
       onChange: onValueChange
     })),
-    getCustomFormDataLabel(formElement),
+    customLabel(formElement),
     _react2.default.createElement(
       'span',
       formElement.placeholderProps,
@@ -1043,7 +1043,7 @@ function getFormButton(options) {
   }
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var onClickHandler = void 0;
   if (formElement.onClick) {
     if (formElement.onClick.indexOf('func:this.props') !== -1) {
@@ -1060,7 +1060,7 @@ function getFormButton(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_reBulma.Button, (0, _extends3.default)({}, formElement.passProps, {
       type: formElement.type,
       name: this.state[formElement.formdata_name] || formElement.name,
@@ -1127,7 +1127,7 @@ function getFormSwitch(options) {
 
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   if (formElement.disableOnChange) {
     onValueChange = function onValueChange() {};
   } else if (!onValueChange) {
@@ -1157,7 +1157,7 @@ function getFormSwitch(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'div',
       null,
@@ -1188,7 +1188,7 @@ function getRawInput(options) {
       onValueChange = options.onValueChange;
 
   var hasError = getErrorStatus(this.state, formElement.name);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var wrapperProps = (0, _assign2.default)({
     style: {
       overflow: 'auto',
@@ -1219,7 +1219,7 @@ function getRawInput(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'div',
       wrapperProps,
@@ -1357,7 +1357,7 @@ function getFormLink(options) {
       i = options.i,
       button = options.button;
 
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+
   var wrapperProps = (0, _assign2.default)({
     style: _styles2.default.inputStyle
   }, formElement.wrapperProps);
@@ -1385,6 +1385,7 @@ function getFormLink(options) {
 }
 
 function getFormGroup(options) {
+  var customLabel = getCustomFormLabel.bind(this);
   var formElement = options.formElement,
       i = options.i,
       groupElements = options.groupElements;
@@ -1392,7 +1393,7 @@ function getFormGroup(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       _reBulma.Group,
       formElement.passProps,
@@ -1408,7 +1409,7 @@ function getFormCode(options) {
 
   var hasError = getErrorStatus(this.state, formElement.name);
   var initialVal = getInitialValue(formElement, this.state);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var CodeMirrorProps = (0, _assign2.default)({
     codeMirrorProps: (0, _assign2.default)({
       lineNumbers: true,
@@ -1445,14 +1446,14 @@ function getFormCode(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_RACodeMirror2.default, (0, _extends3.default)({ key: i }, CodeMirrorProps)),
     getCustomErrorLabel(hasError, this.state, formElement)
   );
 }
 
 function getFormDatePicker(options) {
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var formElement = options.formElement,
       i = options.i,
       onValueChange = options.onValueChange;
@@ -1495,7 +1496,7 @@ function getFormDatePicker(options) {
     return _react2.default.createElement(
       _FormItem2.default,
       (0, _extends3.default)({ key: i }, formElement.layoutProps),
-      formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+      formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
       _react2.default.createElement(_SingleDatePickerWrapper2.default, (0, _extends3.default)({ key: i }, SingleDatePickerProps)),
       getCustomErrorLabel(hasError, this.state, formElement)
     );
@@ -1503,7 +1504,7 @@ function getFormDatePicker(options) {
     return _react2.default.createElement(
       _FormItem2.default,
       (0, _extends3.default)({ key: i }, formElement.layoutProps),
-      formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+      formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
       _react2.default.createElement(_DateRangePickerWrapper2.default, (0, _extends3.default)({ key: i }, RangeDatePickerProps)),
       getCustomErrorLabel(hasError, this.state, formElement)
     );
@@ -1518,7 +1519,7 @@ function getFormEditor(options) {
       onValueChange = options.onValueChange;
 
   var initialVal = getInitialValue(formElement, this.state);
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   if (!onValueChange) {
     onValueChange = function onValueChange(newvalue) {
       // console.debug({ newvalue, });
@@ -1558,7 +1559,7 @@ function getFormEditor(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_PreviewEditor2.default, (0, _extends3.default)({ key: i }, EditorProps, { value: initialVal }))
   );
 }
@@ -1668,7 +1669,7 @@ function getFormSubmit(options) {
   var formElement = options.formElement,
       i = options.i;
 
-  getCustomFormLabel = getCustomFormLabel.bind(this);
+  var customLabel = getCustomFormLabel.bind(this);
   var passableProps = (0, _assign2.default)({
     state: formElement.confirmModal && (0, _keys2.default)(this.state.formDataErrors).length > 0 ? 'isDisabled' : undefined
   }, this.props.useLoadingButtons && this.state.__formIsSubmitting ? {
@@ -1677,7 +1678,7 @@ function getFormSubmit(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
-    formElement.customLabel ? getCustomFormLabel(formElement) : getFormLabel(formElement),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       _reBulma.Button,
       (0, _extends3.default)({}, passableProps, {
