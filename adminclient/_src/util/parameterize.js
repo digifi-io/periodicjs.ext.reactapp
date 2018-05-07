@@ -9,6 +9,10 @@ var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -64,7 +68,7 @@ var setParameters = exports.setParameters = function setParameters() {
     if (options && options.resource && typeof options.resource === 'string') {
       options.resource = options.resource.replace(new RegExp(':' + pkeys[i]), params[pkeys[i]]);
     } else if (options && options.resource && typeof options.resource !== 'string' && options.resource.url) {
-      options.resource.url = options.resource.url.replace(new RegExp(':' + pkeys[i]), params[pkeys[i]]);
+      options.resource = (0, _assign2.default)({}, options.resource, { url: options.resource.url.replace(new RegExp(':' + pkeys[i]), params[pkeys[i]]) });
     }
   }
   if (options.query && (0, _typeof3.default)(options.query) === 'object') options.resource += '?' + _querystring2.default.stringify(options.query);else if (typeof options.query === 'string') options.resource += '' + (/^\?/.test(options.query) ? '' : '?') + options.query;
