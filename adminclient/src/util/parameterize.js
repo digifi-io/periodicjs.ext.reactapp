@@ -42,7 +42,7 @@ export const setParameters = function(options = {}) {
     if (options && options.resource && typeof options.resource === 'string') {
       options.resource = options.resource.replace(new RegExp(`:${ pkeys[i] }`), params[pkeys[i]]);
     } else if (options && options.resource && typeof options.resource !== 'string' && options.resource.url) {
-      options.resource.url = options.resource.url.replace(new RegExp(`:${pkeys[ i ]}`), params[ pkeys[ i ] ]);
+      options.resource = Object.assign({}, options.resource, { url: options.resource.url.replace(new RegExp(`:${pkeys[ i ]}`), params[ pkeys[ i ] ]), });
     }
   }
   if (options.query && typeof options.query === 'object') options.resource += `?${ querystring.stringify(options.query) }`;
