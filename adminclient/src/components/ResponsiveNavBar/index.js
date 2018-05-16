@@ -35,7 +35,6 @@ class ResponsiveNavBar extends Component {
     let toggleData = props.toggleData || {};
     let navType = props.navType || '';
     this.state = {
-      initialActiveIndex: -1,
       activeIndex: [0],
       activeSinglePageIndex: [ 0, 0 ],
     };
@@ -254,13 +253,13 @@ class ResponsiveNavBar extends Component {
      return (
         <Menu.Item {...this.props.sectionProps}>
           <Accordion.Title
-            active={activeIndex.indexOf(sectionIdx) !== -1} 
+            active={(this.props.allActive) ? true : activeIndex.indexOf(sectionIdx) !== -1} 
             index={sectionIdx} onClick={this.handleClick} 
             content={section.title} 
             {...this.props.titleProps}>
           </Accordion.Title>
           <Accordion.Content
-            active={activeIndex.indexOf(sectionIdx) !== -1}
+           active={(this.props.allActive) ? true : activeIndex.indexOf(sectionIdx) !== -1}
             {...this.props.contentProps}>
             {subMenu}
           </Accordion.Content>
