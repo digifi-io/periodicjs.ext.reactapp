@@ -52,19 +52,18 @@ class ResponsiveNavBar extends Component {
   } 
 
   componentWillMount() {
-    this.props.navSections.map((section, idx) => {
-      if (this.props.navData && this.props.navData[idx]) {
-        this.props.navData[idx].map((link, linkIdx) => {
-          let linkURL = this.getBaseUrl(section.baseURL, this.props.params, this.props, linkIdx);
-          link.linkURL = linkURL;
-          if (linkURL === this.props.location.pathname) {
-            this.setState({ 
-              activeIndex: [idx]
-            })
-          }
-        })
-      }
-    });
+     let newActiveIndex = this.props.navSections.map((section, idx) => {
+        if (this.props.navData && this.props.navData[idx]) {
+          this.props.navData[idx].map((link, linkIdx) => {
+            let linkURL = this.getBaseUrl(section.baseURL, this.props.params, this.props, linkIdx);
+            link.linkURL = linkURL;
+          })
+        }
+        return idx;
+      });
+    this.setState({
+      activeIndex: newActiveIndex,
+    })
   }
 
   getBaseUrl(baseurl, params, prop, index) {
