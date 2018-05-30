@@ -13,6 +13,7 @@ const propTypes = {
   active: PropTypes.boolean,
   navType: PropTypes.string,
   customComponents: PropTypes.array,
+  allActive: PropTypes.boolean,
 };
 
 const defaultProps = {
@@ -23,6 +24,7 @@ const defaultProps = {
   linkProps: {},
   toggleData: {},
   customComponents: [],
+  allActive: false,
 };
 
 class ResponsiveNavBar extends Component {
@@ -34,6 +36,7 @@ class ResponsiveNavBar extends Component {
     let linkProps = props.linkProps || {};
     let toggleData = props.toggleData || {};
     let navType = props.navType || '';
+    let allActive = props.allActive;
     this.state = {
       activeIndex: [0],
       activeSinglePageIndex: [ 0, 0 ],
@@ -247,19 +250,20 @@ class ResponsiveNavBar extends Component {
   const { activeIndex, activeSinglePageIndex } = this.state;
    let navMenu = this.props.navSections.map((section, sectionIdx)=> {
     if (section.toggle && !this.props.toggleData[section.toggle]) { return; }
-     
      let subMenu = (this.props.navType === 'singlePage') ? this.getSinglePageNav(section, sectionIdx) : this.getMultipageNav(section, sectionIdx);
-
+     let activeStatus = (this.props.allActive) 
+      ? true 
+      : activeIndex.indexOf(sectionIdx) !== -1;
      return (
         <Menu.Item {...this.props.sectionProps}>
           <Accordion.Title
-            active={(this.props.allActive) ? true : activeIndex.indexOf(sectionIdx) !== -1} 
+            active={activeStatus} 
             index={sectionIdx} onClick={this.handleClick} 
             content={section.title} 
             {...this.props.titleProps}>
           </Accordion.Title>
           <Accordion.Content
-           active={(this.props.allActive) ? true : activeIndex.indexOf(sectionIdx) !== -1}
+           active={activeStatus}
             {...this.props.contentProps}>
             {subMenu}
           </Accordion.Content>
