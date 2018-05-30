@@ -60,7 +60,8 @@ var propTypes = {
   params: _react.PropTypes.array,
   active: _react.PropTypes.boolean,
   navType: _react.PropTypes.string,
-  customComponents: _react.PropTypes.array
+  customComponents: _react.PropTypes.array,
+  allActive: _react.PropTypes.boolean
 };
 
 var defaultProps = {
@@ -70,7 +71,8 @@ var defaultProps = {
   params: [],
   linkProps: {},
   toggleData: {},
-  customComponents: []
+  customComponents: [],
+  allActive: false
 };
 
 var ResponsiveNavBar = function (_Component) {
@@ -87,8 +89,8 @@ var ResponsiveNavBar = function (_Component) {
     var linkProps = props.linkProps || {};
     var toggleData = props.toggleData || {};
     var navType = props.navType || '';
+    var allActive = props.allActive;
     _this.state = {
-      initialActiveIndex: -1,
       activeIndex: [0],
       activeSinglePageIndex: [0, 0]
     };
@@ -108,18 +110,17 @@ var ResponsiveNavBar = function (_Component) {
     value: function componentWillMount() {
       var _this2 = this;
 
-      this.props.navSections.map(function (section, idx) {
+      var newActiveIndex = this.props.navSections.map(function (section, idx) {
         if (_this2.props.navData && _this2.props.navData[idx]) {
           _this2.props.navData[idx].map(function (link, linkIdx) {
             var linkURL = _this2.getBaseUrl(section.baseURL, _this2.props.params, _this2.props, linkIdx);
             link.linkURL = linkURL;
-            if (linkURL === _this2.props.location.pathname) {
-              _this2.setState({
-                activeIndex: [idx]
-              });
-            }
           });
         }
+        return idx;
+      });
+      this.setState({
+        activeIndex: newActiveIndex
       });
     }
   }, {
@@ -331,21 +332,20 @@ var ResponsiveNavBar = function (_Component) {
         if (section.toggle && !_this5.props.toggleData[section.toggle]) {
           return;
         }
-
         var subMenu = _this5.props.navType === 'singlePage' ? _this5.getSinglePageNav(section, sectionIdx) : _this5.getMultipageNav(section, sectionIdx);
-
+        var activeStatus = _this5.props.allActive ? true : activeIndex.indexOf(sectionIdx) !== -1;
         return _react2.default.createElement(
           _semanticUiReact.Menu.Item,
           _this5.props.sectionProps,
           _react2.default.createElement(_semanticUiReact.Accordion.Title, (0, _extends3.default)({
-            active: activeIndex.indexOf(sectionIdx) !== -1,
+            active: activeStatus,
             index: sectionIdx, onClick: _this5.handleClick,
             content: section.title
           }, _this5.props.titleProps)),
           _react2.default.createElement(
             _semanticUiReact.Accordion.Content,
             (0, _extends3.default)({
-              active: activeIndex.indexOf(sectionIdx) !== -1
+              active: activeStatus
             }, _this5.props.contentProps),
             subMenu
           )
