@@ -644,7 +644,6 @@ var user = {
       var sessionSettings = getState().settings.session;
       var notificationsSettings = getState().settings.ui.notifications;
       var url = loginSettings.url;
-
       dispatch(_this10.loginRequest(url));
       fetch(url, {
         method: loginSettings.method || 'POST',
@@ -653,11 +652,13 @@ var user = {
           // 'Content-Type': 'application/json',
         }, loginSettings.options.headers, {
           username: loginData.username,
-          password: loginData.password
+          password: loginData.password,
+          organization: loginData.organization
         }),
         body: (0, _stringify2.default)({
           username: loginData.username,
-          password: loginData.password
+          password: loginData.password,
+          organization: loginData.organization
         })
       }).then(checkStatus).then(function (response) {
         return response.json();
