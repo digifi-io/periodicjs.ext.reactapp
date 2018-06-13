@@ -584,7 +584,6 @@ const user = {
       let sessionSettings = getState().settings.session;
       let notificationsSettings = getState().settings.ui.notifications;
       let url = loginSettings.url;
-
       dispatch(this.loginRequest(url));
       fetch(url, {
         method: loginSettings.method || 'POST',
@@ -594,10 +593,12 @@ const user = {
         }, loginSettings.options.headers, {
             username: loginData.username,
             password: loginData.password,
+            organization: loginData.organization,
           }),
         body: JSON.stringify({
           username: loginData.username,
           password: loginData.password,
+          organization: loginData.organization,
         }),
       })
         .then(checkStatus)
