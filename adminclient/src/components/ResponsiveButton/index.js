@@ -163,13 +163,17 @@ class ResponsiveButton extends Component {
     // console.debug({ value, selectProps });
   }
   render() {
-    let getPropsForOnClick = () => {
+    let getPropsForOnClick = (token) => {
       return {
         clickprop: this.props.onClick,
         clickThisProp: this.props.onclickThisProp,
         clickAddPropObject: this.props.onclickAddProp,
         clickPropObject: this.props.onclickPropObject,
-        clickBaseUrl: this.props.onclickBaseUrl,
+        clickBaseUrl: token
+          ? this.props.onclickBaseUrl.includes('?')
+            ? `${this.props.onclickBaseUrl}&access_token=${token}`
+            : `${this.props.onclickBaseUrl}?access_token=${token}`
+          : this.props.onclickBaseUrl,
         clickLinkParams: this.props.onclickLinkParams,
         clickPassProps: this.props.onclickProps,
         clickFetchProps: this.props.fetchProps,
@@ -210,7 +214,9 @@ class ResponsiveButton extends Component {
         }
       </Button>;
     } else if (this.props.aProps) { 
-      return <a className="__ra_rb" {...this.props.aProps} onClick={this.handleOnClick.bind(this, getPropsForOnClick())} href={this.getHref.call(this, getPropsForOnClick())}>{this.props.children}</a>;
+      let token;
+      if (this.props.aProps.token) token = localStorage.getItem('Admin Panel_jwt_token');
+      return <a className="__ra_rb" {...this.props.aProps} onClick={this.handleOnClick.bind(this, getPropsForOnClick())} href={this.getHref.call(this, getPropsForOnClick(token))}>{this.props.children}</a>;
     } else {
       return <span className="__ra_rb"
         {...this.props.spanProps}
