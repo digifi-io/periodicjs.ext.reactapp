@@ -2,7 +2,7 @@ import flatten from 'flat';
 import validate from 'validate.js';
 
 export function validateFormElement(options) {
-  try {
+  try { 
     let { formElement, } = options;
     let validation = this.props.validations.filter(validation => validation.name === formElement.name);
     validation = (validation.length > 0) ? validation[0] : false;
@@ -32,6 +32,22 @@ export function validateFormElement(options) {
     }
   } catch (e) {
     console.debug('validation check error', e);
+  }
+}
+
+export function valueCheckFormElement(options) {
+  try {
+    let { formElement, } = options;
+    let validationValid = Object.assign({}, this.state.formDataValid);
+      if (this.state[formElement.name]) {
+        validationValid[formElement.name] = true;
+      } else {
+        delete validationValid[formElement.name];
+      }
+      this.setState({ formDataValid: validationValid });
+      // console.debug('has errors', validationErrors, 'this.state[formElement.name]', this.state[ formElement.name ]);
+  } catch (e) {
+    console.debug('value check error', e);
   }
 }
 
