@@ -94,7 +94,9 @@ function valueChangeHandler(formElement) {
     this.setState(updatedStateProp, () => {
       if(formElement.validateOnChange){
       this.validateFormElement({ formElement, });
-    }});
+      } else if (formElement.valueCheckOnChange) {
+        this.valueCheckFormElement({ formElement })
+      }});
   };
 }
 
@@ -176,6 +178,8 @@ function getPassablePropsKeyEvents(passableProps, formElement) {
     passableProps.onBlur = (e) => {
       if (formElement.validateOnBlur) {
         this.validateFormElement({ formElement, });
+      } else if (formElement.valueCheckOnBlur) {
+        this.valueCheckFormElement({ formElement, });
       }
       customonBlur(e, formElement);
     };
@@ -523,8 +527,10 @@ export function getFormDropdown(options){
       });
       this.setState(updatedStateProp, () => {
         if(formElement.validateOnChange){
-        this.validateFormElement({ formElement, });
-      }});
+          this.validateFormElement({ formElement, });
+        } else if (formElement.valueCheckOnChange) {
+          this.valueCheckFormElement({ formElement })
+        }});
     }
   } else if (!onChange) {
     onChange = (event, newvalue)=>{
@@ -533,6 +539,8 @@ export function getFormDropdown(options){
       this.setState(updatedStateProp, () => {
         if(formElement.validateOnChange){
         this.validateFormElement({ formElement, });
+      } else if (formElement.valueCheckOnChange) {
+        this.valueCheckFormElement({ formElement })
       }});
     }
   }
@@ -1255,6 +1263,8 @@ export function getFormDatePicker(options) {
     this.setState({ [formElement.name]: (date) ? date.toISOString() : null }, () => {
       if(formElement.validateOnChange){
         this.validateFormElement({ formElement, })
+      } else if (formElement.valueCheckOnChange) {
+        this.valueCheckFormElement({ formElement })
       }
     });
   };
@@ -1263,6 +1273,8 @@ export function getFormDatePicker(options) {
     this.setState({ [formElement.name]: combined_date}, () => {
       if(formElement.validateOnChange){
         this.validateFormElement({ formElement, })
+      } else if (formElement.valueCheckOnChange) {
+        this.valueCheckFormElement({ formElement })
       }
     })
   };

@@ -4,7 +4,7 @@ import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
-import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement } from './FormHelpers';
+import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, valueCheckFormElement } from './FormHelpers';
 import flatten, { unflatten, } from 'flat';
 import qs from 'querystring';
 // function getCallbackFromString(fetchOptions.successCallback) {
@@ -136,6 +136,7 @@ class ResponsiveForm extends Component{
     this.getImage = getImage.bind(this);
     this.getFormDNDTable = getFormDNDTable.bind(this);
     this.validateFormElement = validateFormElement.bind(this);
+    this.valueCheckFormElement = valueCheckFormElement.bind(this);
 
     this.staticLayouts = (this.props.staticLayouts)
       ? Object.keys(this.props.staticLayouts).reduce((result, layout) => {
