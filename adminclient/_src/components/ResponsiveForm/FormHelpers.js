@@ -25,6 +25,7 @@ var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
 exports.validateFormElement = validateFormElement;
+exports.valueCheckFormElement = valueCheckFormElement;
 exports.validateForm = validateForm;
 exports.assignHiddenFields = assignHiddenFields;
 exports.getCallbackFromString = getCallbackFromString;
@@ -78,6 +79,23 @@ function validateFormElement(options) {
     }
   } catch (e) {
     console.debug('validation check error', e);
+  }
+}
+
+function valueCheckFormElement(options) {
+  try {
+    var formElement = options.formElement;
+
+    var validationValid = (0, _assign2.default)({}, this.state.formDataValid);
+    if (this.state[formElement.name]) {
+      validationValid[formElement.name] = true;
+    } else {
+      delete validationValid[formElement.name];
+    }
+    this.setState({ formDataValid: validationValid });
+    // console.debug('has errors', validationErrors, 'this.state[formElement.name]', this.state[ formElement.name ]);
+  } catch (e) {
+    console.debug('value check error', e);
   }
 }
 

@@ -216,6 +216,8 @@ function valueChangeHandler(formElement) {
     _this.setState(updatedStateProp, function () {
       if (formElement.validateOnChange) {
         _this.validateFormElement({ formElement: formElement });
+      } else if (formElement.valueCheckOnChange) {
+        _this.valueCheckFormElement({ formElement: formElement });
       }
     });
   };
@@ -298,6 +300,8 @@ function getPassablePropsKeyEvents(passableProps, formElement) {
     passableProps.onBlur = function (e) {
       if (formElement.validateOnBlur) {
         _this2.validateFormElement({ formElement: formElement });
+      } else if (formElement.valueCheckOnBlur) {
+        _this2.valueCheckFormElement({ formElement: formElement });
       }
       customonBlur(e, formElement);
     };
@@ -620,6 +624,8 @@ function getFormDropdown(options) {
       _this6.setState(updatedStateProp, function () {
         if (formElement.validateOnChange) {
           _this6.validateFormElement({ formElement: formElement });
+        } else if (formElement.valueCheckOnChange) {
+          _this6.valueCheckFormElement({ formElement: formElement });
         }
       });
     };
@@ -630,6 +636,8 @@ function getFormDropdown(options) {
       _this6.setState(updatedStateProp, function () {
         if (formElement.validateOnChange) {
           _this6.validateFormElement({ formElement: formElement });
+        } else if (formElement.valueCheckOnChange) {
+          _this6.valueCheckFormElement({ formElement: formElement });
         }
       });
     };
@@ -1468,6 +1476,8 @@ function getFormDatePicker(options) {
     this.setState((0, _defineProperty3.default)({}, formElement.name, date ? date.toISOString() : null), function () {
       if (formElement.validateOnChange) {
         _this14.validateFormElement({ formElement: formElement });
+      } else if (formElement.valueCheckOnChange) {
+        _this14.valueCheckFormElement({ formElement: formElement });
       }
     });
   };
@@ -1481,6 +1491,8 @@ function getFormDatePicker(options) {
     this.setState((0, _defineProperty3.default)({}, formElement.name, combined_date), function () {
       if (formElement.validateOnChange) {
         _this15.validateFormElement({ formElement: formElement });
+      } else if (formElement.valueCheckOnChange) {
+        _this15.valueCheckFormElement({ formElement: formElement });
       }
     });
   };
