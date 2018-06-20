@@ -80,7 +80,7 @@ var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
     var val = void 0;
     if (typeof data[key] === 'string') val = [data[key]];else val = [data[key].url, data[key].options];
     var additionalParams = '';
-    additionalParams = typeof window !== 'undefined' && (0, _keys2.default)(window).length ? window.location.search.charAt(0) === '?' ? window.location.search.substr(1) : window.location.search : '';
+    additionalParams = typeof window !== 'undefined' && (0, _keys2.default)(window).length && window.location && window.location.search ? window.location.search.charAt(0) === '?' ? window.location.search.substr(1) : window.location.search : '';
     var route = val[0] || '';
     var fetchOptions = (0, _assign2.default)({}, val[1], { headers: headers });
     var onSuccess = fetchOptions.onSuccess,

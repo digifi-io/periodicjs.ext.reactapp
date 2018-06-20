@@ -50,8 +50,8 @@ export const fetchPaths = function (basename, data = {}, headers) {
     if (typeof data[key] === 'string') val = [data[key], ];
     else val = [data[key].url, data[key].options, ];
     let additionalParams = '';
-    additionalParams = (typeof window !== 'undefined' && Object.keys(window).length)
-      ?  (window.location.search.charAt(0) === '?')
+    additionalParams = (typeof window !== 'undefined' && Object.keys(window).length && window.location && window.location.search)
+      ? (window.location.search.charAt(0) === '?')
         ? window.location.search.substr(1)
         : window.location.search
       : '';
