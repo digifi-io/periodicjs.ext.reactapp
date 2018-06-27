@@ -421,6 +421,7 @@ class ResponsiveForm extends Component{
   render() {
     let keyValue = 0;
     let formGroupData = this.props.formgroups.map((formgroup, i) => {
+      console.log('RERENDERING???????????????????????');
       let gridProps = Object.assign({
         isMultiline: true,
         key: i,

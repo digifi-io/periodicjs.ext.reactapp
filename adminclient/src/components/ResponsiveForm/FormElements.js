@@ -25,7 +25,7 @@ import pluralize from 'pluralize';
 import flatten, { unflatten, } from 'flat';
 import styles from '../../styles';
 import { validateForm, } from './FormHelpers';
-import debounce from 'debounce';
+// import debounce from 'debounce';
 
 export function getPropertyAttribute(options) {
   let { property, element, } = options;
@@ -487,7 +487,6 @@ export function getFormDatalist(options) {
       value={initialValue} />
   </FormItem>);
 }
-
 export function getFormDropdown(options) {
   let { formElement, i, } = options;
   let initialValue = getInitialValue(formElement, Object.assign({}, this.state, unflatten(this.state)));
@@ -498,12 +497,12 @@ export function getFormDropdown(options) {
   let wrapperProps = Object.assign({
     className: '__re-bulma_control',
   }, formElement.wrapperProps)
-
+  
   wrapperProps.className = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ?
-    wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
-    : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
-    : wrapperProps.className;
-
+  wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
+  : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
+  : wrapperProps.className;
+  
   let onChange;
   let passedProps = formElement.passProps;
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
@@ -512,32 +511,34 @@ export function getFormDropdown(options) {
   let displayField = (formElement.passProps.displayField) ? formElement.passProps.displayField : 'label';
   let valueField = (formElement.passProps.valueField) ? formElement.passProps.valueField : 'value';
   let updatedState = {};
+  var prev = '';
+  console.log('hitting getFormDropdown: ', prev);
   if (formElement.searchProps && passedProps.search) {
-    let called = 0;
-    let prev = '';
-    let searchState = {
-      called: 0,
-      prev: '',
+    function debounce(func, wait, immediate) {
+      var timeout;
+      return function() {
+        var context = this, args = arguments;
+        var later = function() {
+          timeout = null;
+          console.log('prev in later: ', prev );
+          if (!immediate && prev !== args[ 1 ]) {
+            prev = args[ 1 ];
+            console.log('prev in block: ', prev );
+            func.apply(context, args);
+          } else {
+            return [];
+          }
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
     };
     passedProps.search = debounce((dropdowns, query) => {
-      // debounce(() => {
-      //   console.log({query, dropdowns, prev})
-      //   if (prev !== query) {
-      //     prev = query;
-      //     console.log('DIFF');
-      //     return [ 'diff' ];
-      //   } else {
-      //     console.log('SAME');
-      //     return ['same'];
-      //   }
-      // }, 3000)()
-      called++;
-      searchState.called++;
-      console.log({ query, dropdowns, prev, called, searchState })
-      if (prev !== query) {
-        prev = query;
-        console.log('DIFF', prev);
-        console.log('DIFF', called);
+      console.log({ query, dropdowns, })
+      // if (prev !== query) {
+        // prev = query;
         let options = formElement.searchProps;
         if (options.pagenum < 1) {
           options.pagenum = 1;
@@ -568,65 +569,7 @@ export function getFormDropdown(options) {
             console.log({ e })
             this.props.errorNotification(e);
           });
-      } else {
-        console.log('SAME');
-        return [];
-      }
     }, 3000);
-
-    // debounce(() => {
-    //   if (!prev || (prev !== query)) {
-    //     console.log({ prev, query });
-    //     prev = query;
-    //     let options = formElement.searchProps;
-    //     if (options.pagenum < 1) {
-    //       options.pagenum = 1;
-    //     }
-    //     this.setState({ isLoading: true, });
-    //     let stateProps = this.props.getState();
-    //     let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
-    //       limit: this.state.limit || this.props.limit || 50,
-    //       sort: '-createdat',
-    //       // fq: (this.state.filterRowData && this.state.filterRowData.length)
-    //       //   ? this.state.filterRowData.map(frd => {
-    //       //     return `${frd.property}|||${frd.filter_value}|||${frd.value}`;
-    //       //   })
-    //       //   : undefined,
-    //       query: options.search,
-    //       allowSpecialCharacters: true,
-    //       pagenum: options.pagenum || 1,
-    //     })}`;
-    //     // console.debug('this.state.filterRowData', this.state.filterRowData, { options, fetchURL, });
-    //     let headers = Object.assign({
-    //       'x-access-token': stateProps.user.jwt_token,
-    //     }, stateProps.settings.userprofile.options.headers);
-    //     console.log({ headers, fetchURL })
-    //     utilities.fetchComponent(fetchURL, { headers, })()
-    //       .then(response => {
-    //         console.log({ response })
-    //         // let usingResponsePages = false;
-    //         // console.debug('this.props.dataMap',this.props.dataMap)
-    //         // console.log({ response })
-    //         if (response.data && response.result && response.status) {
-    //           // console.log('USE DATA FROM RESPONSE', response.data)
-    //           // console.log('this.props.dataMap',this.props.dataMap)
-    //           response = response.data;
-    //         }
-    //         updatedState.numPages = Math.ceil(updatedState.numItems / this.state.limit);
-    //         updatedState.limit = this.state.limit;
-    //         updatedState.currentPage = (typeof options.pagenum !== 'undefined') ? options.pagenum : this.props.currentPage;
-    //         updatedState.isLoading = false;
-    //         this.setState(updatedState);
-    //         return [];
-    //       }, e => {
-    //         console.log({ e })
-    //         this.props.errorNotification(e);
-    //       });
-    //   } else {
-    //     prev = query;
-    //     return options;
-    //   }
-    // }, 3000)()
   }
   else if (this.props.__formOptions && formElement.formoptions_field && this.props.__formOptions[ formElement.formoptions_field ]) {
     dropdowndata = this.props.__formOptions[ formElement.formoptions_field ];
