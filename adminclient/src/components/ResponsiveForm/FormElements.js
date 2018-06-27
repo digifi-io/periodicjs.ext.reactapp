@@ -513,8 +513,13 @@ export function getFormDropdown(options) {
   let valueField = (formElement.passProps.valueField) ? formElement.passProps.valueField : 'value';
   let updatedState = {};
   if (formElement.searchProps && passedProps.search) {
-    let prev;
-    passedProps.search = (dropdowns, query) => {
+    let called = 0;
+    let prev = '';
+    let searchState = {
+      called: 0,
+      prev: '',
+    };
+    passedProps.search = debounce((dropdowns, query) => {
       // debounce(() => {
       //   console.log({query, dropdowns, prev})
       //   if (prev !== query) {
@@ -526,86 +531,102 @@ export function getFormDropdown(options) {
       //     return ['same'];
       //   }
       // }, 3000)()
-
-      debounce(() => {
-        console.log({query, dropdowns, prev})
-        if (prev !== query) {
-          prev = query;
-          console.log('DIFF');
-          let options = formElement.searchProps;
-          if (options.pagenum < 1) {
-            options.pagenum = 1;
-          }
-          let stateProps = this.props.getState();
-          let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
-            limit: this.state.limit || this.props.limit || 50,
-            sort: '-createdat',
-            query: options.search,
-            allowSpecialCharacters: true,
-            pagenum: options.pagenum || 1,
-          })}`;
-          return [ 'diff' ];
-        } else {
-          console.log('SAME');
-          return ['same'];
+      called++;
+      searchState.called++;
+      console.log({ query, dropdowns, prev, called, searchState })
+      if (prev !== query) {
+        prev = query;
+        console.log('DIFF', prev);
+        console.log('DIFF', called);
+        let options = formElement.searchProps;
+        if (options.pagenum < 1) {
+          options.pagenum = 1;
         }
-      }, 3000)()
+        let stateProps = this.props.getState();
+        let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
+          limit: this.state.limit || this.props.limit || 50,
+          sort: '-createdat',
+          query: options.search,
+          allowSpecialCharacters: true,
+          pagenum: options.pagenum || 1,
+        })}`;
+        let headers = Object.assign({
+          'x-access-token': stateProps.user.jwt_token,
+        }, stateProps.settings.userprofile.options.headers);
+        utilities.fetchComponent(fetchURL, { headers, })()
+          .then(response => {
+            console.log({ response })
+            if (response.data && response.result && response.status) {
+              response = response.data;
+            }
+            updatedState.numPages = Math.ceil(updatedState.numItems / this.state.limit);
+            updatedState.limit = this.state.limit;
+            updatedState.currentPage = (typeof options.pagenum !== 'undefined') ? options.pagenum : this.props.currentPage;
+            this.setState(updatedState);
+            return [];
+          }, e => {
+            console.log({ e })
+            this.props.errorNotification(e);
+          });
+      } else {
+        console.log('SAME');
+        return [];
+      }
+    }, 3000);
 
-      // debounce(() => {
-      //   if (!prev || (prev !== query)) {
-      //     console.log({ prev, query });
-      //     prev = query;
-      //     let options = formElement.searchProps;
-      //     if (options.pagenum < 1) {
-      //       options.pagenum = 1;
-      //     }
-      //     this.setState({ isLoading: true, });
-      //     let stateProps = this.props.getState();
-      //     let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
-      //       limit: this.state.limit || this.props.limit || 50,
-      //       sort: '-createdat',
-      //       // fq: (this.state.filterRowData && this.state.filterRowData.length)
-      //       //   ? this.state.filterRowData.map(frd => {
-      //       //     return `${frd.property}|||${frd.filter_value}|||${frd.value}`;
-      //       //   })
-      //       //   : undefined,
-      //       query: options.search,
-      //       allowSpecialCharacters: true,
-      //       pagenum: options.pagenum || 1,
-      //     })}`;
-      //     // console.debug('this.state.filterRowData', this.state.filterRowData, { options, fetchURL, });
-      //     let headers = Object.assign({
-      //       'x-access-token': stateProps.user.jwt_token,
-      //     }, stateProps.settings.userprofile.options.headers);
-      //     console.log({ headers, fetchURL })
-      //     utilities.fetchComponent(fetchURL, { headers, })()
-      //       .then(response => {
-      //         console.log({ response })
-      //         // let usingResponsePages = false;
-      //         // console.debug('this.props.dataMap',this.props.dataMap)
-      //         // console.log({ response })
-      //         if (response.data && response.result && response.status) {
-      //           // console.log('USE DATA FROM RESPONSE', response.data)
-      //           // console.log('this.props.dataMap',this.props.dataMap)
-      //           response = response.data;
-      //         }
-      //         updatedState.numPages = Math.ceil(updatedState.numItems / this.state.limit);
-      //         updatedState.limit = this.state.limit;
-      //         updatedState.currentPage = (typeof options.pagenum !== 'undefined') ? options.pagenum : this.props.currentPage;
-      //         updatedState.isLoading = false;
-      //         this.setState(updatedState);
-      //         return [];
-      //       }, e => {
-      //         console.log({ e })
-      //         this.props.errorNotification(e);
-      //       });
-      //   } else {
-      //     prev = query;
-      //     return options;
-      //   }
-      // }, 3000)()
-
-    }
+    // debounce(() => {
+    //   if (!prev || (prev !== query)) {
+    //     console.log({ prev, query });
+    //     prev = query;
+    //     let options = formElement.searchProps;
+    //     if (options.pagenum < 1) {
+    //       options.pagenum = 1;
+    //     }
+    //     this.setState({ isLoading: true, });
+    //     let stateProps = this.props.getState();
+    //     let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
+    //       limit: this.state.limit || this.props.limit || 50,
+    //       sort: '-createdat',
+    //       // fq: (this.state.filterRowData && this.state.filterRowData.length)
+    //       //   ? this.state.filterRowData.map(frd => {
+    //       //     return `${frd.property}|||${frd.filter_value}|||${frd.value}`;
+    //       //   })
+    //       //   : undefined,
+    //       query: options.search,
+    //       allowSpecialCharacters: true,
+    //       pagenum: options.pagenum || 1,
+    //     })}`;
+    //     // console.debug('this.state.filterRowData', this.state.filterRowData, { options, fetchURL, });
+    //     let headers = Object.assign({
+    //       'x-access-token': stateProps.user.jwt_token,
+    //     }, stateProps.settings.userprofile.options.headers);
+    //     console.log({ headers, fetchURL })
+    //     utilities.fetchComponent(fetchURL, { headers, })()
+    //       .then(response => {
+    //         console.log({ response })
+    //         // let usingResponsePages = false;
+    //         // console.debug('this.props.dataMap',this.props.dataMap)
+    //         // console.log({ response })
+    //         if (response.data && response.result && response.status) {
+    //           // console.log('USE DATA FROM RESPONSE', response.data)
+    //           // console.log('this.props.dataMap',this.props.dataMap)
+    //           response = response.data;
+    //         }
+    //         updatedState.numPages = Math.ceil(updatedState.numItems / this.state.limit);
+    //         updatedState.limit = this.state.limit;
+    //         updatedState.currentPage = (typeof options.pagenum !== 'undefined') ? options.pagenum : this.props.currentPage;
+    //         updatedState.isLoading = false;
+    //         this.setState(updatedState);
+    //         return [];
+    //       }, e => {
+    //         console.log({ e })
+    //         this.props.errorNotification(e);
+    //       });
+    //   } else {
+    //     prev = query;
+    //     return options;
+    //   }
+    // }, 3000)()
   }
   else if (this.props.__formOptions && formElement.formoptions_field && this.props.__formOptions[ formElement.formoptions_field ]) {
     dropdowndata = this.props.__formOptions[ formElement.formoptions_field ];
