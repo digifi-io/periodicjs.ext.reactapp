@@ -3,63 +3,11 @@ import React, { Component } from 'react';
 import { Button, Dropdown, Grid, Header } from 'semantic-ui-react';
 import utilities from '../../util';
 import qs from 'querystring';
-const names = [ "Banana", "Orange", "Cherry", "Apple", "Pineapple", "Melon", "Plum", "Watermelon", "Blueberry", "Lime" ];
-// const getOptions = () =>
-//   _.times(3, () => {
-//     let idx = Math.floor(Math.random() * 10);
-//     const name = names[ idx ];
-//     return { key: name, text: name, value: _.snakeCase(name) }
-//   })
-
-// const getOptions = (searchQuery) => {
-//   const self = this;
-//   function debounce(func, wait, immediate) {
-//     var timeout;
-//     return function () {
-//       var context = self, args = arguments;
-//       var later = function () {
-//         timeout = null;
-//         if (!immediate && self.state.searchQuery !== searchQuery) {
-//           console.log('DIFF')
-//           return func.apply(context, args);
-//         } else {
-//           console.log('SAME');
-//           return [];
-//         }
-//       };
-//       var callNow = immediate && !timeout;
-//       clearTimeout(timeout);
-//       timeout = setTimeout(later, wait);
-//       if (callNow) func.apply(context, args);
-//     };
-//   }
-//   debounce(() => {
-//     let stateProps = self.props.getState();
-//     let options = self.props.searchProps;
-//     let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
-//       limit: self.state.limit || self.props.limit || 50,
-//       sort: '-createdat',
-//       query: searchQuery,
-//       allowSpecialCharacters: true,
-//       pagenum: options.pagenum || 1,
-//     })}`;
-//     let headers = Object.assign({
-//       'x-access-token': stateProps.user.jwt_token,
-//     }, stateProps.settings.userprofile.options.headers);
-//     utilities.fetchComponent(fetchURL, { headers, })()
-//       .then(response => {
-//         self.setState({ isFetching: false, options: response[ 'test_search' ] })
-//       }, e => {
-//         console.log({ e })
-//       });
-//   }, 3000);
-// }
 
 class RemoteDropdown extends Component {
   constructor(props) {
     super(props);
     this.debounce = this.debounce.bind(this);
-    // this.getOptions = getOptions.bind(this);
   }
 
   componentWillMount() {
@@ -70,14 +18,10 @@ class RemoteDropdown extends Component {
       searchQuery: null,
       value: [],
       options: [],
-      // options: getOptions(),
     })
   }
 
   handleChange = (e, { value }) => this.setState({ value })
-  // handleSearchChange = (e, { searchQuery }) => {
-  //   this.fetchOptions(searchQuery);
-  // }
 
   debounce(func, wait, immediate, searchQuery) {
     var timeout;
@@ -132,34 +76,6 @@ class RemoteDropdown extends Component {
         console.log({ e })
       });
   }, 3000, false, searchQuery)
-
-  // fetchOptions = (searchQuery) => {
-  //   this.setState({ isFetching: true })
-  //   const self = this;
-    
-  //   debounce(() => {
-  //     let stateProps = self.props.getState();
-  //     let options = self.props.searchProps;
-  //     let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
-  //       limit: self.state.limit || self.props.limit || 50,
-  //       sort: '-createdat',
-  //       query: searchQuery,
-  //       allowSpecialCharacters: true,
-  //       pagenum: options.pagenum || 1,
-  //     })}`;
-  //     let headers = Object.assign({
-  //       'x-access-token': stateProps.user.jwt_token,
-  //     }, stateProps.settings.userprofile.options.headers);
-  //     utilities.fetchComponent(fetchURL, { headers, })()
-  //       .then(response => {
-  //         console.log({ response });
-  //         self.setState({ isFetching: false, options: response[ 'test_search' ] })
-  //       }, e => {
-  //         self.setState({ isFetching: false, options: [] })
-  //         console.log({ e })
-  //       });
-  //   }, 3000);
-  // }
 
   toggleSearch = e => this.setState({ search: e.target.checked })
 
