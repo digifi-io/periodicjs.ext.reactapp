@@ -510,8 +510,6 @@ export function getFormDropdown(options) {
   let dropdowndata = [];
   let displayField = (formElement.passProps.displayField) ? formElement.passProps.displayField : 'label';
   let valueField = (formElement.passProps.valueField) ? formElement.passProps.valueField : 'value';
-  let updatedState = {};
-  const self = this;
   if (this.props.__formOptions && formElement.formoptions_field && this.props.__formOptions[ formElement.formoptions_field ]) {
     dropdowndata = this.props.__formOptions[ formElement.formoptions_field ];
     dropdowndata = dropdowndata.map(option => ({ text: option[ displayField ], value: option[ valueField ], key: option[ valueField ] }));
@@ -569,7 +567,6 @@ export function getFormDropdown(options) {
     initialValue = unflatten(this.state)[ formElement.name ].filter(i => i !== undefined);
   }
 
-  console.log({ passedProps });
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div {...wrapperProps}>

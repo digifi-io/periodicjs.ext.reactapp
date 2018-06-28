@@ -39,7 +39,6 @@ export const fetchComponent = function (url, options = {}) {
     return fetch(url, Object.assign({}, options))
       .then(checkStatus)
       .then(res => {
-        console.log({res})
         return res.json()
       })
       .catch(e => Promise.reject(e));
