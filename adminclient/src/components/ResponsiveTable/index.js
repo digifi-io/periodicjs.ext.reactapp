@@ -1006,7 +1006,7 @@ class ResponsiveTable extends Component {
                 }
                 // console.debug({ event, rowIndex, row, });
               }}>
-                  <Progress percent={row.progressBar.progress} indicating={indicating} progress={progress} success={success} warning={warning} error={error} disabled={disabled} style={style}>{label}</Progress>
+                <Progress percent={row.progressBar.progress} indicating={indicating} progress={progress} success={success} warning={warning} error={error} disabled={disabled} style={style}>{label}</Progress>
               </rb.Td>
             );
           }else {
