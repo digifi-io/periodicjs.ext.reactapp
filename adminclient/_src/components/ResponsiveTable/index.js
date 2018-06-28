@@ -1181,6 +1181,20 @@ var ResponsiveTable = function (_Component) {
                 // Object.assign
 
               );
+            } else if (header.progressBar) {
+              return _react2.default.createElement(
+                rb.Td,
+                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, { onClick: function onClick() {
+                    if (_this8.props.selectEntireRow) {
+                      _this8.selectRow({
+                        selectedRowData: row,
+                        selectedRowIndex: rowIndex
+                      });
+                    }
+                    // console.debug({ event, rowIndex, row, });
+                  } }),
+                _react2.default.createElement(_semanticUiReact.Progress, { percent: row.progress, indicating: true, style: { marginTop: '5%', marginBottom: '5%' } })
+              );
             } else {
               return _react2.default.createElement(
                 rb.Td,
