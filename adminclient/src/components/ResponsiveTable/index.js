@@ -972,6 +972,30 @@ class ResponsiveTable extends Component {
             );
           
           } else if (header.progressBar) {
+            let progress = typeof header.progressBar.progress === 'boolean' 
+              ? header.progressBar.progress
+              : true;
+            let indicating = (header.progressBar.indicating || header.progressBar.indicating === undefined ) && row.progressBar.progress < 100
+              ? true
+              : false;
+            let label = row.progressBar.label
+              ? row.progressBar.label
+              : null;
+            let success = row.progressBar && row.progressBar.state === 'success'
+              ? true
+              : null;
+            let warning = row.progressBar && row.progressBar.state === 'warning'
+              ? true
+              : null;
+            let error = row.progressBar && row.progressBar.state === 'error'
+              ? true
+              : null;
+            let disabled = row.progressBar && row.progressBar.state === 'disabled'
+              ? true
+              : null;
+            let style = row.progressBar && row.progressBar.style
+              ? row.progressBar.style
+              : {};
             return (
               <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps} onClick={() => {
                 if (this.props.selectEntireRow) {
@@ -982,7 +1006,7 @@ class ResponsiveTable extends Component {
                 }
                 // console.debug({ event, rowIndex, row, });
               }}>
-                <Progress percent={row.progress} indicating style={{ marginTop: '5%', marginBottom: '5%' }} />
+                  <Progress percent={row.progressBar.progress} indicating={indicating} progress={progress} success={success} warning={warning} error={error} disabled={disabled} style={style}>{label}</Progress>
               </rb.Td>
             );
           }else {
