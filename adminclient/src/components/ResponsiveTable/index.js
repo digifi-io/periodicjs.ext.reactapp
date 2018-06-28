@@ -1,7 +1,7 @@
 import React, { Component, /*PropTypes,*/ } from 'react';
 import { Link, } from 'react-router';
 import * as rb from 're-bulma';
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Progress, } from 'semantic-ui-react';
 import moment from 'moment';
 import numeral from 'numeral';
 import utilities from '../../util';
@@ -971,7 +971,21 @@ class ResponsiveTable extends Component {
               </rb.Td>
             );
           
-          } else {
+          } else if (header.progressBar) {
+            return (
+              <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps} onClick={() => {
+                if (this.props.selectEntireRow) {
+                  this.selectRow({
+                    selectedRowData: row,
+                    selectedRowIndex: rowIndex,
+                  });
+                }
+                // console.debug({ event, rowIndex, row, });
+              }}>
+                <Progress percent={row.progress} indicating style={{ marginTop: '5%', marginBottom: '5%' }} />
+              </rb.Td>
+            );
+          }else {
             return (
               <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps} onClick={() => {
                 if (this.props.selectEntireRow) {
