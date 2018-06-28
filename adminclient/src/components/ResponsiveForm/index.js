@@ -3,7 +3,7 @@ import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, Ca
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
+import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormRemoteDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, valueCheckFormElement } from './FormHelpers';
 import flatten, { unflatten, } from 'flat';
 import qs from 'querystring';
@@ -122,6 +122,7 @@ class ResponsiveForm extends Component{
     this.getFormTextArea = getFormTextArea.bind(this);
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getFormButton = getFormButton.bind(this);
+    this.getFormRemoteDropdown = getFormRemoteDropdown.bind(this);
     this.getFormSemanticCheckbox = getFormSemanticCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
@@ -445,6 +446,8 @@ class ResponsiveForm extends Component{
           return this.getFormDatalist({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'dropdown') {
           return this.getFormDropdown({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'remote_dropdown') {
+          return this.getFormRemoteDropdown({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'datatable') {
           return this.getFormDatatable({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'dndtable') {
