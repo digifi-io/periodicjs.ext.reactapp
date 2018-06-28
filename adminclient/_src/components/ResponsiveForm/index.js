@@ -182,6 +182,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormTextArea = _FormElements.getFormTextArea.bind(_this);
     _this.getFormCheckbox = _FormElements.getFormCheckbox.bind(_this);
     _this.getFormButton = _FormElements.getFormButton.bind(_this);
+    _this.getFormRemoteDropdown = _FormElements.getFormRemoteDropdown.bind(_this);
     _this.getFormSemanticCheckbox = _FormElements.getFormSemanticCheckbox.bind(_this);
     _this.getCardFooterItem = _FormElements.getCardFooterItem.bind(_this);
     _this.getFormSelect = _FormElements.getFormSelect.bind(_this);
@@ -500,6 +501,8 @@ var ResponsiveForm = function (_Component) {
             return _this5.getFormDatalist({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'dropdown') {
             return _this5.getFormDropdown({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'remote_dropdown') {
+            return _this5.getFormRemoteDropdown({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'datatable') {
             return _this5.getFormDatatable({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'dndtable') {

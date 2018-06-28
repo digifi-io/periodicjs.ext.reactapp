@@ -131,6 +131,10 @@ var _ResponsiveTable = require('../ResponsiveTable');
 
 var _ResponsiveTable2 = _interopRequireDefault(_ResponsiveTable);
 
+var _RemoteDropdown = require('../RemoteDropdown');
+
+var _RemoteDropdown2 = _interopRequireDefault(_RemoteDropdown);
+
 var _DNDTable = require('../DNDTable');
 
 var _DNDTable2 = _interopRequireDefault(_DNDTable);
@@ -179,8 +183,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import Editor from '../RAEditor';
 var advancedBinding = (0, _advancedBinding.getAdvancedBinding)();
+// import Editor from '../RAEditor';
+
 var renderIndex = 0;
 
 function getFunctionFromProps(options) {
@@ -201,7 +206,7 @@ function getFunctionFromProps(options) {
 }
 
 var AppLayoutMap = exports.AppLayoutMap = (0, _assign2.default)({}, { victory: victory,
-  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, ResponsiveNavBar: _ResponsiveNavBar2.default, ResponsiveFormContainer: _ResponsiveFormContainer2.default, DynamicLayout: _DynamicLayout2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, DNDTable: _DNDTable2.default, SingleDatePickerWrapper: _SingleDatePickerWrapper2.default, DateRangePickerWrapper: _DateRangePickerWrapper2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, Range: _rcSlider.Range, Slider: _rcSlider2.default, GoogleMap: _googleMapReact2.default, Carousel: _reactResponsiveCarousel.Carousel, PreviewEditor: _PreviewEditor2.default, ResponsiveSteps: _ResponsiveSteps2.default, /* Editor,*/
+  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, ResponsiveNavBar: _ResponsiveNavBar2.default, ResponsiveFormContainer: _ResponsiveFormContainer2.default, DynamicLayout: _DynamicLayout2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, DNDTable: _DNDTable2.default, SingleDatePickerWrapper: _SingleDatePickerWrapper2.default, DateRangePickerWrapper: _DateRangePickerWrapper2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, Range: _rcSlider.Range, Slider: _rcSlider2.default, GoogleMap: _googleMapReact2.default, Carousel: _reactResponsiveCarousel.Carousel, PreviewEditor: _PreviewEditor2.default, ResponsiveSteps: _ResponsiveSteps2.default, RemoteDropdown: _RemoteDropdown2.default, /* Editor,*/
   ResponsiveLink: _ResponsiveLink2.default,
   ResponsiveButton: _ResponsiveButton2.default,
   MaskedInput: _reactTextMask2.default,

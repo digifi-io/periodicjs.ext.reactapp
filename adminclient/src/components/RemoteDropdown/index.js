@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
 import { Dropdown, Header } from 'semantic-ui-react';
 import utilities from '../../util';
@@ -77,37 +76,39 @@ class RemoteDropdown extends Component {
     }
   }
 
-  handleSearchChange = this.debounce((e, { searchQuery, }) => {
-    const self = this;
-    if (searchQuery && (self.state.searchQuery !== searchQuery)) {
-      self.setState({ searchQuery, isFetching: true }, () => {
-        let stateProps = self.props.getState();
-        let options = self.props.searchProps;
-        let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
-          limit: options.limit || 20,
-          sort: options.sort,
-          query: searchQuery,
-          allowSpecialCharacters: true,
-        })}`;
-        let headers = Object.assign({
-          'x-access-token': stateProps.user.jwt_token,
-        }, stateProps.settings.userprofile.options.headers);
-        utilities.fetchComponent(fetchURL, { headers, })()
-          .then(response => {
-            let dropdown = response[ options.response_field ].map((item, idx) => ({
-              "key": idx,
-              "text": item.label,
-              "value": item.value,
-            }));
-            self.setState({ isFetching: false, options: dropdown })
-          }, e => {
-            self.setState({ isFetching: false, options: [] })
-          });
-      })
-    } else {
-      self.setState({ isFetching: false });
-    }
-  })
+  handleSearchChange() {
+    return this.debounce((e, { searchQuery, }) => {
+      const self = this;
+      if (searchQuery && (self.state.searchQuery !== searchQuery)) {
+        self.setState({ searchQuery, isFetching: true }, () => {
+          let stateProps = self.props.getState();
+          let options = self.props.searchProps;
+          let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
+            limit: options.limit || 20,
+            sort: options.sort,
+            query: searchQuery,
+            allowSpecialCharacters: true,
+          })}`;
+          let headers = Object.assign({
+            'x-access-token': stateProps.user.jwt_token,
+          }, stateProps.settings.userprofile.options.headers);
+          utilities.fetchComponent(fetchURL, { headers, })()
+            .then(response => {
+              let dropdown = response[ options.response_field ].map((item, idx) => ({
+                "key": idx,
+                "text": item.label,
+                "value": item.value,
+              }));
+              self.setState({ isFetching: false, options: dropdown })
+            }, e => {
+              self.setState({ isFetching: false, options: [] })
+            });
+        })
+      } else {
+        self.setState({ isFetching: false });
+      }
+    })()
+  }
 
   render() {
     const { multiple, options, isFetching, search, value } = this.state;
