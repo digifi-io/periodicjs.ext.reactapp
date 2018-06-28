@@ -7,21 +7,21 @@ import qs from 'querystring';
 class RemoteDropdown extends Component {
   constructor(props) {
     super(props);
-    this.debounce = this.debounce.bind(this);
-  }
-
-  componentWillMount() {
-    this.setState({
+    this.state = {
       isFetching: false,
-      multiple: true,
-      search: true,
+      multiple: props.multiple || false,
+      search: props.search || false,
       searchQuery: null,
-      value: [],
-      options: [],
-    })
+      value: props.multiple? []  : '',
+      options: props.default_options || [],
+    };
+    this.debounce = this.debounce.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange = (e, { value }) => this.setState({ value })
+  handleChange(e, { value }) {
+    this.setState({ value })
+  }
 
   debounce(func, wait, immediate) {
     var timeout;
@@ -38,6 +38,7 @@ class RemoteDropdown extends Component {
       if (callNow) func.apply(context, args);
     }
   }
+
   handleSearchChange = this.debounce((e, { searchQuery }) => {
     const self = this;
     if (searchQuery && self.state.searchQuery !== searchQuery) {
@@ -46,11 +47,10 @@ class RemoteDropdown extends Component {
         let stateProps = self.props.getState();
         let options = self.props.searchProps;
         let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
-          limit: self.state.limit || self.props.limit || 50,
-          sort: '-createdat',
+          limit: options.limit || 20,
+          sort: options.sort,
           query: searchQuery,
           allowSpecialCharacters: true,
-          pagenum: options.pagenum || 1,
         })}`;
         let headers = Object.assign({
           'x-access-token': stateProps.user.jwt_token,
@@ -72,16 +72,6 @@ class RemoteDropdown extends Component {
     }
   }, 1000, false)
 
-  toggleSearch = e => this.setState({ search: e.target.checked })
-
-  toggleMultiple = (e) => {
-    const { value } = this.state
-    const multiple = e.target.checked
-    // convert the value to/from an array
-    const newValue = multiple ? _.compact([ value ]) : _.head(value) || ''
-    this.setState({ multiple, value: newValue })
-  }
-
   render() {
     const { multiple, options, isFetching, search, value } = this.state
 
@@ -93,12 +83,6 @@ class RemoteDropdown extends Component {
             <Button onClick={this.selectRandom} disabled={_.isEmpty(options)}>
               Random
             </Button>
-            <label>
-              <input type='checkbox' checked={search} onChange={this.toggleSearch} /> Search
-            </label>{' '}
-            <label>
-              <input type='checkbox' checked={multiple} onChange={this.toggleMultiple} /> Multiple
-            </label>
           </p>
           <Dropdown
             fluid
