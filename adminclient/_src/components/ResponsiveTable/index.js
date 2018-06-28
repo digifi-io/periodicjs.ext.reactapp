@@ -1182,6 +1182,14 @@ var ResponsiveTable = function (_Component) {
 
               );
             } else if (header.progressBar) {
+              var progress = typeof header.progressBar.progress === 'boolean' ? header.progressBar.progress : true;
+              var indicating = (header.progressBar.indicating || header.progressBar.indicating === undefined) && row.progressBar.progress < 100 ? true : false;
+              var label = row.progressBar.label ? row.progressBar.label : null;
+              var success = row.progressBar && row.progressBar.state === 'success' ? true : null;
+              var warning = row.progressBar && row.progressBar.state === 'warning' ? true : null;
+              var error = row.progressBar && row.progressBar.state === 'error' ? true : null;
+              var disabled = row.progressBar && row.progressBar.state === 'disabled' ? true : null;
+              var style = row.progressBar && row.progressBar.style ? row.progressBar.style : {};
               return _react2.default.createElement(
                 rb.Td,
                 (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, { onClick: function onClick() {
@@ -1193,7 +1201,11 @@ var ResponsiveTable = function (_Component) {
                     }
                     // console.debug({ event, rowIndex, row, });
                   } }),
-                _react2.default.createElement(_semanticUiReact.Progress, { percent: row.progress, indicating: true, style: { marginTop: '5%', marginBottom: '5%' } })
+                _react2.default.createElement(
+                  _semanticUiReact.Progress,
+                  { percent: row.progressBar.progress, indicating: indicating, progress: progress, success: success, warning: warning, error: error, disabled: disabled, style: style },
+                  label
+                )
               );
             } else {
               return _react2.default.createElement(
