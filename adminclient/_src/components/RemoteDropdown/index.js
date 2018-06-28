@@ -138,11 +138,13 @@ var RemoteDropdown = function (_Component) {
     }
   }, {
     key: 'handleSearchChange',
-    value: function handleSearchChange() {
+    value: function handleSearchChange(e, _ref2) {
       var _this3 = this;
 
-      return this.debounce(function (e, _ref2) {
-        var searchQuery = _ref2.searchQuery;
+      var searchQuery = _ref2.searchQuery;
+
+      return this.debounce(function (e, _ref3) {
+        var searchQuery = _ref3.searchQuery;
 
         var self = _this3;
         if (searchQuery && self.state.searchQuery !== searchQuery) {
@@ -174,7 +176,7 @@ var RemoteDropdown = function (_Component) {
         } else {
           self.setState({ isFetching: false });
         }
-      })();
+      })(e, { searchQuery: searchQuery });
     }
   }, {
     key: 'render',

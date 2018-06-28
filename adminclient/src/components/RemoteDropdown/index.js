@@ -76,7 +76,7 @@ class RemoteDropdown extends Component {
     }
   }
 
-  handleSearchChange() {
+  handleSearchChange(e, { searchQuery, }) {
     return this.debounce((e, { searchQuery, }) => {
       const self = this;
       if (searchQuery && (self.state.searchQuery !== searchQuery)) {
@@ -107,7 +107,7 @@ class RemoteDropdown extends Component {
       } else {
         self.setState({ isFetching: false });
       }
-    })()
+    })(e, { searchQuery, })
   }
 
   render() {
