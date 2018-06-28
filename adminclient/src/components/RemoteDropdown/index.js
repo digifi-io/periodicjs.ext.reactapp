@@ -12,19 +12,28 @@ class RemoteDropdown extends Component {
       multiple: props.multiple || false,
       search: props.search || false,
       searchQuery: null,
-      value: props.multiple? []  : '',
+      value: props.multiple ? [] : '',
       options: props.default_options || [],
     };
     this.debounce = this.debounce.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
   }
 
-  handleChange(e, { value }) {
-    this.setState({ value })
+  handleChange(cb) {
+    const self = this;
+    return function (e, { value }) {
+      self.setState({ value }, () => {
+       if(cb) cb(e, { value })
+      })
+    }
   }
 
-  debounce(func, wait, immediate) {
+  debounce(func) {
     var timeout;
+    let wait = 1000, immediate = false;
+    if (!this.props.debounce) immediate = true;
+    else wait = this.props.debounce || 1000;
     const self = this;
     return function () {
       var context = self, args = arguments;
@@ -42,8 +51,7 @@ class RemoteDropdown extends Component {
   handleSearchChange = this.debounce((e, { searchQuery }) => {
     const self = this;
     if (searchQuery && self.state.searchQuery !== searchQuery) {
-      self.setState({ searchQuery }, () => {
-        self.setState({ isFetching: true })
+      self.setState({ searchQuery, isFetching: true }, () => {
         let stateProps = self.props.getState();
         let options = self.props.searchProps;
         let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
@@ -57,7 +65,7 @@ class RemoteDropdown extends Component {
         }, stateProps.settings.userprofile.options.headers);
         utilities.fetchComponent(fetchURL, { headers, })()
           .then(response => {
-            let dropdown = response[ 'test_search' ].map((item, idx) => ({
+            let dropdown = response[ options.response_field ].map((item, idx) => ({
               "key": idx,
               "text": item.label,
               "value": item.value,
@@ -70,39 +78,26 @@ class RemoteDropdown extends Component {
     } else {
       self.setState({ isFetching: false });
     }
-  }, 1000, false)
+  })
 
   render() {
     const { multiple, options, isFetching, search, value } = this.state
-
+    let passedProps = Object.assign({}, this.props.passProps);
     return (
-      <Grid>
-        <Grid.Column width={8}>
-          <p>
-            <Button onClick={this.fetchOptions}>Fetch</Button>
-            <Button onClick={this.selectRandom} disabled={_.isEmpty(options)}>
-              Random
-            </Button>
-          </p>
-          <Dropdown
-            fluid
-            selection
-            multiple={multiple}
-            search={search}
-            options={options}
-            value={value}
-            placeholder='Add Users'
-            onChange={this.handleChange}
-            onSearchChange={this.handleSearchChange}
-            disabled={isFetching}
-            loading={isFetching}
-          />
-        </Grid.Column>
-        <Grid.Column width={8}>
-          <Header>State</Header>
-          <pre>{JSON.stringify(this.state, null, 2)}</pre>
-        </Grid.Column>
-      </Grid>
+      <Dropdown
+        {...passedProps}
+        fluid
+        selection
+        multiple={multiple}
+        search={search}
+        options={options}
+        value={value}
+        placeholder={this.props.placeholder || ''}
+        onChange={this.props.onChange? this.handleChange(this.props.onChange) : this.handleChange()}
+        onSearchChange={this.handleSearchChange}
+        disabled={isFetching}
+        loading={isFetching}
+      />
     )
   }
 }

@@ -5,6 +5,7 @@ import PreviewEditor from '../PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 import ResponsiveTable from '../ResponsiveTable';
 import DNDTable from '../DNDTable';
+import RemoteDropdown from '../RemoteDropdown';
 import SingleDatePickerWrapper from '../SingleDatePickerWrapper';
 import DateRangePickerWrapper from '../DateRangePickerWrapper';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
@@ -512,70 +513,6 @@ export function getFormDropdown(options) {
   let valueField = (formElement.passProps.valueField) ? formElement.passProps.valueField : 'value';
   let updatedState = {};
   const self = this;
-  if (formElement.searchProps && passedProps.search) {
-    function debounce(func, wait, immediate) {
-      var timeout;
-      return function () {
-        var context = this, args = arguments;
-        var later = function () {
-          timeout = null;
-          console.log(args)
-          if (!immediate && self.state[ `${formElement.name}_query` ] !== args[ 1 ]) {
-            console.log('DIFF')
-            return func.apply(context, args);
-          } else {
-            console.log('SAME');
-            return [];
-          }
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
-    }
-    passedProps.search = debounce((dropdowns, query) => {
-      console.log({dropdowns, query})
-      let options = formElement.searchProps;
-      if (options.pagenum < 1) {
-        options.pagenum = 1;
-      }
-      let stateProps = this.props.getState();
-      let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
-        limit: this.state.limit || this.props.limit || 50,
-        sort: '-createdat',
-        query: query,
-        allowSpecialCharacters: true,
-        pagenum: options.pagenum || 1,
-      })}`;
-      let headers = Object.assign({
-        'x-access-token': stateProps.user.jwt_token,
-      }, stateProps.settings.userprofile.options.headers);
-      utilities.fetchComponent(fetchURL, { headers, })()
-        .then(response => {
-          console.log('test_search_dropdown', response[ 'test_search' ]);
-          updatedState.numPages = Math.ceil(updatedState.numItems / this.state.limit);
-          updatedState.limit = this.state.limit;
-          updatedState.currentPage = (typeof options.pagenum !== 'undefined') ? options.pagenum : this.props.currentPage;
-          updatedState[ `${formElement.name}_query` ] = query;
-          dropdowndata = response[ 'test_search' ];
-          dropdowndata = dropdowndata.map(option => ({ text: option[ displayField ], value: option[ valueField ], key: option[ valueField ] }));
-          return dropdowndata;
-          // passedProps.options = dropdowndata
-          // self.setState(updatedState, () => {
-          //   console.log('GOT BEFORE IN HEREEEEE')
-          //   if (response[ 'test_search' ]) {
-          //     console.log('IN HEREEEEEEEEE');
-          //   } else {
-          //     // return [];
-          //   }
-          // });
-        }, e => {
-          console.log({ e })
-          this.props.errorNotification(e);
-        });
-    }, 3000);
-  }
   if (this.props.__formOptions && formElement.formoptions_field && this.props.__formOptions[ formElement.formoptions_field ]) {
     dropdowndata = this.props.__formOptions[ formElement.formoptions_field ];
     dropdowndata = dropdowndata.map(option => ({ text: option[ displayField ], value: option[ valueField ], key: option[ valueField ] }));
@@ -649,6 +586,91 @@ export function getFormDropdown(options) {
     </div>
   </FormItem>);
 }
+
+export function getFormRemoteDropdown(options) {
+  let { formElement, i, } = options;
+  let initialValue = getInitialValue(formElement, Object.assign({}, this.state, unflatten(this.state)));
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let hasValue = (formElement.name && this.state[ formElement.name ]) ? true : false;
+  let isValid = getValidStatus(this.state, formElement.name);
+  let customLabel = getCustomFormLabel.bind(this);
+  let wrapperProps = Object.assign({
+    className: '__re-bulma_control',
+  }, formElement.wrapperProps)
+
+  wrapperProps.className = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ?
+    wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
+    : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
+    : wrapperProps.className;
+
+  let onChange;
+  let passedProps = formElement.passProps;
+  let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
+  passedProps = getPassablePropkeyevents(passedProps, formElement);
+  let dropdowndata = [];
+  let updatedState = {};
+  if (formElement.disableOnChange) {
+    onChange = () => { return () => { } };
+  } else if (!onChange && formElement.passProps.multiple) {
+    onChange = (event, newvalue) => {
+      let updatedStateProp = {};
+      newvalue.options.forEach((val, idx) => {
+        if (newvalue.value[ idx ]) updatedStateProp[ `${formElement.name}.${idx}` ] = newvalue.value[ idx ];
+        else updatedStateProp[ `${formElement.name}.${idx}` ] = undefined;
+      });
+      this.setState(updatedStateProp, () => {
+        if (formElement.validateOnChange) {
+          this.validateFormElement({ formElement, });
+        } else if (formElement.valueCheckOnChange) {
+          this.valueCheckFormElement({ formElement })
+        }
+      });
+    }
+  } else if (!onChange) {
+    onChange = (event, newvalue) => {
+      let updatedStateProp = {};
+      updatedStateProp[ formElement.name ] = newvalue.value;
+      this.setState(updatedStateProp, () => {
+        if (formElement.validateOnChange) {
+          this.validateFormElement({ formElement, });
+        } else if (formElement.valueCheckOnChange) {
+          this.valueCheckFormElement({ formElement })
+        }
+      });
+    }
+  }
+  let customCallbackfunction;
+  if (formElement.customOnChange) {
+    if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
+      customCallbackfunction = this.props[ formElement.customOnChange.replace('func:this.props.', '') ];
+    } else if (formElement.customOnChange.indexOf('func:window') !== -1 && typeof window[ formElement.customOnChange.replace('func:window.', '') ] === 'function') {
+      customCallbackfunction = window[ formElement.customOnChange.replace('func:window.', '') ].bind(this, formElement);
+    }
+  }
+
+  formElement.customIconStyle = Object.assign({}, { right: "24px" }, formElement.customIconStyle);
+
+  if (formElement.passProps.multiple && Array.isArray(unflatten(this.state)[ formElement.name ])) {
+    initialValue = unflatten(this.state)[ formElement.name ].filter(i => i !== undefined);
+  }
+
+  return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
+    <div {...wrapperProps}>
+      <RemoteDropdown
+        {...this.props}
+        {...passedProps}
+        value={initialValue}
+        onChange={(event, newvalue) => {
+          onChange.call(this, event, newvalue);
+          if (customCallbackfunction) customCallbackfunction(event, newvalue);
+        }}
+      />
+      {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </div>
+  </FormItem>);
+ }
 
 export function getFormMaskedInput(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
