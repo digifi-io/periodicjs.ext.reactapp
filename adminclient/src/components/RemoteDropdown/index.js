@@ -7,17 +7,23 @@ import qs from 'querystring';
 class RemoteDropdown extends Component {
   constructor(props) {
     super(props);
+    console.log({props})
     this.state = {
       isFetching: false,
       multiple: props.multiple || false,
       search: props.search || false,
-      searchQuery: null,
-      value: props.multiple ? [] : '',
+      searchQuery: props.value || null,
+      value: props.value,
+      // value: props.value || props.multiple ? [] : '',
       options: props.default_options || [],
     };
     this.debounce = this.debounce.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
+  }
+
+  componentWillMount() {
+    this.handleSearchChange(false, { searchQuery: this.props.value, init: true });
   }
 
   handleChange(cb) {
@@ -34,6 +40,7 @@ class RemoteDropdown extends Component {
     let wait = 1000, immediate = false;
     if (!this.props.debounce) immediate = true;
     else wait = this.props.debounce || 1000;
+    immediate = true;
     const self = this;
     return function () {
       var context = self, args = arguments;
@@ -48,9 +55,10 @@ class RemoteDropdown extends Component {
     }
   }
 
-  handleSearchChange = this.debounce((e, { searchQuery }) => {
+  handleSearchChange = this.debounce((e, { searchQuery, init }) => {
     const self = this;
-    if (searchQuery && self.state.searchQuery !== searchQuery) {
+    console.log({searchQuery})
+    if (searchQuery && (init || (self.state.searchQuery !== searchQuery))) {
       self.setState({ searchQuery, isFetching: true }, () => {
         let stateProps = self.props.getState();
         let options = self.props.searchProps;
@@ -81,7 +89,8 @@ class RemoteDropdown extends Component {
   })
 
   render() {
-    const { multiple, options, isFetching, search, value } = this.state
+    const { multiple, options, isFetching, search, value } = this.state;
+    console.log({ value });
     let passedProps = Object.assign({}, this.props.passProps);
     return (
       <Dropdown
