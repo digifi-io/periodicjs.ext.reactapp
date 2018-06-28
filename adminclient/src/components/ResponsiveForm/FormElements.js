@@ -649,7 +649,6 @@ export function getFormRemoteDropdown(options) {
   if (formElement.passProps.multiple && Array.isArray(unflatten(this.state)[ formElement.name ])) {
     initialValue = unflatten(this.state)[ formElement.name ].filter(i => i !== undefined);
   }
-  console.log({initialValue})
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div {...wrapperProps}>
