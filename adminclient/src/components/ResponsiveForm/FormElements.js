@@ -26,7 +26,6 @@ import pluralize from 'pluralize';
 import flatten, { unflatten, } from 'flat';
 import styles from '../../styles';
 import { validateForm, } from './FormHelpers';
-// import debounce from 'debounce';
 
 export function getPropertyAttribute(options) {
   let { property, element, } = options;
