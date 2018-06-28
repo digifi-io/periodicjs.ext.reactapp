@@ -7,14 +7,12 @@ import qs from 'querystring';
 class RemoteDropdown extends Component {
   constructor(props) {
     super(props);
-    console.log({props})
     this.state = {
       isFetching: false,
       multiple: props.multiple || false,
       search: props.search || false,
       searchQuery: props.value || null,
-      value: props.value,
-      // value: props.value || props.multiple ? [] : '',
+      value: props.value || '',
       options: props.default_options || [],
     };
     this.debounce = this.debounce.bind(this);
@@ -23,7 +21,32 @@ class RemoteDropdown extends Component {
   }
 
   componentWillMount() {
-    this.handleSearchChange(false, { searchQuery: this.props.value, init: true });
+    if (this.props.value) {
+      this.setState({ searchQuery: this.props.value, isFetching: true }, () => {
+        let stateProps = this.props.getState();
+        let options = this.props.searchProps;
+        let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
+          limit: options.limit || 20,
+          sort: options.sort,
+          query: this.props.value,
+          allowSpecialCharacters: true,
+        })}`;
+        let headers = Object.assign({
+          'x-access-token': stateProps.user.jwt_token,
+        }, stateProps.settings.userprofile.options.headers);
+        utilities.fetchComponent(fetchURL, { headers, })()
+          .then(response => {
+            let dropdown = response[ options.response_field ].map((item, idx) => ({
+              "key": idx,
+              "text": item.label,
+              "value": item.value,
+            }));
+            this.setState({ isFetching: false, options: dropdown })
+          }, e => {
+            this.setState({ isFetching: false, options: [] })
+          });
+      })
+    }
   }
 
   handleChange(cb) {
@@ -40,7 +63,6 @@ class RemoteDropdown extends Component {
     let wait = 1000, immediate = false;
     if (!this.props.debounce) immediate = true;
     else wait = this.props.debounce || 1000;
-    immediate = true;
     const self = this;
     return function () {
       var context = self, args = arguments;
@@ -55,10 +77,9 @@ class RemoteDropdown extends Component {
     }
   }
 
-  handleSearchChange = this.debounce((e, { searchQuery, init }) => {
+  handleSearchChange = this.debounce((e, { searchQuery, }) => {
     const self = this;
-    console.log({searchQuery})
-    if (searchQuery && (init || (self.state.searchQuery !== searchQuery))) {
+    if (searchQuery && (self.state.searchQuery !== searchQuery)) {
       self.setState({ searchQuery, isFetching: true }, () => {
         let stateProps = self.props.getState();
         let options = self.props.searchProps;
@@ -90,7 +111,6 @@ class RemoteDropdown extends Component {
 
   render() {
     const { multiple, options, isFetching, search, value } = this.state;
-    console.log({ value });
     let passedProps = Object.assign({}, this.props.passProps);
     return (
       <Dropdown
