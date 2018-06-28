@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Button, Dropdown, Grid, Header } from 'semantic-ui-react';
+import { Dropdown, Header } from 'semantic-ui-react';
 import utilities from '../../util';
 import qs from 'querystring';
 
