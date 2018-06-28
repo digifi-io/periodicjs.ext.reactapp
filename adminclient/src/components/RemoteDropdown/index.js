@@ -1,22 +1,25 @@
-import _ from 'lodash'
-import React, { Component } from 'react'
-import { Button, Dropdown, Grid, Header } from 'semantic-ui-react'
-const names = [ "Banana", "Orange", "Cherry", "Apple", "Pineapple", "Melon", "Plum", "Watermelon", "Blueberry", "Lime"  ];
-const getOptions = () =>
-  _.times(3, () => {
-    let idx = Math.floor(Math.random() * 10);
-    const name = names[ idx ];
-    return { key: name, text: name, value: _.snakeCase(name) }
-  })
+import _ from 'lodash';
+import React, { Component } from 'react';
+import { Button, Dropdown, Grid, Header } from 'semantic-ui-react';
+import utilities from '../../util';
+import qs from 'querystring';
+const names = [ "Banana", "Orange", "Cherry", "Apple", "Pineapple", "Melon", "Plum", "Watermelon", "Blueberry", "Lime" ];
+// const getOptions = () =>
+//   _.times(3, () => {
+//     let idx = Math.floor(Math.random() * 10);
+//     const name = names[ idx ];
+//     return { key: name, text: name, value: _.snakeCase(name) }
+//   })
 
-// const getOptions = () => {
+// const getOptions = (searchQuery) => {
+//   const self = this;
 //   function debounce(func, wait, immediate) {
 //     var timeout;
 //     return function () {
-//       var context = this, args = arguments;
+//       var context = self, args = arguments;
 //       var later = function () {
 //         timeout = null;
-//         if (!immediate && self.state[ `${formElement.name}_query` ] !== args[ 1 ]) {
+//         if (!immediate && self.state.searchQuery !== searchQuery) {
 //           console.log('DIFF')
 //           return func.apply(context, args);
 //         } else {
@@ -30,17 +33,13 @@ const getOptions = () =>
 //       if (callNow) func.apply(context, args);
 //     };
 //   }
-//   passedProps.search = debounce((dropdowns, query) => {
-//     console.log({ dropdowns, query })
-//     let options = formElement.searchProps;
-//     if (options.pagenum < 1) {
-//       options.pagenum = 1;
-//     }
-//     let stateProps = this.props.getState();
+//   debounce(() => {
+//     let stateProps = self.props.getState();
+//     let options = self.props.searchProps;
 //     let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
-//       limit: this.state.limit || this.props.limit || 50,
+//       limit: self.state.limit || self.props.limit || 50,
 //       sort: '-createdat',
-//       query: query,
+//       query: searchQuery,
 //       allowSpecialCharacters: true,
 //       pagenum: options.pagenum || 1,
 //     })}`;
@@ -49,7 +48,7 @@ const getOptions = () =>
 //     }, stateProps.settings.userprofile.options.headers);
 //     utilities.fetchComponent(fetchURL, { headers, })()
 //       .then(response => {
-//         console.log({response})
+//         self.setState({ isFetching: false, options: response[ 'test_search' ] })
 //       }, e => {
 //         console.log({ e })
 //       });
@@ -57,6 +56,12 @@ const getOptions = () =>
 // }
 
 class RemoteDropdown extends Component {
+  constructor(props) {
+    super(props);
+    this.debounce = this.debounce.bind(this);
+    // this.getOptions = getOptions.bind(this);
+  }
+
   componentWillMount() {
     this.setState({
       isFetching: false,
@@ -64,23 +69,97 @@ class RemoteDropdown extends Component {
       search: true,
       searchQuery: null,
       value: [],
-      options: getOptions(),
+      options: [],
+      // options: getOptions(),
     })
   }
 
   handleChange = (e, { value }) => this.setState({ value })
-  handleSearchChange = (e, { searchQuery }) => {
-    this.setState({ searchQuery });
-    this.fetchOptions();
+  // handleSearchChange = (e, { searchQuery }) => {
+  //   this.fetchOptions(searchQuery);
+  // }
+
+  debounce(func, wait, immediate, searchQuery) {
+    var timeout;
+    const self = this;
+    var context = self, args = arguments;
+    var later = function () {
+      timeout = null;
+      console.log('PREVIOUS', self.state.searchQuery);
+      console.log('CURRENT', searchQuery);
+      if (!immediate && self.state.searchQuery !== searchQuery) {
+        console.log('DIFF')
+        self.setState({ searchQuery }, () => {
+          func.apply(context, args);
+        });
+      } else {
+        console.log('SAME');
+        self.setState({ isFetching: false });
+      }
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
   }
 
-  fetchOptions = () => {
+  handleSearchChange = (e, { searchQuery }) => this.debounce(() => {
     this.setState({ isFetching: true })
-    //make query here
-    setTimeout(() => {
-      this.setState({ isFetching: false, options: getOptions() })
-    }, 500)
-  }
+    const self = this;
+    let stateProps = self.props.getState();
+    let options = self.props.searchProps;
+    let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
+      limit: self.state.limit || self.props.limit || 50,
+      sort: '-createdat',
+      query: searchQuery,
+      allowSpecialCharacters: true,
+      pagenum: options.pagenum || 1,
+    })}`;
+    let headers = Object.assign({
+      'x-access-token': stateProps.user.jwt_token,
+    }, stateProps.settings.userprofile.options.headers);
+    utilities.fetchComponent(fetchURL, { headers, })()
+      .then(response => {
+        console.log({ response });
+        let dropdown = response[ 'test_search' ].map(item => ({
+            "key": item.value,
+            "text": item.label,
+            "value": item.value,
+        }));
+        self.setState({ isFetching: false, options: dropdown })
+      }, e => {
+        self.setState({ isFetching: false, options: [] })
+        console.log({ e })
+      });
+  }, 3000, false, searchQuery)
+
+  // fetchOptions = (searchQuery) => {
+  //   this.setState({ isFetching: true })
+  //   const self = this;
+    
+  //   debounce(() => {
+  //     let stateProps = self.props.getState();
+  //     let options = self.props.searchProps;
+  //     let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
+  //       limit: self.state.limit || self.props.limit || 50,
+  //       sort: '-createdat',
+  //       query: searchQuery,
+  //       allowSpecialCharacters: true,
+  //       pagenum: options.pagenum || 1,
+  //     })}`;
+  //     let headers = Object.assign({
+  //       'x-access-token': stateProps.user.jwt_token,
+  //     }, stateProps.settings.userprofile.options.headers);
+  //     utilities.fetchComponent(fetchURL, { headers, })()
+  //       .then(response => {
+  //         console.log({ response });
+  //         self.setState({ isFetching: false, options: response[ 'test_search' ] })
+  //       }, e => {
+  //         self.setState({ isFetching: false, options: [] })
+  //         console.log({ e })
+  //       });
+  //   }, 3000);
+  // }
 
   toggleSearch = e => this.setState({ search: e.target.checked })
 
@@ -88,7 +167,7 @@ class RemoteDropdown extends Component {
     const { value } = this.state
     const multiple = e.target.checked
     // convert the value to/from an array
-    const newValue = multiple ? _.compact([value]) : _.head(value) || ''
+    const newValue = multiple ? _.compact([ value ]) : _.head(value) || ''
     this.setState({ multiple, value: newValue })
   }
 
