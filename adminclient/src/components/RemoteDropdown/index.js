@@ -53,7 +53,7 @@ class RemoteDropdown extends Component {
     const self = this;
     return function (e, { value }) {
       self.setState({ value }, () => {
-       if(cb) cb(e, { value })
+        if (cb) cb(e, { value })
       })
     }
   }
@@ -104,6 +104,31 @@ class RemoteDropdown extends Component {
             self.setState({ isFetching: false, options: [] })
           });
       })
+    } else if (!searchQuery && this.props.emptyQuery && (self.state.searchQuery !== searchQuery)) {
+      self.setState({ searchQuery: '', isFetching: true }, () => {
+        let stateProps = self.props.getState();
+        let options = self.props.searchProps;
+        let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
+          limit: options.limit || 20,
+          sort: options.sort,
+          query: '',
+          allowSpecialCharacters: true,
+        })}`;
+        let headers = Object.assign({
+          'x-access-token': stateProps.user.jwt_token,
+        }, stateProps.settings.userprofile.options.headers);
+        utilities.fetchComponent(fetchURL, { headers, })()
+          .then(response => {
+            let dropdown = response[ options.response_field ].map((item, idx) => ({
+              "key": idx,
+              "text": item.label,
+              "value": item.value,
+            }));
+            self.setState({ isFetching: false, options: dropdown })
+          }, e => {
+            self.setState({ isFetching: false, options: [] })
+          });
+      })
     } else {
       self.setState({ isFetching: false });
     }
@@ -122,7 +147,7 @@ class RemoteDropdown extends Component {
         options={options}
         value={value}
         placeholder={this.props.placeholder || ''}
-        onChange={this.props.onChange? this.handleChange(this.props.onChange) : this.handleChange()}
+        onChange={this.props.onChange ? this.handleChange(this.props.onChange) : this.handleChange()}
         onSearchChange={this.handleSearchChange}
         disabled={isFetching}
         loading={isFetching}
