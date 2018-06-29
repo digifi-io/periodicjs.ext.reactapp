@@ -104,7 +104,7 @@ class RemoteDropdown extends Component {
             self.setState({ isFetching: false, options: [] })
           });
       })
-    } else if (!searchQuery && this.props.emptyQuery&& (self.state.searchQuery !== searchQuery)) {
+    } else if (!searchQuery && this.props.emptyQuery && (self.state.searchQuery !== searchQuery)) {
       self.setState({ searchQuery: '', isFetching: true }, () => {
         let stateProps = self.props.getState();
         let options = self.props.searchProps;
