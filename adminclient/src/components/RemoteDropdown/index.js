@@ -21,7 +21,7 @@ class RemoteDropdown extends Component {
   }
 
   componentWillMount() {
-    if (this.props.value) {
+    if (this.props.value || (!this.props.value && this.props.emptyQuery)) {
       this.setState({ searchQuery: this.props.value, isFetching: true }, () => {
         let stateProps = this.props.getState();
         let options = this.props.searchProps;
@@ -104,7 +104,7 @@ class RemoteDropdown extends Component {
             self.setState({ isFetching: false, options: [] })
           });
       })
-    } else if (!searchQuery && this.props.emptyQuery && (self.state.searchQuery !== searchQuery)) {
+    } else if (!searchQuery && this.props.emptyQuery&& (self.state.searchQuery !== searchQuery)) {
       self.setState({ searchQuery: '', isFetching: true }, () => {
         let stateProps = self.props.getState();
         let options = self.props.searchProps;
