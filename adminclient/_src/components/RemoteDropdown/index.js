@@ -66,7 +66,8 @@ var RemoteDropdown = function (_Component) {
     };
     _this.debounce = _this.debounce.bind(_this);
     _this.handleChange = _this.handleChange.bind(_this);
-    _this.handleSearchChange = _this.handleSearchChange.bind(_this);
+    _this.searchHandler = _this.searchHandler.bind(_this);
+    _this.handleSearchChange = _this.debounce(_this.searchHandler).bind(_this);
     return _this;
   }
 
@@ -137,46 +138,40 @@ var RemoteDropdown = function (_Component) {
       };
     }
   }, {
-    key: 'handleSearchChange',
-    value: function handleSearchChange(e, _ref2) {
-      var _this3 = this;
-
+    key: 'searchHandler',
+    value: function searchHandler(e, _ref2) {
       var searchQuery = _ref2.searchQuery;
 
-      return this.debounce(function (e, _ref3) {
-        var searchQuery = _ref3.searchQuery;
-
-        var self = _this3;
-        if (searchQuery && self.state.searchQuery !== searchQuery) {
-          self.setState({ searchQuery: searchQuery, isFetching: true }, function () {
-            var stateProps = self.props.getState();
-            var options = self.props.searchProps;
-            var fetchURL = '' + stateProps.settings.basename + options.baseUrl + '&' + _querystring2.default.stringify({
-              limit: options.limit || 20,
-              sort: options.sort,
-              query: searchQuery,
-              allowSpecialCharacters: true
-            });
-            var headers = (0, _assign2.default)({
-              'x-access-token': stateProps.user.jwt_token
-            }, stateProps.settings.userprofile.options.headers);
-            _util2.default.fetchComponent(fetchURL, { headers: headers })().then(function (response) {
-              var dropdown = response[options.response_field].map(function (item, idx) {
-                return {
-                  "key": idx,
-                  "text": item.label,
-                  "value": item.value
-                };
-              });
-              self.setState({ isFetching: false, options: dropdown });
-            }, function (e) {
-              self.setState({ isFetching: false, options: [] });
-            });
+      var self = this;
+      if (searchQuery && self.state.searchQuery !== searchQuery) {
+        self.setState({ searchQuery: searchQuery, isFetching: true }, function () {
+          var stateProps = self.props.getState();
+          var options = self.props.searchProps;
+          var fetchURL = '' + stateProps.settings.basename + options.baseUrl + '&' + _querystring2.default.stringify({
+            limit: options.limit || 20,
+            sort: options.sort,
+            query: searchQuery,
+            allowSpecialCharacters: true
           });
-        } else {
-          self.setState({ isFetching: false });
-        }
-      })(e, { searchQuery: searchQuery });
+          var headers = (0, _assign2.default)({
+            'x-access-token': stateProps.user.jwt_token
+          }, stateProps.settings.userprofile.options.headers);
+          _util2.default.fetchComponent(fetchURL, { headers: headers })().then(function (response) {
+            var dropdown = response[options.response_field].map(function (item, idx) {
+              return {
+                "key": idx,
+                "text": item.label,
+                "value": item.value
+              };
+            });
+            self.setState({ isFetching: false, options: dropdown });
+          }, function (e) {
+            self.setState({ isFetching: false, options: [] });
+          });
+        });
+      } else {
+        self.setState({ isFetching: false });
+      }
     }
   }, {
     key: 'render',
