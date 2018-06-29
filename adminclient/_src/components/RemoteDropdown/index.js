@@ -169,6 +169,32 @@ var RemoteDropdown = function (_Component) {
             self.setState({ isFetching: false, options: [] });
           });
         });
+      } else if (!searchQuery && this.props.emptyQuery && self.state.searchQuery !== searchQuery) {
+        self.setState({ searchQuery: '', isFetching: true }, function () {
+          var stateProps = self.props.getState();
+          var options = self.props.searchProps;
+          var fetchURL = '' + stateProps.settings.basename + options.baseUrl + '&' + _querystring2.default.stringify({
+            limit: options.limit || 20,
+            sort: options.sort,
+            query: '',
+            allowSpecialCharacters: true
+          });
+          var headers = (0, _assign2.default)({
+            'x-access-token': stateProps.user.jwt_token
+          }, stateProps.settings.userprofile.options.headers);
+          _util2.default.fetchComponent(fetchURL, { headers: headers })().then(function (response) {
+            var dropdown = response[options.response_field].map(function (item, idx) {
+              return {
+                "key": idx,
+                "text": item.label,
+                "value": item.value
+              };
+            });
+            self.setState({ isFetching: false, options: dropdown });
+          }, function (e) {
+            self.setState({ isFetching: false, options: [] });
+          });
+        });
       } else {
         self.setState({ isFetching: false });
       }
