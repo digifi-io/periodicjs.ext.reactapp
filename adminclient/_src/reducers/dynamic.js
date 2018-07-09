@@ -27,6 +27,8 @@ var dynamicReducer = function dynamicReducer(state, action) {
     case _constants2.default.dynamic.SET_DYNAMIC_DATA:
       var dynamicPayload = action.payload;
       return (0, _assign2.default)({}, state, (0, _defineProperty3.default)({}, dynamicPayload.prop, dynamicPayload.value));
+    case _constants2.default.dynamic.CLEAR_DYNAMIC_DATA:
+      return initialState;
     default:
       return (0, _assign2.default)(initialState, state);
   }

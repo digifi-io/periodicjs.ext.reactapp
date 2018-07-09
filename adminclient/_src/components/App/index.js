@@ -286,6 +286,9 @@ var reduxActions = {
   setDynamicData: function setDynamicData(prop, val) {
     return _stores2.default.dispatch(_actions2.default.dynamic.setDynamicData(prop, val));
   },
+  clearDynamicData: function clearDynamicData() {
+    return _stores2.default.dispatch(_actions2.default.dynamic.clearDynamicData());
+  },
   fetchLoginComponent: function fetchLoginComponent() {
     return _stores2.default.dispatch(_util2.default.setCacheConfiguration(_actions2.default.ui.fetchComponent(_index2.default.ui.LOGIN_COMPONENT), 'components.login'));
   },

@@ -21,6 +21,12 @@ var dynamic = {
       type: _constants2.default.dynamic.SET_DYNAMIC_DATA,
       payload: { prop: prop, value: value }
     };
+  },
+  clearDynamicData: function clearDynamicData() {
+    return {
+      type: _constants2.default.dynamic.CLEAR_DYNAMIC_DATA,
+      payload: {}
+    };
   }
 };
 

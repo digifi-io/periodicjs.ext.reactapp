@@ -131,7 +131,8 @@ exports.default = {
     CLIENT_CACHE_DATA_SUCCESS: 'client cache data succeeded'
   },
   dynamic: {
-    SET_DYNAMIC_DATA: 'set dynamic data'
+    SET_DYNAMIC_DATA: 'set dynamic data',
+    CLEAR_DYNAMIC_DATA: 'clear dynamic data'
     // SHOW_ERROR:'show error notification',
   },
   output: {

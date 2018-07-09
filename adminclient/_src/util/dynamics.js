@@ -131,12 +131,15 @@ var fetchSuccessContent = exports.fetchSuccessContent = function _fetchSuccessCo
     if (typeof window.customOnChangeLocation === 'function') {
       window.customOnChangeLocation(window.location.pathname);
     }
-
     if (containers[pathname].dynamic && (0, _typeof3.default)(containers[pathname].dynamic) === 'object') {
       (0, _keys2.default)(containers[pathname].dynamic).forEach(function (dynamicProp) {
         _this2.props.setDynamicData(dynamicProp, containers[pathname].dynamic[dynamicProp]);
       });
     }
+    if (containers[pathname].clearDynamicOnLoad) {
+      this.props.clearDynamicData();
+    }
+
     if (containers[pathname].resources && (0, _typeof3.default)(containers[pathname].resources) === 'object') {
       var container = containers[pathname];
       var resources = container.resources;
