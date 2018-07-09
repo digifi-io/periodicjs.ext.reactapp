@@ -89,6 +89,7 @@ const reduxActions = {
   },
   logoutUser: () => store.dispatch(actions.user.logoutUser()),
   setDynamicData: (prop, val) => store.dispatch(actions.dynamic.setDynamicData(prop, val)),
+  clearDynamicData: () => store.dispatch(actions.dynamic.clearDynamicData()),
   fetchLoginComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.LOGIN_COMPONENT), 'components.login')),
   fetchMainComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.MAIN_COMPONENT), 'components.main')),
   fetchErrorComponents: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.ERROR_COMPONENTS), 'components.error')),

@@ -22,15 +22,15 @@ export const _handleDynamicParams = function (pathname, resources, current) {
   // console.log('_handleDynamicParams',{ pathname, resources, current });
   let currentPathname;
   if (typeof current === 'string') currentPathname = current;
-  else currentPathname = (typeof window!== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+  else currentPathname = (typeof window !== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
   return Object.keys(resources).reduce((result, key) => {
     let updatedPath = utilities.setParameters({
       route: pathname,
       location: currentPathname,
       query: (/\?[^\s]+$/.test(currentPathname)) ? currentPathname.replace(/\?([^\s]+)$/g, '$1') : undefined,
-      resource: resources[key],
+      resource: resources[ key ],
     });
-    result[key] = updatedPath;
+    result[ key ] = updatedPath;
     return result;
   }, {});
 };
@@ -55,12 +55,12 @@ export const _handleFetchPaths = function (layout, resources = {}, options = {})
   return utilities.fetchPaths.call(this, state.settings.basename, resources, headers)
     .then((typeof options.onSuccess === 'function') ? options.onSuccess : _resources => {
       if (!_resources || (_resources && !_resources.__hasError)) {
-        this.uiLayout = this.getRenderedComponent(layout, Object.assign({},_resources,this.uiResources));
+        this.uiLayout = this.getRenderedComponent(layout, Object.assign({}, _resources, this.uiResources));
         this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
         if (options.callbacks) _invokeWebhooks.call(this, options.callbacks);
       }
     })
-    .catch((typeof options.onError === 'function') ? e => options.onError( e, 'fetchResources', resources) : e => {
+    .catch((typeof options.onError === 'function') ? e => options.onError(e, 'fetchResources', resources) : e => {
       if (this.props && this.props.errorNotification) this.props.errorNotification(e);
       else console.error(e);
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
@@ -70,7 +70,7 @@ export const _handleFetchPaths = function (layout, resources = {}, options = {})
 /**
  * Sets a configurable 404 error component or sets a default 404 component
  */
-export const fetchErrorContent = function _fetchErrorContent (e, type, resources) {
+export const fetchErrorContent = function _fetchErrorContent(e, type, resources) {
   console.debug('fetchErrorContent', e, { type, resources, });
   let getState = _getState.call(this);
   let state = getState();
@@ -95,42 +95,45 @@ export const fetchErrorContent = function _fetchErrorContent (e, type, resources
  * @param  {string}  pathname  Dynamic page manifest pathname
  * @param  {Boolean} hasParams If true will attempt to assign dynamic params to resource path
  */
-export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasParams) {
+export const fetchSuccessContent = function _fetchSuccessContent(pathname, hasParams) {
   try {
     let getState = _getState.call(this);
     let state = getState();
     let containers = state.manifest.containers;
-    let layout = Object.assign({}, containers[pathname].layout);
+    let layout = Object.assign({}, containers[ pathname ].layout);
 
     if (typeof window.customOnChangeLocation === 'function') {
       window.customOnChangeLocation(window.location.pathname);
     }
-    
-    if (containers[pathname].dynamic && typeof containers[pathname].dynamic === 'object') {
-      Object.keys(containers[pathname].dynamic).forEach(dynamicProp => {
-        this.props.setDynamicData(dynamicProp, containers[pathname].dynamic[dynamicProp]);
+    if (containers[ pathname ].dynamic && typeof containers[ pathname ].dynamic === 'object') {
+      Object.keys(containers[ pathname ].dynamic).forEach(dynamicProp => {
+        this.props.setDynamicData(dynamicProp, containers[ pathname ].dynamic[ dynamicProp ]);
       });
     }
-    if (containers[pathname].resources && typeof containers[pathname].resources === 'object') {
-      let container = containers[pathname];
+    if (containers[ pathname ].clearDynamicOnLoad) {
+      this.props.clearDynamicData();
+    }
+
+    if (containers[ pathname ].resources && typeof containers[ pathname ].resources === 'object') {
+      let container = containers[ pathname ];
       let resources = container.resources;
       if (hasParams) resources = _handleDynamicParams.call(this, pathname, resources, (typeof this.props.pathname === 'string') ? this.props.pathname : undefined);
       if (container.pageData && container.pageData.title) window.document.title = container.pageData.title;
       if (container.pageData && container.pageData.navLabel && this.props && this.props.setNavLabel) this.props.setNavLabel(container.pageData.navLabel);
       else if (this.props && this.props.setNavLabel) this.props.setNavLabel('');
-      return _handleFetchPaths.call(this, layout, resources, { 
+      return _handleFetchPaths.call(this, layout, resources, {
         getState,
-        onError: fetchErrorContent.bind(this), 
-        callbacks: containers[pathname].callbacks,
+        onError: fetchErrorContent.bind(this),
+        callbacks: containers[ pathname ].callbacks,
       });
     } else {
-      if (containers[pathname].callbacks) _invokeWebhooks.call(this, containers[pathname].callbacks);
+      if (containers[ pathname ].callbacks) _invokeWebhooks.call(this, containers[ pathname ].callbacks);
       this.uiLayout = this.getRenderedComponent(containers[ pathname ].layout, this.uiResources);
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-      if(window && window.scrollTo){
+      if (window && window.scrollTo) {
         window.scrollTo(0, 0);
       }
-      if (document && document.querySelector && document.querySelector('.reactapp__app_div_content')){
+      if (document && document.querySelector && document.querySelector('.reactapp__app_div_content')) {
         document.querySelector('.reactapp__app_div_content').scrollIntoView(true)
       }
     }
@@ -138,10 +141,10 @@ export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasP
     if (this.props && this.props.errorNotification) this.props.errorNotification(e);
     else console.error(e);
     this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-    if(window && window.scrollTo){
+    if (window && window.scrollTo) {
       window.scrollTo(0, 0);
     }
-    if (document && document.querySelector && document.querySelector('.reactapp__app_div_content')){
+    if (document && document.querySelector && document.querySelector('.reactapp__app_div_content')) {
       document.querySelector('.reactapp__app_div_content').scrollIntoView(true)
     }
   }
@@ -153,28 +156,28 @@ export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasP
  * @param  {Function} [onSuccess] Optional success function override. If this isnt passed resource paths will be fetched for async props
  * @param  {Function} onError   Optional error function override. If this isnt passed 404 error page will be rendered
  */
-export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onSuccess, onError) {
+export const fetchDynamicContent = function _fetchDynamicContent(_pathname, onSuccess, onError) {
   let pathname;
   let getState = _getState.call(this);
   let state = getState();
-  if (typeof _pathname === 'string'){ 
-    pathname = _pathname; 
+  if (typeof _pathname === 'string') {
+    pathname = _pathname;
   } else {
-    pathname = (window.location.pathname) 
+    pathname = (window.location.pathname)
       ? window.location.pathname
       : this.props.location.pathname;
   }
-  onSuccess = (typeof onSuccess === 'function') 
-    ? onSuccess 
+  onSuccess = (typeof onSuccess === 'function')
+    ? onSuccess
     : fetchSuccessContent.bind(this);
-  onError = (typeof onError === 'function') 
-    ? onError 
+  onError = (typeof onError === 'function')
+    ? onError
     : fetchErrorContent.bind(this);
   // console.log({pathname}, onSuccess, onError)
-  if (state.manifest.containers[pathname]) {
+  if (state.manifest.containers[ pathname ]) {
     return onSuccess(pathname);
-  } else if (state.manifest.containers[pathname.replace(state.settings.auth.admin_path, '')]) {
-    let adminPathname = pathname.replace(state.settings.auth.admin_path, ''); 
+  } else if (state.manifest.containers[ pathname.replace(state.settings.auth.admin_path, '') ]) {
+    let adminPathname = pathname.replace(state.settings.auth.admin_path, '');
     return onSuccess(adminPathname);
   } else {
     let dynamicPathname = utilities.findMatchingRoute(state.manifest.containers, pathname.replace(state.settings.auth.admin_path, ''));
@@ -185,7 +188,7 @@ export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onS
 
 
 const FUNCTION_NAME_REGEXP = /func:(?:this\.props|window)(?:\.reduxRouter)?\.(\D.+)*/;
-export const getDynamicFunctionName = function _getDynamicFunctionName (function_name) {
+export const getDynamicFunctionName = function _getDynamicFunctionName(function_name) {
   return function_name.replace(FUNCTION_NAME_REGEXP, '$1');
 };
 
@@ -217,18 +220,18 @@ export const fetchAction = function _fetchAction(pathname, fetchOptions, success
         } else if (success.success.notification) {
           this.props.createNotification(success.success.notification);
         } else {
-          this.props.createNotification({ text: 'Saved', timeout:4000, type:'success',  });
+          this.props.createNotification({ text: 'Saved', timeout: 4000, type: 'success', });
         }
-      } 
+      }
       if (success.successCallback) {
         res.json()
           .then(successData => {
             let successCallbackProp = success.successCallback;
-            if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props.reduxRouter') !== -1) { 
+            if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props.reduxRouter') !== -1) {
               successCallback = this.props.reduxRouter[ successCallbackProp.replace('func:this.props.reduxRouter.', '') ];
-            } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props') !== -1) { 
+            } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props') !== -1) {
               successCallback = this.props[ success.successCallback.replace('func:this.props.', '') ];
-            } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:window') !== -1 && typeof window[ success.successCallback.replace('func:window.', '') ]==='function') { 
+            } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:window') !== -1 && typeof window[ success.successCallback.replace('func:window.', '') ] === 'function') {
               successCallback = window[ success.successCallback.replace('func:window.', '') ].bind(this);
             }
             if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
