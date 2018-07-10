@@ -1,7 +1,7 @@
 import React, { Component, /*PropTypes,*/ } from 'react';
 import { Link, } from 'react-router';
 import * as rb from 're-bulma';
-import { Dropdown, Progress, } from 'semantic-ui-react';
+import { Dropdown, Progress, Checkbox } from 'semantic-ui-react';
 import moment from 'moment';
 import numeral from 'numeral';
 import utilities from '../../util';
@@ -583,6 +583,18 @@ class ResponsiveTable extends Component {
           }}
         >
         </ResponsiveDatalist>
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'checkbox') {
+        return <Checkbox {...header.passProps}
+          name={header.sortid}
+          checked={value ? true : false}
+          onChange={(event, { value }) => {
+            let text = !value;
+            let name = header.sortid;
+            let rowIndex = options.rowIndex;
+            this.updateInlineRowText({ name, text, rowIndex, });
+          }}
+        >
+        </Checkbox>
       } else if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
         returnValue = returnValue.replace('--idx--', options.idx);
       }
