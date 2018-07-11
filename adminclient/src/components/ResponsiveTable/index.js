@@ -1,7 +1,7 @@
 import React, { Component, /*PropTypes,*/ } from 'react';
 import { Link, } from 'react-router';
 import * as rb from 're-bulma';
-import { Dropdown, Progress, } from 'semantic-ui-react';
+import { Dropdown, Progress, Checkbox } from 'semantic-ui-react';
 import moment from 'moment';
 import numeral from 'numeral';
 import utilities from '../../util';
@@ -83,6 +83,7 @@ class ResponsiveTable extends Component {
     this.moveRowUp = this.updateByMoveRowUp.bind(this);
     this.updateNewRowText = this.updateNewRowDataText.bind(this);
     this.updateInlineRowText = this.updateInlineRowDataText.bind(this);
+    this.updateRadioGroup = this.updateRadioGroupData.bind(this);
     this.getFooterAddRow = this.updateGetFooterAddRow.bind(this);
     this.removeFilterRow = this.removeFilterByDeleteRow.bind(this);
     this.addFilterRow = this.addFilterByAddRow.bind(this);
@@ -187,6 +188,17 @@ class ResponsiveTable extends Component {
     // this.props.onChange({ rows, });
     this.updateTableData({ rows, });
   }
+
+  updateRadioGroupData(options) {
+    let { name, rowIndex, } = options;
+    let rows = this.state.rows.concat([]);
+    rows.forEach(row => {
+      row[name] = false;
+    })
+    rows[ rowIndex ][ name ] = true;
+    this.updateTableData({ rows, });
+  }
+
   handleFileUpload(type) {
     return (e, results) => {
       let updatefunction = (type === 'replace') ?
@@ -583,6 +595,34 @@ class ResponsiveTable extends Component {
           }}
         >
         </ResponsiveDatalist>
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'checkbox') {
+        return <Checkbox {...header.passProps}
+          name={header.sortid}
+          checked={value ? true : false}
+          value={value}
+          onChange={(event, { value }) => {
+            let text = !value;
+            let name = header.sortid;
+            let rowIndex = options.rowIndex;
+            this.updateInlineRowText({ name, text, rowIndex, });
+          }}
+        >
+        </Checkbox>
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'radio') {
+        return <Checkbox {...header.passProps}
+        radio={true}
+        name={header.sortid}
+        value={value}
+        checked={value ? true : false}
+        onChange={(event, { value }) => {
+            if (!value) {
+              let name = header.sortid;
+              let rowIndex = options.rowIndex;
+              this.updateRadioGroup({ name, rowIndex, });
+            }
+          }}
+        >
+        </Checkbox>
       } else if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
         returnValue = returnValue.replace('--idx--', options.idx);
       }
