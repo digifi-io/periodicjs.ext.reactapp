@@ -83,6 +83,7 @@ class ResponsiveTable extends Component {
     this.moveRowUp = this.updateByMoveRowUp.bind(this);
     this.updateNewRowText = this.updateNewRowDataText.bind(this);
     this.updateInlineRowText = this.updateInlineRowDataText.bind(this);
+    this.updateRadioGroup = this.updateRadioGroupData.bind(this);
     this.getFooterAddRow = this.updateGetFooterAddRow.bind(this);
     this.removeFilterRow = this.removeFilterByDeleteRow.bind(this);
     this.addFilterRow = this.addFilterByAddRow.bind(this);
@@ -187,6 +188,17 @@ class ResponsiveTable extends Component {
     // this.props.onChange({ rows, });
     this.updateTableData({ rows, });
   }
+
+  updateRadioGroupData(options) {
+    let { name, rowIndex, } = options;
+    let rows = this.state.rows.concat([]);
+    rows.forEach(row => {
+      row[name] = false;
+    })
+    rows[ rowIndex ][ name ] = true;
+    this.updateTableData({ rows, });
+  }
+
   handleFileUpload(type) {
     return (e, results) => {
       let updatefunction = (type === 'replace') ?
@@ -592,6 +604,20 @@ class ResponsiveTable extends Component {
             let name = header.sortid;
             let rowIndex = options.rowIndex;
             this.updateInlineRowText({ name, text, rowIndex, });
+          }}
+        >
+        </Checkbox>
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'radio') {
+        return <Checkbox {...header.passProps}
+        radio={true}
+        name={header.sortid}
+        checked={value ? true : false}
+        onChange={(event, { value }) => {
+            if (!value) {
+              let name = header.sortid;
+              let rowIndex = options.rowIndex;
+              this.updateRadioGroup({ name, rowIndex, });
+            }
           }}
         >
         </Checkbox>
