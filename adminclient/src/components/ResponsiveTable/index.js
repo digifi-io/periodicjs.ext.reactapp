@@ -660,7 +660,7 @@ class ResponsiveTable extends Component {
       } else if (returnValue === null) {
         return 'null';
       } else if (typeof returnValue  === 'object' && !Array.isArray(returnValue)) {
-        return this.props.getRenderedComponent(returnValue);
+        return this.getRenderedComponent(returnValue);
       } else {
         return returnValue.toString();
       }
