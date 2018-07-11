@@ -599,6 +599,7 @@ class ResponsiveTable extends Component {
         return <Checkbox {...header.passProps}
           name={header.sortid}
           checked={value ? true : false}
+          value={value}
           onChange={(event, { value }) => {
             let text = !value;
             let name = header.sortid;
@@ -611,6 +612,7 @@ class ResponsiveTable extends Component {
         return <Checkbox {...header.passProps}
         radio={true}
         name={header.sortid}
+        value={value}
         checked={value ? true : false}
         onChange={(event, { value }) => {
             if (!value) {
