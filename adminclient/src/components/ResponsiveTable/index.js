@@ -659,6 +659,8 @@ class ResponsiveTable extends Component {
       //   return JSON.stringify(returnValue);
       } else if (returnValue === null) {
         return 'null';
+      } else if (typeof returnValue  === 'object' && !Array.isArray(returnValue)) {
+        return this.props.getRenderedComponent(returnValue);
       } else {
         return returnValue.toString();
       }
