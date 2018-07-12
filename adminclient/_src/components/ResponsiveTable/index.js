@@ -821,6 +821,8 @@ var ResponsiveTable = function (_Component) {
           //   return JSON.stringify(returnValue);
         } else if (returnValue === null) {
           return 'null';
+        } else if ((typeof returnValue === 'undefined' ? 'undefined' : (0, _typeof3.default)(returnValue)) === 'object' && !Array.isArray(returnValue)) {
+          return this.getRenderedComponent(returnValue);
         } else {
           return returnValue.toString();
         }
