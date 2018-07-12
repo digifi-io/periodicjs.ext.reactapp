@@ -1349,6 +1349,7 @@ export function getFormDatePicker(options) {
   let customLabel = getCustomFormLabel.bind(this);
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
+  let isValid = getValidStatus(this.state, formElement.name);
   let initialVal = getInitialValue(formElement, this.state);
   let singleCustomOnChange = function ({ date }) {
     this.setState({ [ formElement.name ]: (date) ? date.toISOString() : null }, () => {
@@ -1380,15 +1381,25 @@ export function getFormDatePicker(options) {
   if (formElement.type === 'singleDatePicker') {
     return (<FormItem key={i} {...formElement.layoutProps} >
       {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
-      <SingleDatePickerWrapper key={i} {...SingleDatePickerProps} />
-      {getCustomErrorLabel(hasError, this.state, formElement)}
+      <div
+        className='__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right'
+      >
+        <SingleDatePickerWrapper key={i} {...SingleDatePickerProps} />
+        {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
+        {getCustomErrorLabel(hasError, this.state, formElement)}
+      </div> 
     </FormItem>
     );
   } else if (formElement.type === 'rangeDatePicker') {
     return (<FormItem key={i} {...formElement.layoutProps} >
       {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
-      <DateRangePickerWrapper key={i} {...RangeDatePickerProps} />
-      {getCustomErrorLabel(hasError, this.state, formElement)}
+    <div
+        className='__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right'
+      >
+        <DateRangePickerWrapper key={i} {...RangeDatePickerProps} />
+        {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
+        {getCustomErrorLabel(hasError, this.state, formElement)}
+      </div>
     </FormItem>
     );
   }
