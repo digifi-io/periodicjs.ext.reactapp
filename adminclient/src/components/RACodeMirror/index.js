@@ -59,7 +59,14 @@ const defaultProps = {
 };
 
 class RACodeMirror extends Component {
+  // constructor(props) {
+  //   // super(props);
+  //   // this.state = {
+  //   //   value: '',
+  //   // }
+  // }
   render() {
+    // let initialValue = this.props.value;
     let options = Object.assign({},
       this.props.codeMirrorProps,
       (this.props.useCMDynamicProps && this.props.dynamicCMProp)
@@ -82,11 +89,18 @@ class RACodeMirror extends Component {
         },
           this.props.codeMirrorPropsOptions, this.props.codeMirrorProps.options),
       });
+    if (options.onChange && typeof options.onChange === 'string') {
+      if (options.onChange.indexOf('func:this.props') !== -1) {
+        options.onChange = this.props[ options.onChange.replace('func:this.props.', '') ];
+      } else if (options.onChange.indexOf('func:window') !== -1 && typeof window[ options.onChange.replace('func:window.', '') ] === 'function') {
+        options.onChange = window[ options.onChange.replace('func:window.', '') ].bind(this);
+      }
+    }
       // console.warn('RACodeMirror',{ options, });
     if (this.props.editorType === 'editor') {
       options.options.mode = 'application/x-ejs';
       return (<div {...this.props.wrapperProps}>
-        <CodeMirror {...options}>{this.props.children}</CodeMirror>
+        <CodeMirror  {...options}>{this.props.children}</CodeMirror>
         </div>);
     } else {
       return <div {...this.props.wrapperProps}><CodeMirror {...options}>{this.props.children}</CodeMirror></div>;
