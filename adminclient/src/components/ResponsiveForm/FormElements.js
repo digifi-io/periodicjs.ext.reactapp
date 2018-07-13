@@ -1303,21 +1303,27 @@ export function getFormGroup(options) {
 export function getFormTabs(options) {
   let customLabel = getCustomFormLabel.bind(this);
   let { formElement, i, tabs, } = options;
+  const self = this;
   tabs = tabs.map(tab => {
+    tab.formElements = tab.formElements || [];
     tab.layout = {
-      formElements: tab.formElements,
+      formElements: tab.formElements || [],
     };
     return tab;
   });
-  const self = this;
   let getFormElementsWrapper = function (tab) {
     return (<div {...tab.tabProps}>{tab.formElements.map(formElement.getFormElements.bind(self))}</div>);
   }
+  let onTabChange = function (currentTab) {
+    if (formElement.name) {
+      self.setState({ [ formElement.name ]: currentTab.name });
+    }
+  };
   getFormElementsWrapper = getFormElementsWrapper.bind(self);
-
+  onTabChange = (formElement.passProps.markActiveTab) ? onTabChange.bind(this) : () => { };
   return (<FormItem key={i} {...formElement.layoutProps} >
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
-    <ResponsiveTabs {...formElement.passProps} isForm={true} tabs={tabs} getFormElements= {getFormElementsWrapper}
+    <ResponsiveTabs {...formElement.passProps} onChange={onTabChange} isForm={true} tabs={tabs} getFormElements= {getFormElementsWrapper}
     />
   </FormItem>);
 }

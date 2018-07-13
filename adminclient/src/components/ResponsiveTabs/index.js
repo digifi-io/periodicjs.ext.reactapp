@@ -85,7 +85,9 @@ class ResponsiveTabs extends Component {
       onChangeFunc= this.props[ this.props.onChange.replace('func:this.props.', '') ];
     } else if (typeof this.props.onChange==='string' && this.props.onChange.indexOf('func:window') !== -1 && typeof window[ this.props.onChange.replace('func:window.', '') ] ==='function') {
       onChangeFunc= window[ this.props.onChange.replace('func:window.', '') ].bind(this);
-    } 
+    } else if (typeof this.props.onChange === "function") {
+      onChangeFunc = this.props.onChange;
+    }
     // console.log('this.props.onChange',this.props.onChange)
     // console.log('onChangeFunc',onChangeFunc)
     onChangeFunc(tab);
@@ -96,6 +98,9 @@ class ResponsiveTabs extends Component {
     this.setState({
       currentLayout: defaultLayout,
     });
+    if(this.props.isForm && this.props.onChange){
+      this.props.onChange(this.state.currentTab);
+    }
   }
   render() {
     let TabSelector = null;
