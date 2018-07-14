@@ -1351,6 +1351,7 @@ export function getFormDatePicker(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let isValid = getValidStatus(this.state, formElement.name);
   let initialVal = getInitialValue(formElement, this.state);
+  let hasValue = (formElement.name && this.state[formElement.name]) ? true : false;
   let singleCustomOnChange = function ({ date }) {
     this.setState({ [ formElement.name ]: (date) ? date.toISOString() : null }, () => {
       if (formElement.validateOnChange) {
@@ -1379,7 +1380,7 @@ export function getFormDatePicker(options) {
     initialDate: (initialVal) ? new moment(initialVal) : null
   }, formElement.passProps);
   if (formElement.type === 'singleDatePicker') {
-    return (<FormItem key={i} {...formElement.layoutProps} >
+    return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
       {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
       <div
         className='__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right'
@@ -1391,7 +1392,7 @@ export function getFormDatePicker(options) {
     </FormItem>
     );
   } else if (formElement.type === 'rangeDatePicker') {
-    return (<FormItem key={i} {...formElement.layoutProps} >
+    return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
       {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div
         className='__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right'
