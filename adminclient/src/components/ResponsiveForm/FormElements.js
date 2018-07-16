@@ -6,6 +6,7 @@ import ResponsiveDatalist from '../ResponsiveDatalist';
 import ResponsiveTable from '../ResponsiveTable';
 import DNDTable from '../DNDTable';
 import RemoteDropdown from '../RemoteDropdown';
+import ResponsiveTabs from '../ResponsiveTabs';
 import SingleDatePickerWrapper from '../SingleDatePickerWrapper';
 import DateRangePickerWrapper from '../DateRangePickerWrapper';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
@@ -1299,10 +1300,38 @@ export function getFormGroup(options) {
   </FormItem>);
 }
 
+export function getFormTabs(options) {
+  let customLabel = getCustomFormLabel.bind(this);
+  let { formElement, i, tabs, } = options;
+  const self = this;
+  tabs = tabs.map(tab => {
+    tab.formElements = tab.formElements || [];
+    tab.layout = {
+      formElements: tab.formElements || [],
+    };
+    return tab;
+  });
+  let getFormElementsWrapper = function (tab) {
+    return (<div {...tab.tabProps}>{tab.formElements.map(formElement.getFormElements.bind(self))}</div>);
+  }
+  let onTabChange = function (currentTab) {
+    if (formElement.name) {
+      self.setState({ [ formElement.name ]: currentTab.name });
+    }
+  };
+  getFormElementsWrapper = getFormElementsWrapper.bind(self);
+  onTabChange = (formElement.passProps.markActiveTab) ? onTabChange.bind(this) : () => { };
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
+    <ResponsiveTabs {...formElement.passProps} onChange={onTabChange} isForm={true} tabs={tabs} getFormElements= {getFormElementsWrapper}
+    />
+  </FormItem>);
+}
+
 export function getFormCode(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
-  let initialVal = getInitialValue(formElement, this.state);
+  let initialVal = getInitialValue(formElement, this.state) || '';
   let customLabel = getCustomFormLabel.bind(this);
   let CodeMirrorProps = Object.assign({
     codeMirrorProps: Object.assign({
@@ -1314,7 +1343,6 @@ export function getFormCode(options) {
       },
       lineWrapping: true,
       onChange: (!onValueChange) ? function (newvalue) {
-        // console.log({ newvalue });
         newvalue = (formElement.stringify) ? JSON.parse(newvalue) : newvalue;
         let updatedStateProp = {};
         updatedStateProp[ formElement.name ] = newvalue;

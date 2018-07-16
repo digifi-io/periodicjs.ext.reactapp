@@ -3,7 +3,7 @@ import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, Ca
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormRemoteDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
+import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormRemoteDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getFormTabs, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, valueCheckFormElement } from './FormHelpers';
 import flatten, { unflatten, } from 'flat';
 import qs from 'querystring';
@@ -134,6 +134,7 @@ class ResponsiveForm extends Component{
     this.getFormEditor = getFormEditor.bind(this);
     this.getFormLink = getFormLink.bind(this);
     this.getFormGroup = getFormGroup.bind(this);
+    this.getFormTabs = getFormTabs.bind(this);
     this.getImage = getImage.bind(this);
     this.getFormDNDTable = getFormDNDTable.bind(this);
     this.validateFormElement = validateFormElement.bind(this);
@@ -494,6 +495,10 @@ class ResponsiveForm extends Component{
           return this.getFormSubmit({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'group') {
           return this.getFormGroup({ formElement,  i:j, groupElements:formElement.groupElements.map(getFormElements), }); 
+        } else if (formElement.type === 'tabs') {
+          formElement.getFormElements = getFormElements.bind(this);
+          let tabs = (formElement.tabs && formElement.tabs.length) ? formElement.tabs : [];
+          return this.getFormTabs({ formElement,  i:j, tabs, }); 
         } else {
           formElement.passProps = Object.assign({}, formElement.passProps, { type: formElement.type, });
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
