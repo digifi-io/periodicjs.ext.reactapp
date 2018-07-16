@@ -56,6 +56,7 @@ exports.getHiddenInput = getHiddenInput;
 exports.getImage = getImage;
 exports.getFormLink = getFormLink;
 exports.getFormGroup = getFormGroup;
+exports.getFormTabs = getFormTabs;
 exports.getFormCode = getFormCode;
 exports.getFormDatePicker = getFormDatePicker;
 exports.getFormEditor = getFormEditor;
@@ -93,6 +94,10 @@ var _DNDTable2 = _interopRequireDefault(_DNDTable);
 var _RemoteDropdown = require('../RemoteDropdown');
 
 var _RemoteDropdown2 = _interopRequireDefault(_RemoteDropdown);
+
+var _ResponsiveTabs = require('../ResponsiveTabs');
+
+var _ResponsiveTabs2 = _interopRequireDefault(_ResponsiveTabs);
 
 var _SingleDatePickerWrapper = require('../SingleDatePickerWrapper');
 
@@ -1516,13 +1521,50 @@ function getFormGroup(options) {
   );
 }
 
+function getFormTabs(options) {
+  var customLabel = getCustomFormLabel.bind(this);
+  var formElement = options.formElement,
+      i = options.i,
+      tabs = options.tabs;
+
+  var self = this;
+  tabs = tabs.map(function (tab) {
+    tab.formElements = tab.formElements || [];
+    tab.layout = {
+      formElements: tab.formElements || []
+    };
+    return tab;
+  });
+  var getFormElementsWrapper = function getFormElementsWrapper(tab) {
+    return _react2.default.createElement(
+      'div',
+      tab.tabProps,
+      tab.formElements.map(formElement.getFormElements.bind(self))
+    );
+  };
+  var onTabChange = function onTabChange(currentTab) {
+    if (formElement.name) {
+      self.setState((0, _defineProperty3.default)({}, formElement.name, currentTab.name));
+    }
+  };
+  getFormElementsWrapper = getFormElementsWrapper.bind(self);
+  onTabChange = formElement.passProps.markActiveTab ? onTabChange.bind(this) : function () {};
+  return _react2.default.createElement(
+    _FormItem2.default,
+    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
+    _react2.default.createElement(_ResponsiveTabs2.default, (0, _extends3.default)({}, formElement.passProps, { onChange: onTabChange, isForm: true, tabs: tabs, getFormElements: getFormElementsWrapper
+    }))
+  );
+}
+
 function getFormCode(options) {
   var formElement = options.formElement,
       i = options.i,
       onValueChange = options.onValueChange;
 
   var hasError = getErrorStatus(this.state, formElement.name);
-  var initialVal = getInitialValue(formElement, this.state);
+  var initialVal = getInitialValue(formElement, this.state) || '';
   var customLabel = getCustomFormLabel.bind(this);
   var CodeMirrorProps = (0, _assign2.default)({
     codeMirrorProps: (0, _assign2.default)({
@@ -1534,7 +1576,6 @@ function getFormCode(options) {
       },
       lineWrapping: true,
       onChange: !onValueChange ? function (newvalue) {
-        // console.log({ newvalue });
         newvalue = formElement.stringify ? JSON.parse(newvalue) : newvalue;
         var updatedStateProp = {};
         updatedStateProp[formElement.name] = newvalue;
@@ -1573,7 +1614,9 @@ function getFormDatePicker(options) {
       onValueChange = options.onValueChange;
 
   var hasError = getErrorStatus(this.state, formElement.name);
+  var isValid = getValidStatus(this.state, formElement.name);
   var initialVal = getInitialValue(formElement, this.state);
+  var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var singleCustomOnChange = function singleCustomOnChange(_ref3) {
     var _this15 = this;
 
@@ -1613,18 +1656,32 @@ function getFormDatePicker(options) {
   if (formElement.type === 'singleDatePicker') {
     return _react2.default.createElement(
       _FormItem2.default,
-      (0, _extends3.default)({ key: i }, formElement.layoutProps),
+      (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
       formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
-      _react2.default.createElement(_SingleDatePickerWrapper2.default, (0, _extends3.default)({ key: i }, SingleDatePickerProps)),
-      getCustomErrorLabel(hasError, this.state, formElement)
+      _react2.default.createElement(
+        'div',
+        {
+          className: '__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right'
+        },
+        _react2.default.createElement(_SingleDatePickerWrapper2.default, (0, _extends3.default)({ key: i }, SingleDatePickerProps)),
+        getCustomErrorIcon(hasError, isValid, this.state, formElement),
+        getCustomErrorLabel(hasError, this.state, formElement)
+      )
     );
   } else if (formElement.type === 'rangeDatePicker') {
     return _react2.default.createElement(
       _FormItem2.default,
-      (0, _extends3.default)({ key: i }, formElement.layoutProps),
+      (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
       formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
-      _react2.default.createElement(_DateRangePickerWrapper2.default, (0, _extends3.default)({ key: i }, RangeDatePickerProps)),
-      getCustomErrorLabel(hasError, this.state, formElement)
+      _react2.default.createElement(
+        'div',
+        {
+          className: '__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right'
+        },
+        _react2.default.createElement(_DateRangePickerWrapper2.default, (0, _extends3.default)({ key: i }, RangeDatePickerProps)),
+        getCustomErrorIcon(hasError, isValid, this.state, formElement),
+        getCustomErrorLabel(hasError, this.state, formElement)
+      )
     );
   }
 }

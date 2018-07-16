@@ -128,9 +128,6 @@ class MainApp extends Component{
     let headerNav = (this.state.settings.ui.initialization.show_header || this.state.user.isLoggedIn)
       ? (<AppHeader className="reactapp__app_header" {...this.state} />)
       : null;
-    let footerNav = (this.state.settings.ui.initialization.show_footer || this.state.user.isLoggedIn)
-      ? (<AppFooter className="reactapp__app_footer" {...this.state} />)
-      : null;  
 
     let overlay = (this.props.ui.sidebar_is_open && this.state.settings.ui.initialization.show_sidebar_overlay)
       ? (<div style={styles.sidebarOverlay} className="__ra_show_sidebar_overlay"
@@ -162,7 +159,7 @@ class MainApp extends Component{
           </Column>
         </Columns>
       </main>
-      {footerNav}
+      <AppFooter className="reactapp__app_footer" {...this.state} />
     </div>);
 
   }

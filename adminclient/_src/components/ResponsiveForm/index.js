@@ -194,6 +194,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormEditor = _FormElements.getFormEditor.bind(_this);
     _this.getFormLink = _FormElements.getFormLink.bind(_this);
     _this.getFormGroup = _FormElements.getFormGroup.bind(_this);
+    _this.getFormTabs = _FormElements.getFormTabs.bind(_this);
     _this.getImage = _FormElements.getImage.bind(_this);
     _this.getFormDNDTable = _FormElements.getFormDNDTable.bind(_this);
     _this.validateFormElement = _FormHelpers.validateFormElement.bind(_this);
@@ -561,6 +562,10 @@ var ResponsiveForm = function (_Component) {
             return _this5.getFormSubmit({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'group') {
             return _this5.getFormGroup({ formElement: formElement, i: j, groupElements: formElement.groupElements.map(getFormElements) });
+          } else if (formElement.type === 'tabs') {
+            formElement.getFormElements = getFormElements.bind(_this5);
+            var tabs = formElement.tabs && formElement.tabs.length ? formElement.tabs : [];
+            return _this5.getFormTabs({ formElement: formElement, i: j, tabs: tabs });
           } else {
             formElement.passProps = (0, _assign2.default)({}, formElement.passProps, { type: formElement.type });
             return _this5.getFormTextInputArea({ formElement: formElement, i: j, formgroup: formgroup });
