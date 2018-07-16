@@ -267,6 +267,16 @@ function setFormNameFields(options) {
             if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(function (formElm) {
               return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
             });
+          } else if (formElement.type === 'tabs') {
+            if (formElement.tabs && formElement.tabs.length) {
+              formElement.tabs.forEach(function (tab) {
+                if (tab.formElements && tab.formElements.length) {
+                  tab.formElements.forEach(function (formElm) {
+                    return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
+                  });
+                }
+              });
+            }
           } else if (!formElement || formElement.disabled || formElement.passProps && formElement.passProps.state === 'isDisabled') {
             //skip if dsiabled
             // console.debug('skip', formElement);

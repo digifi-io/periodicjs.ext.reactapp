@@ -198,7 +198,6 @@ var MainApp = function (_Component) {
       ) : null;
 
       var headerNav = this.state.settings.ui.initialization.show_header || this.state.user.isLoggedIn ? _react2.default.createElement(_AppHeader2.default, (0, _extends3.default)({ className: 'reactapp__app_header' }, this.state)) : null;
-      var footerNav = this.state.settings.ui.initialization.show_footer || this.state.user.isLoggedIn ? _react2.default.createElement(_AppFooter2.default, (0, _extends3.default)({ className: 'reactapp__app_footer' }, this.state)) : null;
 
       var overlay = this.props.ui.sidebar_is_open && this.state.settings.ui.initialization.show_sidebar_overlay ? _react2.default.createElement('div', { style: _styles2.default.sidebarOverlay, className: '__ra_show_sidebar_overlay',
         onClick: this.props.toggleUISidebar }) : null;
@@ -235,7 +234,7 @@ var MainApp = function (_Component) {
             )
           )
         ),
-        footerNav
+        _react2.default.createElement(_AppFooter2.default, (0, _extends3.default)({ className: 'reactapp__app_footer' }, this.state))
       );
     }
   }]);
