@@ -7,6 +7,7 @@ const propTypes = {
   tabsType: PropTypes.string,
   isFullwidth: PropTypes.bool.isRequired,
   isButton: PropTypes.bool,
+  isForm: PropTypes.bool,
   vertical: PropTypes.bool,
   tabgroupProps: PropTypes.object,
   tabsProps: PropTypes.shape({
@@ -20,6 +21,7 @@ const defaultProps = {
   tabsType: 'pageToggle',
   isFullwidth: true,
   isButton: true,
+  isForm: false,
   vertical: false,
   tabgroupProps: {},
   tabsProps: {
@@ -62,12 +64,16 @@ class ResponsiveTabs extends Component {
     };
 
     this.getRenderedComponent = getRenderedComponent.bind(this);
+    this.fetchRenderedComponent = this.fetchRenderedComponent.bind(this);
+  }
+  fetchRenderedComponent() {
+    return (this.props.isForm && this.props.getFormElements)? this.props.getFormElements(...arguments) : this.getRenderedComponent.apply(this, arguments);
   }
   changeTab(tab) {
     if(this.state.tabsType === 'select'){
       tab = this.state.tabs[Number(tab)];
     }
-    let currentLayout = (tab.layout && (Object.keys(tab.layout).length >= 1)) ? this.getRenderedComponent(tab.layout) : '';
+    let currentLayout = (tab.layout && (Object.keys(tab.layout).length >= 1)) ? this.fetchRenderedComponent(tab.layout) : '';
     // window.location.hash = tab.name;
     // console.log({tab})
     this.setState({
@@ -79,17 +85,22 @@ class ResponsiveTabs extends Component {
       onChangeFunc= this.props[ this.props.onChange.replace('func:this.props.', '') ];
     } else if (typeof this.props.onChange==='string' && this.props.onChange.indexOf('func:window') !== -1 && typeof window[ this.props.onChange.replace('func:window.', '') ] ==='function') {
       onChangeFunc= window[ this.props.onChange.replace('func:window.', '') ].bind(this);
-    } 
+    } else if (typeof this.props.onChange === "function") {
+      onChangeFunc = this.props.onChange;
+    }
     // console.log('this.props.onChange',this.props.onChange)
     // console.log('onChangeFunc',onChangeFunc)
     onChangeFunc(tab);
 
   } 
   componentWillMount() {
-    let defaultLayout = (this.state.currentTab.layout && (Object.keys(this.state.currentTab.layout).length >= 1)) ? this.getRenderedComponent(this.state.currentTab.layout) : '';
+    let defaultLayout = (this.state.currentTab.layout && (Object.keys(this.state.currentTab.layout).length >= 1)) ? this.fetchRenderedComponent(this.state.currentTab.layout) : '';
     this.setState({
       currentLayout: defaultLayout,
     });
+    if(this.props.isForm && this.props.onChange){
+      this.props.onChange(this.state.currentTab);
+    }
   }
   render() {
     let TabSelector = null;
@@ -106,7 +117,7 @@ class ResponsiveTabs extends Component {
           key: `${tab.name}-${i}`,
           tab,
         });
-        return this.getRenderedComponent(customTab);
+        return this.fetchRenderedComponent(customTab);
       });
     } else if (this.state.tabsType === 'pageToggle') { 
       TabSelector = this.state.tabs.map((tab, i) => {

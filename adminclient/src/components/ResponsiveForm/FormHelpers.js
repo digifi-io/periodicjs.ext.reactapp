@@ -2,29 +2,29 @@ import flatten from 'flat';
 import validate from 'validate.js';
 
 export function validateFormElement(options) {
-  try { 
+  try {
     let { formElement, } = options;
     let validation = this.props.validations.filter(validation => validation.name === formElement.name);
-    validation = (validation.length > 0) ? validation[0] : false;
+    validation = (validation.length > 0) ? validation[ 0 ] : false;
     if (validation) {
       let validationerror = validate({
-        [validation.name]: this.state[validation.name],
+        [ validation.name ]: this.state[ validation.name ],
       }, validation.constraints);
       let validationErrors;
       let validationValid;
       if (validationerror) {
         validationErrors = Object.assign({}, this.state.formDataErrors);
-        validationErrors[validation.name] = validationerror[validation.name];
+        validationErrors[ validation.name ] = validationerror[ validation.name ];
         if (this.state.formDataValid) {
           validationValid = Object.assign({}, this.state.formDataValid);
-          delete validationValid[validation.name];
+          delete validationValid[ validation.name ];
         }
       } else {
         validationValid = Object.assign({}, this.state.formDataValid);
-        validationValid[validation.name] = true;
+        validationValid[ validation.name ] = true;
         if (this.state.formDataErrors) {
           validationErrors = Object.assign({}, this.state.formDataErrors);
-          delete validationErrors[validation.name];
+          delete validationErrors[ validation.name ];
         }
       }
       this.setState({ formDataErrors: validationErrors, formDataValid: validationValid });
@@ -39,13 +39,13 @@ export function valueCheckFormElement(options) {
   try {
     let { formElement, } = options;
     let validationValid = Object.assign({}, this.state.formDataValid);
-      if (this.state[formElement.name]) {
-        validationValid[formElement.name] = true;
-      } else {
-        delete validationValid[formElement.name];
-      }
-      this.setState({ formDataValid: validationValid });
-      // console.debug('has errors', validationErrors, 'this.state[formElement.name]', this.state[ formElement.name ]);
+    if (this.state[ formElement.name ]) {
+      validationValid[ formElement.name ] = true;
+    } else {
+      delete validationValid[ formElement.name ];
+    }
+    this.setState({ formDataValid: validationValid });
+    // console.debug('has errors', validationErrors, 'this.state[formElement.name]', this.state[ formElement.name ]);
   } catch (e) {
     console.debug('value check error', e);
   }
@@ -57,12 +57,13 @@ export function validateForm(options) {
   if (this.props.validations) {
     this.props.validations.forEach(validation => {
       let validationerror = validate({
-        [validation.name]: formdata[validation.name], }, validation.constraints);
+        [ validation.name ]: formdata[ validation.name ],
+      }, validation.constraints);
       // console.debug(formdata[ validation.name ], { validation, validationerror, });
       if (validationerror) {
-        validationErrors[validation.name] = validationerror[validation.name];
+        validationErrors[ validation.name ] = validationerror[ validation.name ];
       } else {
-        delete validationErrors[validation.name];
+        delete validationErrors[ validation.name ];
       }
     });
   } else {
@@ -78,11 +79,11 @@ export function assignHiddenFields(options) {
 
   if (this.props.hiddenFields) {
     this.props.hiddenFields.forEach(hiddenField => {
-      let hiddenFormValue = (typeof this.state[hiddenField.form_val] === 'undefined') ?
+      let hiddenFormValue = (typeof this.state[ hiddenField.form_val ] === 'undefined') ?
         hiddenField.form_static_val :
-        this.state[hiddenField.form_val];
-      hiddenInputs[hiddenField.form_name] = hiddenFormValue;
-      submitFormData[hiddenField.form_name] = hiddenFormValue;
+        this.state[ hiddenField.form_val ];
+      hiddenInputs[ hiddenField.form_name ] = hiddenFormValue;
+      submitFormData[ hiddenField.form_name ] = hiddenFormValue;
     });
   }
   if (this.props.dynamicFields) {
@@ -90,24 +91,24 @@ export function assignHiddenFields(options) {
       Object.assign({}, ApplicationState.dynamic, flatten(ApplicationState.dynamic)) :
       ApplicationState.dynamic;
     this.props.dynamicFields.forEach(dynamicHiddenField => {
-      let hiddenFormValue = (typeof mergedDynamicField[dynamicHiddenField.form_val] === 'undefined') ?
+      let hiddenFormValue = (typeof mergedDynamicField[ dynamicHiddenField.form_val ] === 'undefined') ?
         dynamicHiddenField.form_static_val :
-        mergedDynamicField[dynamicHiddenField.form_val];
-      dynamicFields[dynamicHiddenField.form_name] = hiddenFormValue;
-      submitFormData[dynamicHiddenField.form_name] = hiddenFormValue;
+        mergedDynamicField[ dynamicHiddenField.form_val ];
+      dynamicFields[ dynamicHiddenField.form_name ] = hiddenFormValue;
+      submitFormData[ dynamicHiddenField.form_name ] = hiddenFormValue;
     });
   }
   formdata = Object.assign(formdata, hiddenInputs, dynamicFields);
   return { formdata, hiddenInputs, submitFormData, };
 }
 
-export function getCallbackFromString(successCBProp, multiArgs=false) {
+export function getCallbackFromString(successCBProp, multiArgs = false) {
   let successCallback;
   if (!multiArgs && Array.isArray(successCBProp) && successCBProp.length) {
     let fns = successCBProp.map(getCallbackFromString.bind(this));
     successCallback = function () {
       for (let i = 0; i < fns.length; i++) {
-        fns[i].call(this, ...arguments);
+        fns[ i ].call(this, ...arguments);
       }
     }.bind(this);
   } else if (multiArgs & Array.isArray(successCBProp) && successCBProp.length) {
@@ -115,16 +116,16 @@ export function getCallbackFromString(successCBProp, multiArgs=false) {
     successCallback = function () {
       for (let i = 0; i < fns.length; i++) {
         let args = [ arguments[ 0 ][ i ] ].concat([].slice.call(arguments, 1));
-        fns[i].call(this, ...args);
+        fns[ i ].call(this, ...args);
       }
     }.bind(this);
   } else {
     if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
-      successCallback = this.props.reduxRouter[successCBProp.replace('func:this.props.reduxRouter.', '')];
-    } else if (typeof successCBProp === 'string' && successCBProp.indexOf('func:window') !== -1 && typeof window[successCBProp.replace('func:window.', '')] === 'function') {
-      successCallback = window[successCBProp.replace('func:window.', '')].bind(this);
+      successCallback = this.props.reduxRouter[ successCBProp.replace('func:this.props.reduxRouter.', '') ];
+    } else if (typeof successCBProp === 'string' && successCBProp.indexOf('func:window') !== -1 && typeof window[ successCBProp.replace('func:window.', '') ] === 'function') {
+      successCallback = window[ successCBProp.replace('func:window.', '') ].bind(this);
     } else if (typeof successCBProp === 'string') {
-      successCallback = this.props[successCBProp.replace('func:this.props.', '')];
+      successCallback = this.props[ successCBProp.replace('func:this.props.', '') ];
     }
   }
   return successCallback;
@@ -146,32 +147,46 @@ export function setAddNameToName(options) {
     if (formElm.groupElements && formElm.groupElements.length) {
       formElm.groupElements.forEach(formElm => recursiveSetAddNameToName({ formdata, formElementFields, formElm, }));
     }
+  } else if (formElm.type === 'tabs') {
+    if (formElm.name && formElm.passProps && formElm.passProps.markActiveTab) {
+      formdata[ formElm.name ] = (this.state) ?
+      this.state[ formElm.name ] || formElm.value :
+        formElm.value;
+        formElementFields.push(formElm.name)
+    }
+    if (Array.isArray(formElm.tabs) && formElm.tabs.length) {
+      formElm.tabs.forEach(tab => {
+        if (Array.isArray(tab.formElements)) {
+          tab.formElements.forEach(formElm => recursiveSetAddNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }))
+        }
+      });
+    }
   } else if (formElm.name) {
     formElementFields.push(formElm.name);
     if (formElm.type === 'hidden' || (this.props && this.props.setInitialValues)) {
       if (formElm.type === 'radio') {
-        if (this.state && formElm.name && this.state[formElm.name]) {
-          formdata[formElm.name] = this.state[formElm.name];
+        if (this.state && formElm.name && this.state[ formElm.name ]) {
+          formdata[ formElm.name ] = this.state[ formElm.name ];
         } else if (this.state || formElm.checked || (formElm.passProps && formElm.passProps.checked)) {
-          formdata[formElm.name] = formElm.value;
+          formdata[ formElm.name ] = formElm.value;
         }
       } else {
-        formdata[formElm.name] = (this.state) ?
-          this.state[formElm.name] || formElm.value :
+        formdata[ formElm.name ] = (this.state) ?
+          this.state[ formElm.name ] || formElm.value :
           formElm.value;
       }
     }
     if (formElm.type === 'datalist') {
       // console.debug('before',{formElm,formdata});
-      if (formElm.datalist.multi && formdata[formElm.name] && formdata[formElm.name].length) {
-        formdata[formElm.name] = formdata[formElm.name].map(datum => datum[formElm.datalist.selector || '_id']);
-      } else if (formdata[formElm.name] && Object.keys(formdata[formElm.name]).length) {
-        formdata[formElm.name] = formdata[formElm.name][formElm.datalist.selector || '_id'];
+      if (formElm.datalist.multi && formdata[ formElm.name ] && formdata[ formElm.name ].length) {
+        formdata[ formElm.name ] = formdata[ formElm.name ].map(datum => datum[ formElm.datalist.selector || '_id' ]);
+      } else if (formdata[ formElm.name ] && Object.keys(formdata[ formElm.name ]).length) {
+        formdata[ formElm.name ] = formdata[ formElm.name ][ formElm.datalist.selector || '_id' ];
       }
       // console.debug('after',{formElm,formdata});
     }
     if (formElm.type === 'dropdown' && formElm.passProps && formElm.passProps.multiple) {
-      multipleDropdowns[formElm.name] = true;
+      multipleDropdowns[ formElm.name ] = true;
     }
   }
   return { formdata, formElementFields, formElement: formElm, multipleDropdowns, };
@@ -181,7 +196,6 @@ export function setFormNameFields(options) {
   let { formElementFields, formdata, } = options;
   let multipleDropdowns = {};
   const addNameToName = setAddNameToName.bind(this);
-
   if (this.props.formgroups && this.props.formgroups.length) {
     this.props.formgroups.forEach(formgroup => {
       if (formgroup.formElements && formgroup.formElements.length) {
@@ -198,6 +212,20 @@ export function setFormNameFields(options) {
             if (formGroupRight) formGroupRight.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
           } else if (formElement.type === 'group') {
             if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
+          } else if (formElement.type === 'tabs') {
+            if (formElement.name && formElement.passProps && formElement.passProps.markActiveTab) {
+              formdata[ formElement.name ] = (this.state) ?
+              this.state[ formElement.name ] || formElement.value :
+              formElement.value;
+              formElementFields.push(formElement.name)
+            }
+            if (formElement.tabs && formElement.tabs.length) {
+              formElement.tabs.forEach(tab => {
+                if (tab.formElements && tab.formElements.length) {
+                  tab.formElements.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
+                }
+              })
+            }
           } else if (!formElement ||
             formElement.disabled ||
             (formElement.passProps && formElement.passProps.state === 'isDisabled')
@@ -222,10 +250,10 @@ export function assignFormBody(options) {
   let { formdata, headers, formBody, submitFormData, fetchPostBody, fetchOptions, } = options;
   //if file
   if (Object.keys(formdata.formDataFiles).length) {
-    delete headers['Content-Type'];
-    delete headers['content-type'];
+    delete headers[ 'Content-Type' ];
+    delete headers[ 'content-type' ];
     Object.keys(formdata.formDataFiles).forEach((formFileName) => {
-      let fileList = formdata.formDataFiles[formFileName].files;
+      let fileList = formdata.formDataFiles[ formFileName ].files;
       for (let x = 0; x < fileList.length; x++) {
         formBody.append(formFileName, fileList.item(x));
       }
@@ -233,7 +261,7 @@ export function assignFormBody(options) {
     delete formdata.formDataErrors;
     delete formdata.formDataFiles;
     Object.keys(submitFormData).forEach(form_name => {
-      formBody.append(form_name, submitFormData[form_name]);
+      formBody.append(form_name, submitFormData[ form_name ]);
     });
     fetchPostBody = formBody;
   } else {
@@ -255,8 +283,8 @@ export function assignFormBody(options) {
     fetchOptions.options,
     {
       headers,
-    },  
-  bodyForFetch);
+    },
+    bodyForFetch);
 
   return { formdata, headers, formBody, submitFormData, fetchPostBody, fetchOptions, isGetRequest, };
 }
@@ -284,7 +312,7 @@ export function handleSuccessCallbacks(options) {
       this.props.setDynamicData(this.props.dynamicField, submitFormData);
     }
     if (successCallback) {
-        successCallback(fetchOptions.successProps || successData.callbackProps || Object.assign({}, submitFormData, successData), submitFormData);
+      successCallback(fetchOptions.successProps || successData.callbackProps || Object.assign({}, submitFormData, successData), submitFormData);
     }
   }
   if (responseCallback) {
@@ -312,7 +340,7 @@ export function submitThisDotPropsFunc(options) {
     // console.debug('this.props', this.props);
     this.props.setDynamicData(this.props.dynamicField, submitFormData);
   } else {
-    this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
+    this.props[ this.props.onSubmit.replace('func:this.props.', '') ](submitFormData);
   }
 }
 
@@ -320,5 +348,5 @@ export function submitWindowFunc(options) {
   let { formdata, submitFormData, } = options;
   delete formdata.formDataFiles;
   delete formdata.formDataErrors;
-  window[this.props.onSubmit.replace('func:window.', '')].call(this, submitFormData);
+  window[ this.props.onSubmit.replace('func:window.', '') ].call(this, submitFormData);
 }

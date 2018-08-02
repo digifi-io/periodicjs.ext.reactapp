@@ -184,6 +184,7 @@ var ResponsiveTable = function (_Component) {
     _this.moveRowUp = _this.updateByMoveRowUp.bind(_this);
     _this.updateNewRowText = _this.updateNewRowDataText.bind(_this);
     _this.updateInlineRowText = _this.updateInlineRowDataText.bind(_this);
+    _this.updateRadioGroup = _this.updateRadioGroupData.bind(_this);
     _this.getFooterAddRow = _this.updateGetFooterAddRow.bind(_this);
     _this.removeFilterRow = _this.removeFilterByDeleteRow.bind(_this);
     _this.addFilterRow = _this.addFilterByAddRow.bind(_this);
@@ -310,6 +311,19 @@ var ResponsiveTable = function (_Component) {
       rows[rowIndex][name] = text;
       // console.debug({ rowIndex, rows, deletedRow }, this.state.rows);
       // this.props.onChange({ rows, });
+      this.updateTableData({ rows: rows });
+    }
+  }, {
+    key: 'updateRadioGroupData',
+    value: function updateRadioGroupData(options) {
+      var name = options.name,
+          rowIndex = options.rowIndex;
+
+      var rows = this.state.rows.concat([]);
+      rows.forEach(function (row) {
+        row[name] = false;
+      });
+      rows[rowIndex][name] = true;
       this.updateTableData({ rows: rows });
     }
   }, {
@@ -733,6 +747,36 @@ var ResponsiveTable = function (_Component) {
               _this6.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
             }
           }));
+        } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'checkbox') {
+          return _react2.default.createElement(_semanticUiReact.Checkbox, (0, _extends3.default)({}, header.passProps, {
+            name: header.sortid,
+            checked: value ? true : false,
+            value: value,
+            onChange: function onChange(event, _ref2) {
+              var value = _ref2.value;
+
+              var text = !value;
+              var name = header.sortid;
+              var rowIndex = options.rowIndex;
+              _this6.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+            }
+          }));
+        } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'radio') {
+          return _react2.default.createElement(_semanticUiReact.Checkbox, (0, _extends3.default)({}, header.passProps, {
+            radio: true,
+            name: header.sortid,
+            value: value,
+            checked: value ? true : false,
+            onChange: function onChange(event, _ref3) {
+              var value = _ref3.value;
+
+              if (!value) {
+                var name = header.sortid;
+                var rowIndex = options.rowIndex;
+                _this6.updateRadioGroup({ name: name, rowIndex: rowIndex });
+              }
+            }
+          }));
         } else if (typeof options.idx !== 'undefined' && typeof returnValue === 'string' && returnValue.indexOf('--idx--') !== -1) {
           returnValue = returnValue.replace('--idx--', options.idx);
         }
@@ -777,6 +821,8 @@ var ResponsiveTable = function (_Component) {
           //   return JSON.stringify(returnValue);
         } else if (returnValue === null) {
           return 'null';
+        } else if ((typeof returnValue === 'undefined' ? 'undefined' : (0, _typeof3.default)(returnValue)) === 'object' && !Array.isArray(returnValue)) {
+          return this.getRenderedComponent(returnValue);
         } else {
           return returnValue.toString();
         }

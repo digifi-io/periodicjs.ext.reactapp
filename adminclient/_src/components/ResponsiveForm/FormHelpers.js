@@ -203,6 +203,20 @@ function setAddNameToName(options) {
         return recursiveSetAddNameToName({ formdata: formdata, formElementFields: formElementFields, formElm: formElm });
       });
     }
+  } else if (formElm.type === 'tabs') {
+    if (formElm.name && formElm.passProps && formElm.passProps.markActiveTab) {
+      formdata[formElm.name] = this.state ? this.state[formElm.name] || formElm.value : formElm.value;
+      formElementFields.push(formElm.name);
+    }
+    if (Array.isArray(formElm.tabs) && formElm.tabs.length) {
+      formElm.tabs.forEach(function (tab) {
+        if (Array.isArray(tab.formElements)) {
+          tab.formElements.forEach(function (formElm) {
+            return recursiveSetAddNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
+          });
+        }
+      });
+    }
   } else if (formElm.name) {
     formElementFields.push(formElm.name);
     if (formElm.type === 'hidden' || this.props && this.props.setInitialValues) {
@@ -235,12 +249,13 @@ function setAddNameToName(options) {
 }
 
 function setFormNameFields(options) {
+  var _this2 = this;
+
   var formElementFields = options.formElementFields,
       formdata = options.formdata;
 
   var multipleDropdowns = {};
   var addNameToName = setAddNameToName.bind(this);
-
   if (this.props.formgroups && this.props.formgroups.length) {
     this.props.formgroups.forEach(function (formgroup) {
       if (formgroup.formElements && formgroup.formElements.length) {
@@ -267,6 +282,20 @@ function setFormNameFields(options) {
             if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(function (formElm) {
               return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
             });
+          } else if (formElement.type === 'tabs') {
+            if (formElement.name && formElement.passProps && formElement.passProps.markActiveTab) {
+              formdata[formElement.name] = _this2.state ? _this2.state[formElement.name] || formElement.value : formElement.value;
+              formElementFields.push(formElement.name);
+            }
+            if (formElement.tabs && formElement.tabs.length) {
+              formElement.tabs.forEach(function (tab) {
+                if (tab.formElements && tab.formElements.length) {
+                  tab.formElements.forEach(function (formElm) {
+                    return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
+                  });
+                }
+              });
+            }
           } else if (!formElement || formElement.disabled || formElement.passProps && formElement.passProps.state === 'isDisabled') {
             //skip if dsiabled
             // console.debug('skip', formElement);
