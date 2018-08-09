@@ -188,6 +188,7 @@ var packageJSON = {
     're-bulma': '^0.4.3',
     react: '15.3.2',
     'react-codemirror': '^0.3.0',
+    'react-cropper': '^1.0.1',
     'react-dates': '^16.4.0',
     'react-dom': '15.3.2',
     'react-draft-wysiwyg': '^1.7.6',

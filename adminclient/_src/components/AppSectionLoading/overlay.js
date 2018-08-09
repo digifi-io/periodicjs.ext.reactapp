@@ -66,16 +66,17 @@ var Loading = function (_Component) {
     key: 'render',
     value: function render() {
       // this.getRenderedComponent(formElement.value, undefined, true)
+      var customUI = this.props.ui && this.props.ui.custom_ui_layout ? this.props.ui.custom_ui_layout : {};
       return this.props.display ? _react2.default.createElement(
         _reBulma.Hero,
-        (0, _extends3.default)({ size: 'isFullheight' }, this.props.heroProps, { style: (0, _assign2.default)({ textAlign: 'center' }, this.props.wrapperstyle) }),
+        (0, _extends3.default)({ size: 'isFullheight' }, this.props.heroProps, { style: (0, _assign2.default)({ textAlign: 'center' }, this.props.wrapperstyle, customUI.wrapperstyle) }),
         _react2.default.createElement(
           _reBulma.HeroBody,
           this.props.bodyProps,
           _react2.default.createElement(
             'div',
             { className: 'has-text-centered', style: (0, _assign2.default)({ textAlign: 'center', margin: 'auto' }, this.props.style) },
-            this.props.ui && this.props.ui.custom_ui_layout ? this.getRenderedComponent(this.props.ui.custom_ui_layout) : _react2.default.createElement(
+            this.props.ui && this.props.ui.custom_ui_layout && this.props.ui.custom_ui_layout.layout ? this.getRenderedComponent(this.props.ui.custom_ui_layout.layout) : this.props.ui && this.props.ui.custom_ui_layout ? this.getRenderedComponent(this.props.ui.custom_ui_layout) : _react2.default.createElement(
               _reBulma.Button,
               { color: 'isWhite', buttonStyle: 'isOutlined', state: 'isLoading', style: { border: 'none' } },
               'Loading'

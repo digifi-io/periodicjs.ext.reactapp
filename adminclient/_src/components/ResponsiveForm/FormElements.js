@@ -44,6 +44,7 @@ exports.getFormDropdown = getFormDropdown;
 exports.getFormRemoteDropdown = getFormRemoteDropdown;
 exports.getFormMaskedInput = getFormMaskedInput;
 exports.getFormTextInputArea = getFormTextInputArea;
+exports.getFormImageCropper = getFormImageCropper;
 exports.getFormTextArea = getFormTextArea;
 exports.getFormSelect = getFormSelect;
 exports.getFormCheckbox = getFormCheckbox;
@@ -159,10 +160,17 @@ var _styles = require('../../styles');
 
 var _styles2 = _interopRequireDefault(_styles);
 
+var _ResponsiveCropper = require('../ResponsiveCropper');
+
+var _ResponsiveCropper2 = _interopRequireDefault(_ResponsiveCropper);
+
 var _FormHelpers = require('./FormHelpers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import RAEditor from '../RAEditor';
+// import ResponsiveButton from '../ResponsiveButton';
+// import { EditorState, } from 'draft-js';
 function getPropertyAttribute(options) {
   var property = options.property,
       element = options.element;
@@ -184,10 +192,6 @@ function getPropertyAttribute(options) {
     return returnVal;
   }
 }
-// import RAEditor from '../RAEditor';
-// import ResponsiveButton from '../ResponsiveButton';
-// import { EditorState, } from 'draft-js';
-
 
 function getErrorStatus(state, name) {
   return state.formDataErrors && state.formDataErrors[name];
@@ -979,6 +983,35 @@ function getFormTextInputArea(options) {
       onChange: onChange,
       placeholder: formElement.placeholder,
       value: initialValue }))
+  );
+}
+
+function getFormImageCropper(options) {
+  var self = this;
+  var customLabel = getCustomFormLabel.bind(this);
+  var formElement = options.formElement,
+      i = options.i,
+      onChange = options.onChange;
+
+  var fileClassname = '__reactapp_file_' + formElement.name;
+  var passProps = (0, _assign2.default)({}, formElement.passProps, { fileInputProps: { className: fileClassname } });
+  if (passProps.cropperSrc && this.state[passProps.cropperSrc]) {
+    passProps.src = this.state[passProps.cropperSrc];
+  }
+  var getFileData = function getFileData(filedata) {
+    var formDataFiles = (0, _assign2.default)({}, this.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, filedata));
+    this.setState({
+      formDataFiles: formDataFiles
+    });
+  };
+  var getCropperBoxData = function getCropperBoxData(boxdata) {
+    this.setState((0, _defineProperty3.default)({}, formElement.name, (0, _stringify2.default)(boxdata)));
+  };
+  return _react2.default.createElement(
+    _FormItem2.default,
+    { key: i },
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
+    _react2.default.createElement(_ResponsiveCropper2.default, (0, _extends3.default)({ getFileData: getFileData.bind(self), getCropperBoxData: getCropperBoxData.bind(self) }, passProps))
   );
 }
 

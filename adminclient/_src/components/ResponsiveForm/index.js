@@ -187,6 +187,7 @@ var ResponsiveForm = function (_Component) {
     _this.getCardFooterItem = _FormElements.getCardFooterItem.bind(_this);
     _this.getFormSelect = _FormElements.getFormSelect.bind(_this);
     _this.getRawInput = _FormElements.getRawInput.bind(_this);
+    _this.getFormImageCropper = _FormElements.getFormImageCropper.bind(_this);
     _this.getSliderInput = _FormElements.getSliderInput.bind(_this);
     _this.getFormSwitch = _FormElements.getFormSwitch.bind(_this);
     _this.getFormDatatable = _FormElements.getFormDatatable.bind(_this);
@@ -494,6 +495,8 @@ var ResponsiveForm = function (_Component) {
             return _this5.getRawInput({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'maskedinput') {
             return _this5.getFormMaskedInput({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'cropper') {
+            return _this5.getFormImageCropper({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'textarea') {
             return _this5.getFormTextArea({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'hidden') {
