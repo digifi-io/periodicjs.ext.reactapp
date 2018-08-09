@@ -3,7 +3,7 @@ import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, Ca
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormRemoteDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getFormTabs, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, } from './FormElements';
+import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormRemoteDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getFormTabs, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, getFormImageCropper } from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, valueCheckFormElement } from './FormHelpers';
 import flatten, { unflatten, } from 'flat';
 import qs from 'querystring';
@@ -127,6 +127,7 @@ class ResponsiveForm extends Component{
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
     this.getRawInput = getRawInput.bind(this);
+    this.getFormImageCropper = getFormImageCropper.bind(this);
     this.getSliderInput = getSliderInput.bind(this);
     this.getFormSwitch = getFormSwitch.bind(this);
     this.getFormDatatable = getFormDatatable.bind(this);
@@ -439,6 +440,8 @@ class ResponsiveForm extends Component{
           return this.getRawInput({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'maskedinput' ) {
           return this.getFormMaskedInput({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'cropper' ) {
+          return this.getFormImageCropper({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'textarea') {
           return this.getFormTextArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'hidden') {

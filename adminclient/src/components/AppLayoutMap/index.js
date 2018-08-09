@@ -37,6 +37,7 @@ import ResponsiveBar from '../ResponsiveBar';
 import ResponsiveLink from '../ResponsiveLink';
 import ResponsiveFormContainer from '../ResponsiveFormContainer';
 import ResponsiveButton from '../ResponsiveButton';
+import ResponsiveCropper from '../ResponsiveCropper';
 import ResponsiveSteps from '../ResponsiveSteps';
 import FormItem from '../FormItem';
 import utilities from '../../util';
@@ -63,6 +64,7 @@ export let AppLayoutMap = Object.assign({}, { victory,
   recharts, ResponsiveForm, ResponsiveNavBar, ResponsiveFormContainer, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, DNDTable, SingleDatePickerWrapper, DateRangePickerWrapper, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, ResponsiveSteps, RemoteDropdown,/* Editor,*/
   ResponsiveLink,
   ResponsiveButton,
+  ResponsiveCropper,
   MaskedInput,
   RCTable,
   RCTree,
