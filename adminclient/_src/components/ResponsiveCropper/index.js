@@ -46,8 +46,6 @@ var _reactCropper = require('react-cropper');
 
 var _reactCropper2 = _interopRequireDefault(_reactCropper);
 
-require('cropperjs/dist/cropper.css');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var propTypes = {

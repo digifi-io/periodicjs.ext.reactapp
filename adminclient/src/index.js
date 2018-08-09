@@ -19,6 +19,7 @@ import './index.css';
 import 'semantic-ui-css/semantic.min.css';
 import 'react-virtualized/styles.css';
 import 'react-dates/lib/css/_datepicker.css';
+import 'cropperjs/dist/cropper.css';
 import insertCss from 'insert-css';
 import css from 're-bulma/build/css';
 try {

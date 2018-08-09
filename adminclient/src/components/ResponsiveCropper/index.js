@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import styles from '../../styles';
 import Cropper from 'react-cropper';
-import 'cropperjs/dist/cropper.css';
+
 
 const propTypes = {
   getFileData: PropTypes.func,
