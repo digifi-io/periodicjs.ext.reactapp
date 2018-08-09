@@ -46,6 +46,7 @@
     "re-bulma": "^0.4.3",
     "react": "15.3.2",
     "react-codemirror": "^0.3.0",
+    "react-cropper": "^1.0.1",
     "react-dates": "^16.4.0",
     "react-dom": "15.3.2",
     "react-draft-wysiwyg": "^1.7.6",
@@ -69,6 +70,6 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://localhost:8787",
+  "proxy": "https://des-dev.digifi.cc:8788",
   "homepage": "/extensions/periodicjs.ext.reactapp"
 }

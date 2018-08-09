@@ -26,6 +26,7 @@ import numeral from 'numeral';
 import pluralize from 'pluralize';
 import flatten, { unflatten, } from 'flat';
 import styles from '../../styles';
+import ResponsiveCropper from '../ResponsiveCropper';
 import { validateForm, } from './FormHelpers';
 
 export function getPropertyAttribute(options) {
@@ -846,6 +847,32 @@ export function getFormTextInputArea(options) {
       onChange={onChange}
       placeholder={formElement.placeholder}
       value={initialValue} />
+  </FormItem>);
+}
+
+export function getFormImageCropper(options) {
+  const self = this;
+  let customLabel = getCustomFormLabel.bind(this);
+  let { formElement, i, /*formgroup, width,*/ onChange, } = options;
+  let fileClassname = `__reactapp_file_${formElement.name}`;
+  let passProps = Object.assign({}, formElement.passProps, { fileInputProps: { className: fileClassname } });
+  let getFileData = function (filedata) {
+    console.log({ filedata })
+    let formDataFiles = Object.assign({}, this.state.formDataFiles, {
+      [ formElement.name ]: filedata,
+    });
+    this.setState({
+      formDataFiles
+    });
+  };
+  let getCropperBoxData = function (boxdata) {
+    this.setState({
+      [ formElement.name ]: JSON.stringify(boxdata),
+    })
+  };
+  return (<FormItem key={i} >
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
+    <ResponsiveCropper getFileData={getFileData.bind(self)} getCropperBoxData={getCropperBoxData.bind(self)} {...passProps}/>
   </FormItem>);
 }
 
