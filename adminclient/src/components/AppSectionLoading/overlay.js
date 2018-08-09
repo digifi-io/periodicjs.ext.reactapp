@@ -14,19 +14,24 @@ class Loading extends Component {
   }
   render() {
     // this.getRenderedComponent(formElement.value, undefined, true)
+    let customUI = (this.props.ui && this.props.ui.custom_ui_layout) 
+      ? this.props.ui.custom_ui_layout
+      : {}
     return (
       (this.props.display)
         ? (<Hero size="isFullheight" {...this.props.heroProps} style={
-            Object.assign({ textAlign: 'center', }, this.props.wrapperstyle)
+            Object.assign({ textAlign: 'center', }, this.props.wrapperstyle, customUI.wrapperstyle)
           }>
         <HeroBody {...this.props.bodyProps}>
           <div className="has-text-centered" style={
-            Object.assign({ textAlign: 'center', margin:'auto', }, this.props.style)
+              Object.assign({ textAlign: 'center', margin: 'auto', }, this.props.style)
             }>
               {
-                (this.props.ui && this.props.ui.custom_ui_layout)
-                ? this.getRenderedComponent(this.props.ui.custom_ui_layout)
-                : <Button color="isWhite" buttonStyle="isOutlined" state="isLoading" style={{ border:'none', }}>Loading</Button>
+                (this.props.ui && this.props.ui.custom_ui_layout && this.props.ui.custom_ui_layout.layout)
+                ? this.getRenderedComponent(this.props.ui.custom_ui_layout.layout)
+                : (this.props.ui && this.props.ui.custom_ui_layout)
+                  ? this.getRenderedComponent(this.props.ui.custom_ui_layout)
+                  : <Button color="isWhite" buttonStyle="isOutlined" state="isLoading" style={{ border:'none', }}>Loading</Button>
               }    
           </div>
         </HeroBody>
