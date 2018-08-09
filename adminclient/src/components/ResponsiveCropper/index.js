@@ -10,6 +10,13 @@ const propTypes = {
 };
 
 const defaultProps = {
+  cropbox: {
+    left: 0,
+    top: 0,
+    width: 100,
+    height: 100,
+  },
+
 };
 
 class ResponsiveCropper extends Component {
@@ -17,13 +24,8 @@ class ResponsiveCropper extends Component {
     super(props);
     this.getRenderedComponent = getRenderedComponent.bind(this);
     this.state = {
-      src: null,
-      cropbox: {
-        left: 0,
-        top: 0,
-        width: 100,
-        height: 100,
-      }
+      src: props.src || null,
+      cropbox: props.cropbox || {},
     }
   }
 
@@ -35,7 +37,7 @@ class ResponsiveCropper extends Component {
       reader.addEventListener(
         'load',
         () =>
-        self.setState({
+          self.setState({
             src: reader.result,
           }, () => {
             if (self.props.getFileData) {
@@ -48,11 +50,20 @@ class ResponsiveCropper extends Component {
     }
   }
 
-  onCropComplete (e) {
+  onCropComplete(e) {
     const self = this;
     let boxData = self.refs.cropper.getCropBoxData();
+    let imageData = self.refs.cropper.getImageData();
+    let canvasData = self.refs.cropper.getCanvasData();
+    let ratio = imageData.naturalHeight / imageData.height;
+    let scaledBoxData = Object.assign({}, boxData, {
+      height: boxData.height * ratio,
+      width: boxData.width * ratio,
+      left: (boxData.left - canvasData.left) * ratio,
+      top: (boxData.top - canvasData.top) * ratio,
+    })
     if (self.props.getCropperBoxData) {
-      self.props.getCropperBoxData(boxData);
+      self.props.getCropperBoxData(scaledBoxData);
     }
     this.setState({
       cropbox: {
@@ -70,17 +81,19 @@ class ResponsiveCropper extends Component {
     const self = this;
     let onCropEnd = self.onCropComplete.bind(self);
     let onFileSelect = self.onSelectFile.bind(self);
+    let fileInput = self.props.includeFileInput ? (<div>
+      <input type="file" onChange={onFileSelect} {...self.props.fileInputProps} />
+    </div>) : null;
+    let cropperProps = self.props.cropperProps || {};
     return (
       <div style={{ height: 'auto', width: 'auto' }}>
-        <div>
-          <input type="file" onChange={onFileSelect} {...self.props.fileInputProps} />
-        </div>
+        {fileInput}
         {this.state.src && (
           <Cropper
+            {...cropperProps}
             src={this.state.src}
             ref='cropper'
-            style={{ height: 'auto', width: 'auto' }}
-            aspectRatio={NaN}
+            aspectRatio={cropperProps.aspectRatio || NaN}
             cropend={onCropEnd}
           />
         )}

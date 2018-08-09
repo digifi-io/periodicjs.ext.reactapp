@@ -856,8 +856,10 @@ export function getFormImageCropper(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let fileClassname = `__reactapp_file_${formElement.name}`;
   let passProps = Object.assign({}, formElement.passProps, { fileInputProps: { className: fileClassname } });
+  if (passProps.cropperSrc && this.state[ passProps.cropperSrc ]) {
+    passProps.src = this.state[ passProps.cropperSrc ];
+  }
   let getFileData = function (filedata) {
-    console.log({ filedata })
     let formDataFiles = Object.assign({}, this.state.formDataFiles, {
       [ formElement.name ]: filedata,
     });
