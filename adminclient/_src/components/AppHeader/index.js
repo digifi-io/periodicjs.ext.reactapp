@@ -146,9 +146,15 @@ var AppHeader = function (_Component) {
           _react2.default.createElement(_reBulma.Icon, { icon: 'fa fa-external-link' })
         );
       };
+      var organizationProducts = this.props.user && this.props.user.association.organization && this.props.user.association.organization.products ? this.props.user.association.organization.products : {};
       var dropdownLinks = this.props.settings.ui.header.productHeader.productLinks.length > 0 ? this.props.settings.ui.header.productHeader.productLinks.map(function (link) {
+        var isProduct = link.product;
+        var display = link.type && _this2.props.user.userdata && _this2.props.user.userdata.userroles && _this2.props.user.userdata.userroles[0] && _this2.props.user.userdata.userroles[0].name !== link.type ? 'none' : undefined;
+        if (isProduct && organizationProducts) {
+          display = display !== 'none' && organizationProducts[link.name] && organizationProducts[link.name].active ? undefined : 'none';
+        }
         return _react2.default.createElement(_semanticUiReact.Dropdown.Item, {
-          style: { display: link.type && _this2.props.user.userdata && _this2.props.user.userdata.userroles && _this2.props.user.userdata.userroles[0] && _this2.props.user.userdata.userroles[0].name !== link.type ? 'none' : undefined },
+          style: { display: display },
           children: link.reroute ? getRerouteLink(link) : null,
           text: link.reroute ? null : link.text,
           onClick: function onClick() {
