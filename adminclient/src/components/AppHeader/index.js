@@ -69,7 +69,7 @@ class AppHeader extends Component {
         backgroundImage: 'url(' + (this.props.user.profile_image_preview || this.props.settings.default_user_image || '/favicon.png') + ')',
       })
     let getRerouteLink = (link) => { return (<a href={(link.reroute) ? link.reroute : ''} target="_blank"><span>{link.text}</span><Icon icon="fa fa-external-link" /></a>) };
-    let organizationProducts = (this.props.user && this.props.user.association.organization && this.props.user.association.organization.products) ? this.props.user.association.organization.products : {};
+    let organizationProducts = (this.props.user && this.props.user.userdata && this.props.user.userdata.association.organization && this.props.user.userdata.association.organization.products) ? this.props.user.userdata.association.organization.products : {};
     let dropdownLinks = (this.props.settings.ui.header.productHeader.productLinks.length > 0)
       ? this.props.settings.ui.header.productHeader.productLinks.map(link => {
         let isProduct = link.product;

@@ -146,7 +146,7 @@ var AppHeader = function (_Component) {
           _react2.default.createElement(_reBulma.Icon, { icon: 'fa fa-external-link' })
         );
       };
-      var organizationProducts = this.props.user && this.props.user.association.organization && this.props.user.association.organization.products ? this.props.user.association.organization.products : {};
+      var organizationProducts = this.props.user && this.props.user.userdata && this.props.user.userdata.association.organization && this.props.user.userdata.association.organization.products ? this.props.user.userdata.association.organization.products : {};
       var dropdownLinks = this.props.settings.ui.header.productHeader.productLinks.length > 0 ? this.props.settings.ui.header.productHeader.productLinks.map(function (link) {
         var isProduct = link.product;
         var display = link.type && _this2.props.user.userdata && _this2.props.user.userdata.userroles && _this2.props.user.userdata.userroles[0] && _this2.props.user.userdata.userroles[0].name !== link.type ? 'none' : undefined;
