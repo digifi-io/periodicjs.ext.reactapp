@@ -68,12 +68,18 @@ class AppHeader extends Component {
     }, this.props.settings.ui.header.profileImageStyle, {
         backgroundImage: 'url(' + (this.props.user.profile_image_preview || this.props.settings.default_user_image || '/favicon.png') + ')',
       })
-    let getRerouteLink = (link) => { return (<a href={(link.reroute) ? link.reroute : ''} target="_blank"><span>{link.text}</span><Icon icon="fa fa-external-link"/></a>)};
+    let getRerouteLink = (link) => { return (<a href={(link.reroute) ? link.reroute : ''} target="_blank"><span>{link.text}</span><Icon icon="fa fa-external-link" /></a>) };
+    let organizationProducts = (this.props.user && this.props.user.association.organization && this.props.user.association.organization.products) ? this.props.user.association.organization.products : {};
     let dropdownLinks = (this.props.settings.ui.header.productHeader.productLinks.length > 0)
       ? this.props.settings.ui.header.productHeader.productLinks.map(link => {
+        let isProduct = link.product;
+        let display = (link.type && this.props.user.userdata && this.props.user.userdata.userroles && this.props.user.userdata.userroles[ 0 ] && this.props.user.userdata.userroles[ 0 ].name !== link.type) ? 'none' : undefined;
+        if (isProduct && organizationProducts) {
+          display = (display !== 'none' && organizationProducts[ link.name ] && organizationProducts[ link.name ].active) ? undefined : 'none';
+        }
         return (
           <Dropdown.Item
-          style={{ display: (link.type && this.props.user.userdata && this.props.user.userdata.userroles && this.props.user.userdata.userroles[0] && this.props.user.userdata.userroles[0].name !== link.type) ? 'none' : undefined }}
+          style={{ display }}
           children={(link.reroute) ? getRerouteLink(link) : null}
           text={(link.reroute) ? null : link.text}
           onClick={() => {
