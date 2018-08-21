@@ -653,12 +653,12 @@ var user = {
         }, loginSettings.options.headers, {
           username: loginData.username,
           password: loginData.password,
-          organization: loginData.organization
+          organization: loginData.name
         }),
         body: (0, _stringify2.default)({
           username: loginData.username,
           password: loginData.password,
-          organization: loginData.organization
+          organization: loginData.name
         })
       }).then(checkStatus).then(function (response) {
         return response.json();
