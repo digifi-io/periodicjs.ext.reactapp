@@ -593,12 +593,12 @@ const user = {
         }, loginSettings.options.headers, {
             username: loginData.username,
             password: loginData.password,
-            organization: loginData.organization,
+            organization: loginData.name,
           }),
         body: JSON.stringify({
           username: loginData.username,
           password: loginData.password,
-          organization: loginData.organization,
+          organization: loginData.name,
         }),
       })
         .then(checkStatus)
