@@ -872,7 +872,7 @@ export function getFormImageCropper(options) {
       [ formElement.name ]: JSON.stringify(boxdata),
     })
   };
-  return (<FormItem key={i} >
+  return (<FormItem key={i} {...formElement.layoutProps} >
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <ResponsiveCropper getFileData={getFileData.bind(self)} getCropperBoxData={getCropperBoxData.bind(self)} {...passProps}/>
   </FormItem>);
