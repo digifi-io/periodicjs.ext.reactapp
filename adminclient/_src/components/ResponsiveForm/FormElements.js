@@ -1009,7 +1009,7 @@ function getFormImageCropper(options) {
   };
   return _react2.default.createElement(
     _FormItem2.default,
-    { key: i },
+    (0, _extends3.default)({ key: i }, formElement.layoutProps),
     formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_ResponsiveCropper2.default, (0, _extends3.default)({ getFileData: getFileData.bind(self), getCropperBoxData: getCropperBoxData.bind(self) }, passProps))
   );
