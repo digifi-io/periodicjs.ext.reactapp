@@ -26,16 +26,12 @@ class ResponsiveCropper extends Component {
     this.state = {
       src: props.src || null,
       // cropbox: props.cropbox || {},
-      cropbox: props.cropperProps.data || {},
-      scaledcropbox: {
-        left: props.cropperProps.data.x,
-        top: props.cropperProps.data.y,
-        width: props.cropperProps.data.width,
-        height: props.cropperProps.data.height,
-      } || {},
+      cropbox:{"height": 0, "width": 0, "x": 0, "y": 0},
+      scaledcropbox: props.cropperProps.data || {"height": 0, "width": 0, "x": 0, "y": 0},
     }
   }
 
+ 
   onSelectFile(e) {
     const self = this;
     if (e.target.files && e.target.files.length > 0) {
@@ -66,16 +62,16 @@ class ResponsiveCropper extends Component {
     let scaledBoxData = Object.assign({}, boxData, {
       height: boxData.height * ratio,
       width: boxData.width * ratio,
-      left: (boxData.left - canvasData.left) * ratio,
-      top: (boxData.top - canvasData.top) * ratio,
+      x: (boxData.left - canvasData.left) * ratio,
+      y: (boxData.top - canvasData.top) * ratio,
     })
     if (self.props.getCropperBoxData) {
       self.props.getCropperBoxData(scaledBoxData);
     }
     this.setState({
       cropbox: {
-        left: boxData.left,
-        top: boxData.top,
+        x: boxData.left,
+        y: boxData.top,
         width: boxData.width,
         height: boxData.height,
       },
@@ -93,7 +89,8 @@ class ResponsiveCropper extends Component {
       <input type="file" onChange={onFileSelect} {...self.props.fileInputProps} />
     </div>) : null;
     let cropperProps = self.props.cropperProps || {};
-    let formatted_data = {x: this.state.scaledcropbox.left, y: this.state.scaledcropbox.top, width:  this.state.scaledcropbox.width, height:  this.state.scaledcropbox.height}
+    let formatted_data = { x: this.state.scaledcropbox.x, y: this.state.scaledcropbox.y, width: this.state.scaledcropbox.width, height: this.state.scaledcropbox.height };
+    console.log({ formatted_data });
     return (
       <div style={{ height: 'auto', width: 'auto' }}>
         {fileInput}
