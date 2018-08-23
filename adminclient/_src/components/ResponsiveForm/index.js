@@ -302,7 +302,6 @@ var ResponsiveForm = function (_Component) {
       hiddenInputs = assigedHiddenFields.hiddenInputs;
       formdata = assigedHiddenFields.formdata;
       submitFormData = assigedHiddenFields.submitFormData;
-
       var updatedFormFieldsAndData = formNameFields({ formElementFields: formElementFields, formdata: formdata });
       formElementFields = updatedFormFieldsAndData.formElementFields;
       formdata = updatedFormFieldsAndData.formdata;

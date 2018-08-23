@@ -74,7 +74,8 @@ var ResponsiveCropper = function (_Component) {
     _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
     _this.state = {
       src: props.src || null,
-      cropbox: props.cropbox || {}
+      cropbox: { "height": 0, "width": 0, "x": 0, "y": 0 },
+      scaledcropbox: props.cropperProps.data || { "height": 0, "width": 0, "x": 0, "y": 0 }
     };
     return _this;
   }
@@ -109,19 +110,20 @@ var ResponsiveCropper = function (_Component) {
       var scaledBoxData = (0, _assign2.default)({}, boxData, {
         height: boxData.height * ratio,
         width: boxData.width * ratio,
-        left: (boxData.left - canvasData.left) * ratio,
-        top: (boxData.top - canvasData.top) * ratio
+        x: (boxData.left - canvasData.left) * ratio,
+        y: (boxData.top - canvasData.top) * ratio
       });
       if (self.props.getCropperBoxData) {
         self.props.getCropperBoxData(scaledBoxData);
       }
       this.setState({
         cropbox: {
-          left: boxData.left,
-          top: boxData.top,
+          x: boxData.left,
+          y: boxData.top,
           width: boxData.width,
           height: boxData.height
-        }
+        },
+        scaledcropbox: scaledBoxData
       }, function () {
         self.refs.cropper.setCropBoxData(boxData);
       });
@@ -138,11 +140,13 @@ var ResponsiveCropper = function (_Component) {
         _react2.default.createElement('input', (0, _extends3.default)({ type: 'file', onChange: onFileSelect }, self.props.fileInputProps))
       ) : null;
       var cropperProps = self.props.cropperProps || {};
+      var formatted_data = { x: this.state.scaledcropbox.x, y: this.state.scaledcropbox.y, width: this.state.scaledcropbox.width, height: this.state.scaledcropbox.height };
       return _react2.default.createElement(
         'div',
         { style: { height: 'auto', width: 'auto' } },
         fileInput,
         this.state.src && _react2.default.createElement(_reactCropper2.default, (0, _extends3.default)({}, cropperProps, {
+          data: formatted_data,
           src: this.state.src,
           ref: 'cropper',
           aspectRatio: cropperProps.aspectRatio || NaN,

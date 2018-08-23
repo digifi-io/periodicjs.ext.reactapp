@@ -993,11 +993,18 @@ function getFormImageCropper(options) {
       i = options.i,
       onChange = options.onChange;
 
+  var initialValue = getInitialValue(formElement, this.state);
+  try {
+    initialValue = JSON.parse(initialValue);
+  } catch (e) {
+    initialValue = { "height": 0, "width": 0, "x": 0, "y": 0 };
+  }
   var fileClassname = '__reactapp_file_' + formElement.name;
   var passProps = (0, _assign2.default)({}, formElement.passProps, { fileInputProps: { className: fileClassname } });
   if (passProps.cropperSrc && this.state[passProps.cropperSrc]) {
     passProps.src = this.state[passProps.cropperSrc];
   }
+  passProps.cropperProps.data = initialValue;
   var getFileData = function getFileData(filedata) {
     var formDataFiles = (0, _assign2.default)({}, this.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, filedata));
     this.setState({
