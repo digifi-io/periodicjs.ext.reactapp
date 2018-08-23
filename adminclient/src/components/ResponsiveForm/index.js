@@ -235,7 +235,6 @@ class ResponsiveForm extends Component{
     hiddenInputs = assigedHiddenFields.hiddenInputs;
     formdata = assigedHiddenFields.formdata;
     submitFormData = assigedHiddenFields.submitFormData;
-    console.log({submitFormData})
     let updatedFormFieldsAndData = formNameFields({ formElementFields, formdata, });
     formElementFields = updatedFormFieldsAndData.formElementFields;
     formdata = updatedFormFieldsAndData.formdata;
