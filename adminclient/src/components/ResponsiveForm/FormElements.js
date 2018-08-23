@@ -860,7 +860,6 @@ export function getFormImageCropper(options) {
   } catch (e) {
     initialValue = { "height": 0, "width": 0, "x": 0, "y": 0 };
   }
-  console.log({initialValue})
   let fileClassname = `__reactapp_file_${formElement.name}`;
   let passProps = Object.assign({}, formElement.passProps, { fileInputProps: { className: fileClassname } });
   if (passProps.cropperSrc && this.state[ passProps.cropperSrc ]) {

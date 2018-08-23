@@ -25,13 +25,11 @@ class ResponsiveCropper extends Component {
     this.getRenderedComponent = getRenderedComponent.bind(this);
     this.state = {
       src: props.src || null,
-      // cropbox: props.cropbox || {},
       cropbox:{"height": 0, "width": 0, "x": 0, "y": 0},
       scaledcropbox: props.cropperProps.data || {"height": 0, "width": 0, "x": 0, "y": 0},
     }
   }
 
- 
   onSelectFile(e) {
     const self = this;
     if (e.target.files && e.target.files.length > 0) {
@@ -90,7 +88,6 @@ class ResponsiveCropper extends Component {
     </div>) : null;
     let cropperProps = self.props.cropperProps || {};
     let formatted_data = { x: this.state.scaledcropbox.x, y: this.state.scaledcropbox.y, width: this.state.scaledcropbox.width, height: this.state.scaledcropbox.height };
-    console.log({ formatted_data });
     return (
       <div style={{ height: 'auto', width: 'auto' }}>
         {fileInput}
