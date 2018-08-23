@@ -25,7 +25,14 @@ class ResponsiveCropper extends Component {
     this.getRenderedComponent = getRenderedComponent.bind(this);
     this.state = {
       src: props.src || null,
-      cropbox: props.cropbox || {},
+      // cropbox: props.cropbox || {},
+      cropbox: props.cropperProps.data || {},
+      scaledcropbox: {
+        left: props.cropperProps.data.x,
+        top: props.cropperProps.data.y,
+        width: props.cropperProps.data.width,
+        height: props.cropperProps.data.height,
+      } || {},
     }
   }
 
@@ -71,7 +78,8 @@ class ResponsiveCropper extends Component {
         top: boxData.top,
         width: boxData.width,
         height: boxData.height,
-      }
+      },
+      scaledcropbox: scaledBoxData,
     }, () => {
       self.refs.cropper.setCropBoxData(boxData);
     })
@@ -85,12 +93,14 @@ class ResponsiveCropper extends Component {
       <input type="file" onChange={onFileSelect} {...self.props.fileInputProps} />
     </div>) : null;
     let cropperProps = self.props.cropperProps || {};
+    let formatted_data = {x: this.state.scaledcropbox.left, y: this.state.scaledcropbox.top, width:  this.state.scaledcropbox.width, height:  this.state.scaledcropbox.height}
     return (
       <div style={{ height: 'auto', width: 'auto' }}>
         {fileInput}
         {this.state.src && (
           <Cropper
             {...cropperProps}
+            data={formatted_data}
             src={this.state.src}
             ref='cropper'
             aspectRatio={cropperProps.aspectRatio || NaN}

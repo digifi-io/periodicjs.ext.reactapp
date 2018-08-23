@@ -854,6 +854,8 @@ export function getFormImageCropper(options) {
   const self = this;
   let customLabel = getCustomFormLabel.bind(this);
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
+  let initialValue = getInitialValue(formElement, this.state);
+  console.log({initialValue})
   let fileClassname = `__reactapp_file_${formElement.name}`;
   let passProps = Object.assign({}, formElement.passProps, { fileInputProps: { className: fileClassname } });
   if (passProps.cropperSrc && this.state[ passProps.cropperSrc ]) {
