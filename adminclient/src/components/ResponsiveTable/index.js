@@ -766,12 +766,12 @@ class ResponsiveTable extends Component {
     let calcStartIndex = ((this.state.currentPage - 1) * this.state.limit);
     let startIndex = (!this.props.baseUrl)
       ? calcStartIndex
-      : (this.searchInputTextVal)
+      : (this.searchInputTextVal && !this.props.calculatePagination)
         ? this.state.limit * (this.state.currentPage - 1)
         : 0;
     let endIndex = (!this.props.baseUrl)
       ? ((this.state.limit * this.state.currentPage))
-      : (this.searchInputTextVal)
+      : (this.searchInputTextVal && !this.props.calculatePagination)
         ? this.state.limit * (this.state.currentPage)
         : this.state.limit;
     let displayRows = this.state.rows.slice(startIndex, endIndex);
