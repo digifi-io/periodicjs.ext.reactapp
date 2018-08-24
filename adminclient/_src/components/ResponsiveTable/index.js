@@ -936,8 +936,8 @@ var ResponsiveTable = function (_Component) {
       // console.debug('render this.state', this.state);
       var maxFormRowLength = 0;
       var calcStartIndex = (this.state.currentPage - 1) * this.state.limit;
-      var startIndex = !this.props.baseUrl ? calcStartIndex : this.searchInputTextVal ? this.state.limit * (this.state.currentPage - 1) : 0;
-      var endIndex = !this.props.baseUrl ? this.state.limit * this.state.currentPage : this.searchInputTextVal ? this.state.limit * this.state.currentPage : this.state.limit;
+      var startIndex = !this.props.baseUrl ? calcStartIndex : this.searchInputTextVal && !this.props.calculatePagination ? this.state.limit * (this.state.currentPage - 1) : 0;
+      var endIndex = !this.props.baseUrl ? this.state.limit * this.state.currentPage : this.searchInputTextVal && !this.props.calculatePagination ? this.state.limit * this.state.currentPage : this.state.limit;
       var displayRows = this.state.rows.slice(startIndex, endIndex);
       var mergedCustomLayout = this.props.customLayout && displayRows && displayRows.length ? _react2.default.createElement(
         'div',
