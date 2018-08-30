@@ -596,7 +596,7 @@ class ResponsiveTable extends Component {
         >
         </ResponsiveDatalist>
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'checkbox') {
-        let rowProps = (header.useRowProps && row.rowProps) ? Object.assign({}, row.rowProps) : {};
+        let rowProps = (header.useRowProps && row.rowProps && row.rowProps[header.sortid]) ? Object.assign({}, row.rowProps[header.sortid]) : {};
         return <Checkbox {...header.passProps} {...rowProps}
           name={header.sortid}
           checked={value ? true : false}
