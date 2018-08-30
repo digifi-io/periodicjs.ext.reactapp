@@ -16,7 +16,7 @@ var generateManifest = function generateManifest(connection, options = {}) {
 
 module.exports = {
   generateManifest,
-  layouts: {
-    dbstats,
-  },
+  // layouts: {
+  //   dbstats,
+  // },
 };

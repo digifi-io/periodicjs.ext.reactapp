@@ -4,8 +4,8 @@ module.exports = {
   'periodicjs_ext_reactapp': {
     'manifests': [
       'node_modules/@digifi/periodicjs.ext.reactapp/adminclient/src/content/config/manifest.json',
-      'node_modules/@digifi/periodicjs.ext.reactapp/views/reactapp/manifests/',
-      'node_modules/@digifi/periodicjs.ext.reactapp/views/test/',
+      // 'node_modules/@digifi/periodicjs.ext.reactapp/views/reactapp/manifests/',
+      // 'node_modules/@digifi/periodicjs.ext.reactapp/views/test/',
     ],
     'unauthenticated_manifests': [
       'node_modules/@digifi/periodicjs.ext.reactapp/views/public/home/',
