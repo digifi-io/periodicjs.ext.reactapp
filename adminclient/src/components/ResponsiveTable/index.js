@@ -484,18 +484,18 @@ class ResponsiveTable extends Component {
           </rb.Tag>))
       }
       else if (header && header.selectedOptionRowHeader) {
-        return <input type="radio" checked={(options.rowIndex===this.state.selectedRowIndex)?true:false} />;
-      } else if (this.props.useInputRows && header && header.formtype && header.formtype==='code') {
+        return <input type="radio" checked={(options.rowIndex === this.state.selectedRowIndex) ? true : false} />;
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'code') {
         let CodeMirrorProps = Object.assign({}, {
           codeMirrorProps: {
             lineNumbers: true,
             value: value, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
             //value: this.state[ formElement.name ] || formElement.value,
             style: {
-              minHeight:200,
+              minHeight: 200,
             },
-            lineWrapping:true,
-            onChange: function (text){
+            lineWrapping: true,
+            onChange: function (text) {
               // console.log({ newvalue });
               let name = header.sortid;
               let rowIndex = options.rowIndex;
@@ -519,7 +519,7 @@ class ResponsiveTable extends Component {
           {...CodeMirrorProps}
           {...codeProps}
         />;
-      } else if (this.props.useInputRows && header && header.formtype && header.formtype==='textarea') {
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'textarea') {
         return <rb.Textarea
           {...header.textareaProps}
           value={value}
@@ -530,10 +530,10 @@ class ResponsiveTable extends Component {
             this.updateInlineRowText({ name, text, rowIndex, });
           }}
         >{value}</rb.Textarea>;
-      } else if (this.props.useInputRows && header && header.formtype && header.formtype==='text') {
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'text') {
         return <rb.Input
           value={value}
-          readOnly={header.readOnly? true: false}
+          readOnly={header.readOnly ? true : false}
           {...header.inputProps}
           onChange={(event) => {
             let text = event.target.value;
@@ -544,7 +544,7 @@ class ResponsiveTable extends Component {
         >{value}</rb.Input>;
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
         let selectOptions = uniqueFormOptions
-          ? header.formoptions[options.rowIndex] || []
+          ? header.formoptions[ options.rowIndex ] || []
           : header.formoptions || [];
         return <rb.Select
           value={value}
@@ -559,26 +559,26 @@ class ResponsiveTable extends Component {
             return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
           })}
         </rb.Select>
-    } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'dropdown') {
-      let selectOptions = uniqueFormOptions
-          ? header.formoptions[options.rowIndex] || []
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'dropdown') {
+        let selectOptions = uniqueFormOptions
+          ? header.formoptions[ options.rowIndex ] || []
           : header.formoptions || [];
-      return <Dropdown
-        fluid
-        selection
-        value={value}
-        {...header.dropdownProps}
-        onChange={(event, {value}) => {
-          let text = value;
-          let name = header.sortid;
-          let rowIndex = options.rowIndex;
-          this.updateInlineRowText({ name, text, rowIndex, });
-        }}
-        options={selectOptions.map((opt, k) => {
-          return {key: k, disabled: opt.disabled, value: opt.value, text: (opt.label) ? opt.label : opt.value, };
-        })}
+        return <Dropdown
+          fluid
+          selection
+          value={value}
+          {...header.dropdownProps}
+          onChange={(event, { value }) => {
+            let text = value;
+            let name = header.sortid;
+            let rowIndex = options.rowIndex;
+            this.updateInlineRowText({ name, text, rowIndex, });
+          }}
+          options={selectOptions.map((opt, k) => {
+            return { key: k, disabled: opt.disabled, value: opt.value, text: (opt.label) ? opt.label : opt.value, };
+          })}
         >
-      </Dropdown>
+        </Dropdown>
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'datalist') {
         let rowdata = Array.isArray(this.props.__tableOptions[ header.sortid ][ options.rowIndex ]) ? this.props.__tableOptions[ header.sortid ][ options.rowIndex ]
           : Array.isArray(this.props.__tableOptions[ header.sortid ]) ? this.props.__tableOptions[ header.sortid ]
@@ -586,7 +586,7 @@ class ResponsiveTable extends Component {
         return <ResponsiveDatalist
           value={value}
           {...header.datalistProps}
-          datalistdata={ rowdata }
+          datalistdata={rowdata}
           onChange={(event) => {
             let text = event;
             let name = header.sortid;
@@ -596,7 +596,8 @@ class ResponsiveTable extends Component {
         >
         </ResponsiveDatalist>
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'checkbox') {
-        return <Checkbox {...header.passProps}
+        let rowProps = (header.useRowProps && row.rowProps && row.rowProps[header.sortid]) ? Object.assign({}, row.rowProps[header.sortid]) : {};
+        return <Checkbox {...header.passProps} {...rowProps}
           name={header.sortid}
           checked={value ? true : false}
           value={value}
@@ -613,7 +614,7 @@ class ResponsiveTable extends Component {
         radio={true}
         name={header.sortid}
         value={value}
-        checked={value ? true : false}
+        checked={value ? true : false}  
         onChange={(event, { value }) => {
             if (!value) {
               let name = header.sortid;
