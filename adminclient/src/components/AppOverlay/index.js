@@ -196,13 +196,12 @@ class Overlay extends Component {
   }
 
   render() {
+  
     window.overlayProps = this.props;
-    
-    Object.keys(window.overlayProps.settings).forEach(setting => {
-      if (setting !== 'userprofile') delete window.overlayProps.settings[ setting ];
-    })
-
-    let overlayStyleOverrides = this.props.getState().settings.ui.a;
+    Object.keys(window.overlayProps.settings).forEach(function(setting) {
+      if(setting !== 'userprofile' && setting !== 'ui') delete window.overlayProps.settings[setting]
+    });
+    let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
       
     return (
       <div className="__reactapp_overlay" {...overlayStyleOverrides} style={{ position: 'fixed', bottom: 0, width: 'auto', zIndex:100000, }}>

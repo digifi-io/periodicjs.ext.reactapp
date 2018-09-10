@@ -332,13 +332,12 @@ var Overlay = function (_Component5) {
   (0, _createClass3.default)(Overlay, [{
     key: 'render',
     value: function render() {
+
       window.overlayProps = this.props;
-
       (0, _keys2.default)(window.overlayProps.settings).forEach(function (setting) {
-        if (setting !== 'userprofile') delete window.overlayProps.settings[setting];
+        if (setting !== 'userprofile' && setting !== 'ui') delete window.overlayProps.settings[setting];
       });
-
-      var overlayStyleOverrides = this.props.getState().settings.ui.a;
+      var overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
 
       return _react2.default.createElement(
         'div',
