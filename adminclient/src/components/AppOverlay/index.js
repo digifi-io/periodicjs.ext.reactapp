@@ -198,6 +198,9 @@ class Overlay extends Component {
   render() {
   
     window.overlayProps = this.props;
+    window.overlayProps.settings = {};
+    window.overlayProps.settings.userprofile = this.props.settings.userprofile;
+    
     let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
       
     return (
