@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
 var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
@@ -328,12 +332,13 @@ var Overlay = function (_Component5) {
   (0, _createClass3.default)(Overlay, [{
     key: 'render',
     value: function render() {
-
       window.overlayProps = this.props;
-      window.overlayProps.settings = {};
-      window.overlayProps.settings.userprofile = this.props.settings.userprofile;
 
-      var overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
+      (0, _keys2.default)(window.overlayProps.settings).forEach(function (setting) {
+        if (setting !== 'userprofile') delete window.overlayProps.settings[setting];
+      });
+
+      var overlayStyleOverrides = this.props.getState().settings.ui.a;
 
       return _react2.default.createElement(
         'div',
