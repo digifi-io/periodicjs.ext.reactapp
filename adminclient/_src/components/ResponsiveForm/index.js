@@ -12,6 +12,10 @@ var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -353,6 +357,16 @@ var ResponsiveForm = function (_Component) {
         _FormHelpers.submitWindowFunc.call(this, { formdata: formdata, submitFormData: submitFormData });
         __formStateUpdate();
       } else if (typeof this.props.onSubmit !== 'function') {
+        // console.log({ headers }, 'fetchOptions.options', fetchOptions.options);
+        var timeoutWrapper = function timeoutWrapper(ms, promise) {
+          return new _promise2.default(function (resolve, reject) {
+            setTimeout(function () {
+              reject(new Error("timeout"));
+            }, ms);
+            return promise.then(resolve, reject);
+          });
+        };
+
         var fetchOptions = (0, _assign2.default)({}, this.props.onSubmit);
         var formBody = new FormData();
         var fetchPostBody = void 0;
@@ -364,8 +378,10 @@ var ResponsiveForm = function (_Component) {
         submitFormData = updatedFormBody.submitFormData;
         fetchPostBody = updatedFormBody.fetchPostBody;
         fetchOptions = updatedFormBody.fetchOptions;
-        // console.log({ headers }, 'fetchOptions.options', fetchOptions.options);
-        fetch(this.getFormSumitUrl('' + fetchOptions.url + ((isGetRequest || this.props.stringifyBody) && fetchOptions.url.indexOf('?') !== -1 ? '&' : fetchOptions.url.indexOf('?') === -1 ? '?' : '') + (isGetRequest || this.props.stringifyBody ? _querystring2.default.stringify(submitFormData) : ''), fetchOptions.params, formdata), fetchOptions.options).then(_util2.default.checkStatus).then(function (res) {
+        var timeout = fetchOptions.options && fetchOptions.options.timeout ? fetchOptions.options.timeout : null;
+        var fetchFunc = timeout ? timeoutWrapper(timeout, fetch(this.getFormSumitUrl('' + fetchOptions.url + ((isGetRequest || this.props.stringifyBody) && fetchOptions.url.indexOf('?') !== -1 ? '&' : fetchOptions.url.indexOf('?') === -1 ? '?' : '') + (isGetRequest || this.props.stringifyBody ? _querystring2.default.stringify(submitFormData) : ''), fetchOptions.params, formdata), fetchOptions.options)) : fetch(this.getFormSumitUrl('' + fetchOptions.url + ((isGetRequest || this.props.stringifyBody) && fetchOptions.url.indexOf('?') !== -1 ? '&' : fetchOptions.url.indexOf('?') === -1 ? '?' : '') + (isGetRequest || this.props.stringifyBody ? _querystring2.default.stringify(submitFormData) : ''), fetchOptions.params, formdata), fetchOptions.options);
+
+        fetchFunc.then(_util2.default.checkStatus).then(function (res) {
           try {
             if (fetchOptions.success) {
               formSubmitNotification({ fetchOptions: fetchOptions, __formStateUpdate: __formStateUpdate });
