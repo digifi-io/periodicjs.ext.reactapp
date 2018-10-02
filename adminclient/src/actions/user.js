@@ -589,7 +589,7 @@ const user = {
         method: loginSettings.method || 'POST',
         headers: Object.assign({
           'Accept': 'application/json',
-          // 'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         }, loginSettings.options.headers, {
             username: loginData.username,
             password: loginData.password,
