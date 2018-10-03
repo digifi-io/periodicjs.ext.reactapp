@@ -1787,8 +1787,8 @@ var ResponsiveTable = function (_Component) {
                         } }, _this8.props.headerLinkProps, { onClick: function onClick() {
                           _this8.updateTableData({ sort: header.sortid, search: _this8.searchInputTextVal });
                         } }),
-                      header.label
-                    ) : header.label
+                      !Array.isArray(header.label) && (0, _typeof3.default)(header.label) === "object" ? _this8.getRenderedComponent(header.label) : header.label
+                    ) : !Array.isArray(header.label) && (0, _typeof3.default)(header.label) === "object" ? _this8.getRenderedComponent(header.label) : header.label
                   );
                 })
               )
