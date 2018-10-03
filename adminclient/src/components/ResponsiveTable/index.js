@@ -1393,9 +1393,10 @@ class ResponsiveTable extends Component {
                         cursor: 'pointer',
                       }} {...this.props.headerLinkProps} onClick={() => {
                         this.updateTableData({ sort: header.sortid, search: this.searchInputTextVal, });
-                      }}>{header.label}</a>)
-                      : header.label
-                      }</rb.Th>
+                      }}>{(!Array.isArray(header.label) && typeof header.label === "object") ? this.getRenderedComponent(header.label) : header.label}</a>)
+                      : (!Array.isArray(header.label) && typeof header.label === "object") ? this.getRenderedComponent(header.label): header.label
+                      }
+                      </rb.Th>
                   ))}
                 </rb.Tr>
               </rb.Thead>
