@@ -28,7 +28,7 @@ class RemoteDropdown extends Component {
         let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
           limit: options.limit || 20,
           sort: options.sort,
-          query: this.props.value,
+          query: this.props.useRemoteSearch ? this.props.value : '',
           allowSpecialCharacters: true,
         })}`;
         let headers = Object.assign({
@@ -148,7 +148,7 @@ class RemoteDropdown extends Component {
         value={value}
         placeholder={this.props.placeholder || ''}
         onChange={this.props.onChange ? this.handleChange(this.props.onChange) : this.handleChange()}
-        onSearchChange={this.handleSearchChange}
+        onSearchChange={this.props.useRemoteSearch ? this.handleSearchChange : (e, { searchQuery, }) => { this.setState({ searchQuery }) }}
         disabled={isFetching}
         loading={isFetching}
       />
