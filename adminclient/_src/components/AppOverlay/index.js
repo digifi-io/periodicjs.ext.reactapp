@@ -330,6 +330,12 @@ var Overlay = function (_Component5) {
     value: function render() {
 
       window.overlayProps = this.props;
+      if (window.overlayProps && window.overlayProps.settings && window.overlayProps.settings.session) {
+        delete window.overlayProps.settings.session.host;
+        delete window.overlayProps.settings.session.port;
+        delete window.overlayProps.settings.session.auth;
+      }
+
       var overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
 
       return _react2.default.createElement(

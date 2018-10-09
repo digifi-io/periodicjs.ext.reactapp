@@ -77,14 +77,16 @@ class AppHeader extends Component {
         if (isProduct && organizationProducts) {
           display = (display !== 'none' && organizationProducts[ link.name ] && organizationProducts[ link.name ].active) ? undefined : 'none';
         }
+        let userrole = (this.props.user && this.props.user.userdata && this.props.user.userdata.userroles[ 0 ] && this.props.user.userdata.userroles[ 0 ].name) ? this.props.user.userdata.userroles[ 0 ].name : 'user';
+        let location = (userrole && link[ userrole ]) ? link[ userrole ] : link.location;
         return (
           <Dropdown.Item
           style={{ display }}
           children={(link.reroute) ? getRerouteLink(link) : null}
           text={(link.reroute) ? null : link.text}
           onClick={() => {
-              (link.location)
-                ? this.props.reduxRouter.push(link.location)
+              (location)
+                ? this.props.reduxRouter.push(location)
                 : (link.logoutUser)
                   ? this.props.logoutUser()
                   : null

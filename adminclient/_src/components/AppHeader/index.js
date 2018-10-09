@@ -153,12 +153,14 @@ var AppHeader = function (_Component) {
         if (isProduct && organizationProducts) {
           display = display !== 'none' && organizationProducts[link.name] && organizationProducts[link.name].active ? undefined : 'none';
         }
+        var userrole = _this2.props.user && _this2.props.user.userdata && _this2.props.user.userdata.userroles[0] && _this2.props.user.userdata.userroles[0].name ? _this2.props.user.userdata.userroles[0].name : 'user';
+        var location = userrole && link[userrole] ? link[userrole] : link.location;
         return _react2.default.createElement(_semanticUiReact.Dropdown.Item, {
           style: { display: display },
           children: link.reroute ? getRerouteLink(link) : null,
           text: link.reroute ? null : link.text,
           onClick: function onClick() {
-            link.location ? _this2.props.reduxRouter.push(link.location) : link.logoutUser ? _this2.props.logoutUser() : null;
+            location ? _this2.props.reduxRouter.push(location) : link.logoutUser ? _this2.props.logoutUser() : null;
           },
           className: link.className ? link.className : ''
         });

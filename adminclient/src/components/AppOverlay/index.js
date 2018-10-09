@@ -198,6 +198,12 @@ class Overlay extends Component {
   render() {
   
     window.overlayProps = this.props;
+    if (window.overlayProps && window.overlayProps.settings && window.overlayProps.settings.session) {
+      delete window.overlayProps.settings.session.host;
+      delete window.overlayProps.settings.session.port;
+      delete window.overlayProps.settings.session.auth;
+    }
+
     let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
       
     return (

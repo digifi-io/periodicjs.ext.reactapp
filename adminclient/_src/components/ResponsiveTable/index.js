@@ -748,7 +748,8 @@ var ResponsiveTable = function (_Component) {
             }
           }));
         } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'checkbox') {
-          return _react2.default.createElement(_semanticUiReact.Checkbox, (0, _extends3.default)({}, header.passProps, {
+          var rowProps = header.useRowProps && row.rowProps && row.rowProps[header.sortid] ? (0, _assign2.default)({}, row.rowProps[header.sortid]) : {};
+          return _react2.default.createElement(_semanticUiReact.Checkbox, (0, _extends3.default)({}, header.passProps, rowProps, {
             name: header.sortid,
             checked: value ? true : false,
             value: value,
@@ -1786,8 +1787,8 @@ var ResponsiveTable = function (_Component) {
                         } }, _this8.props.headerLinkProps, { onClick: function onClick() {
                           _this8.updateTableData({ sort: header.sortid, search: _this8.searchInputTextVal });
                         } }),
-                      header.label
-                    ) : header.label
+                      !Array.isArray(header.label) && (0, _typeof3.default)(header.label) === "object" ? _this8.getRenderedComponent(header.label) : header.label
+                    ) : !Array.isArray(header.label) && (0, _typeof3.default)(header.label) === "object" ? _this8.getRenderedComponent(header.label) : header.label
                   );
                 })
               )
