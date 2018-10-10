@@ -66,21 +66,20 @@ class RemoteDropdown extends Component {
       let headers = Object.assign({
         'x-access-token': stateProps.user.jwt_token,
       }, stateProps.settings.userprofile.options.headers);
-      utilities.fetchComponent(fetchURL, { headers, })()
-        .then(response => {
-          let dropdown = response[ options.response_field ].map((item, idx) => ({
-            "key": idx,
-            "text": item.label,
-            "value": item.value,
-          }));
-          self.setState({ isFetching: false, options: dropdown, value }, () => {
-            if (cb) cb(e, { value })
-          })
-        }, e => {
-          self.setState({ isFetching: false, options: [], value }, () => {
-            if (cb) cb(e, { value })
-          })
-        });
+      self.setState({ value }, () => {
+        if (cb) cb(e, { value });
+        utilities.fetchComponent(fetchURL, { headers, })()
+          .then(response => {
+            let dropdown = response[ options.response_field ].map((item, idx) => ({
+              "key": idx,
+              "text": item.label,
+              "value": item.value,
+            }));
+            self.setState({ isFetching: false, options: dropdown, });
+          }, e => {
+            self.setState({ isFetching: false, options: [] })
+          });
+      });
     }
   }
 
