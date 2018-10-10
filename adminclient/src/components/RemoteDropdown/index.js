@@ -73,13 +73,14 @@ class RemoteDropdown extends Component {
             "text": item.label,
             "value": item.value,
           }));
-          self.setState({ isFetching: false, options: dropdown })
+          self.setState({ isFetching: false, options: dropdown, value }, () => {
+            if (cb) cb(e, { value })
+          })
         }, e => {
-          self.setState({ isFetching: false, options: [] })
+          self.setState({ isFetching: false, options: [], value }, () => {
+            if (cb) cb(e, { value })
+          })
         });
-      self.setState({ value }, () => {
-        if (cb) cb(e, { value })
-      })
     }
   }
 
