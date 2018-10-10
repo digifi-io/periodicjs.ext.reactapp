@@ -83,8 +83,10 @@ var RemoteDropdown = function (_Component) {
           var fetchURL = '' + stateProps.settings.basename + options.baseUrl + '&' + _querystring2.default.stringify({
             limit: options.limit || 20,
             sort: options.sort,
-            query: _this2.props.useRemoteSearch ? _this2.props.value : '',
-            allowSpecialCharacters: true
+            query: _this2.props.value || '',
+            allowSpecialCharacters: true,
+            changed: true,
+            init: true
           });
           var headers = (0, _assign2.default)({
             'x-access-token': stateProps.user.jwt_token
@@ -111,8 +113,32 @@ var RemoteDropdown = function (_Component) {
       return function (e, _ref) {
         var value = _ref.value;
 
+        var stateProps = self.props.getState();
+        var options = self.props.searchProps;
+        var fetchURL = '' + stateProps.settings.basename + options.baseUrl + '&' + _querystring2.default.stringify({
+          limit: options.limit || 20,
+          sort: options.sort,
+          query: value,
+          allowSpecialCharacters: true,
+          changed: true
+        });
+        var headers = (0, _assign2.default)({
+          'x-access-token': stateProps.user.jwt_token
+        }, stateProps.settings.userprofile.options.headers);
         self.setState({ value: value }, function () {
           if (cb) cb(e, { value: value });
+          _util2.default.fetchComponent(fetchURL, { headers: headers })().then(function (response) {
+            var dropdown = response[options.response_field].map(function (item, idx) {
+              return {
+                "key": idx,
+                "text": item.label,
+                "value": item.value
+              };
+            });
+            self.setState({ isFetching: false, options: dropdown });
+          }, function (e) {
+            self.setState({ isFetching: false, options: [] });
+          });
         });
       };
     }
@@ -202,8 +228,6 @@ var RemoteDropdown = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
-
       var _state = this.state,
           multiple = _state.multiple,
           options = _state.options,
@@ -221,10 +245,7 @@ var RemoteDropdown = function (_Component) {
         value: value,
         placeholder: this.props.placeholder || '',
         onChange: this.props.onChange ? this.handleChange(this.props.onChange) : this.handleChange(),
-        onSearchChange: this.props.useRemoteSearch ? this.handleSearchChange : function (e, _ref3) {
-          var searchQuery = _ref3.searchQuery;
-          _this3.setState({ searchQuery: searchQuery });
-        },
+        onSearchChange: this.handleSearchChange,
         disabled: isFetching,
         loading: isFetching
       }));
