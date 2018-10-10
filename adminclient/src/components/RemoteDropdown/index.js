@@ -28,8 +28,10 @@ class RemoteDropdown extends Component {
         let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
           limit: options.limit || 20,
           sort: options.sort,
-          query: this.props.useRemoteSearch ? this.props.value : '',
+          query: this.props.value || '',
           allowSpecialCharacters: true,
+          changed: true,
+          init: true,
         })}`;
         let headers = Object.assign({
           'x-access-token': stateProps.user.jwt_token,
@@ -41,7 +43,7 @@ class RemoteDropdown extends Component {
               "text": item.label,
               "value": item.value,
             }));
-            this.setState({ isFetching: false, options: dropdown })
+            this.setState({ isFetching: false, options: dropdown }) 
           }, e => {
             this.setState({ isFetching: false, options: [] })
           });
@@ -52,9 +54,32 @@ class RemoteDropdown extends Component {
   handleChange(cb) {
     const self = this;
     return function (e, { value }) {
+      let stateProps = self.props.getState();
+      let options = self.props.searchProps;
+      let fetchURL = `${stateProps.settings.basename}${options.baseUrl}&${qs.stringify({
+        limit: options.limit || 20,
+        sort: options.sort,
+        query: value,
+        allowSpecialCharacters: true,
+        changed: true,
+      })}`;
+      let headers = Object.assign({
+        'x-access-token': stateProps.user.jwt_token,
+      }, stateProps.settings.userprofile.options.headers);
       self.setState({ value }, () => {
-        if (cb) cb(e, { value })
-      })
+        if (cb) cb(e, { value });
+        utilities.fetchComponent(fetchURL, { headers, })()
+          .then(response => {
+            let dropdown = response[ options.response_field ].map((item, idx) => ({
+              "key": idx,
+              "text": item.label,
+              "value": item.value,
+            }));
+            self.setState({ isFetching: false, options: dropdown, });
+          }, e => {
+            self.setState({ isFetching: false, options: [] })
+          });
+      });
     }
   }
 
@@ -148,7 +173,7 @@ class RemoteDropdown extends Component {
         value={value}
         placeholder={this.props.placeholder || ''}
         onChange={this.props.onChange ? this.handleChange(this.props.onChange) : this.handleChange()}
-        onSearchChange={this.props.useRemoteSearch ? this.handleSearchChange : (e, { searchQuery, }) => { this.setState({ searchQuery }) }}
+        onSearchChange={this.handleSearchChange}
         disabled={isFetching}
         loading={isFetching}
       />
