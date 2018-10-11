@@ -624,13 +624,15 @@ const user = {
               method: sessionSettings.method || 'POST',
               headers: Object.assign({
                 'Accept': 'application/json',
-                // 'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
               }, sessionSettings.options.headers, {
                   username: loginData.username,
+                  organization: loginData.name,
                   token: cachedResponseData.token
                 }),
               body: JSON.stringify({
                 username: loginData.username,
+                organization: loginData.name,
                 token: cachedResponseData.token
               }),
             })

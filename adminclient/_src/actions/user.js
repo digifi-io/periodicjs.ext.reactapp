@@ -676,14 +676,16 @@ var user = {
           return fetch(sessionSettings.url, {
             method: sessionSettings.method || 'POST',
             headers: (0, _assign2.default)({
-              'Accept': 'application/json'
-              // 'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
             }, sessionSettings.options.headers, {
               username: loginData.username,
+              organization: loginData.name,
               token: cachedResponseData.token
             }),
             body: (0, _stringify2.default)({
               username: loginData.username,
+              organization: loginData.name,
               token: cachedResponseData.token
             })
           });
