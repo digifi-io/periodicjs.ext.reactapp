@@ -985,13 +985,13 @@ class ResponsiveTable extends Component {
             return (
               <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps}>
                 {
-                  header.buttons.map(button => {
+                  header.buttons.map((button, idx) => {
                     return this.getRenderedComponent(Object.assign({
                       component: 'ResponsiveButton',
                       props: Object.assign({
                         onclickPropObject: row,
                         buttonProps: {},
-                      }, button.passProps),
+                      }, button.passProps, (this.props.useRowProps && row.rowProps && row.rowProps.buttons && row.rowProps.buttons[idx]) ? row.rowProps.buttons[idx]: {}),
                       children: this.formatValue({
                         value: (typeof row[ header.sortid ] !== 'undefined')
                           ? row[ header.sortid ]
