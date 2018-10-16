@@ -1052,9 +1052,10 @@ class ResponsiveTable extends Component {
                 <Progress percent={row.progressBar.progress} indicating={indicating} progress={progress} success={success} warning={warning} error={error} disabled={disabled} style={style}>{label}</Progress>
               </rb.Td>
             );
-          }else {
+          } else {
+            let rowProps = (this.props.useRowProps && row.rowProps) ? row.rowProps : {};
             return (
-              <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps} onClick={() => {
+              <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps} {...rowProps} onClick={() => {
                 if (this.props.selectEntireRow) {
                   this.selectRow({
                     selectedRowData: row,
