@@ -1204,13 +1204,13 @@ var ResponsiveTable = function (_Component) {
               return _react2.default.createElement(
                 rb.Td,
                 (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
-                header.buttons.map(function (button) {
+                header.buttons.map(function (button, idx) {
                   return _this8.getRenderedComponent((0, _assign2.default)({
                     component: 'ResponsiveButton',
                     props: (0, _assign2.default)({
                       onclickPropObject: row,
                       buttonProps: {}
-                    }, button.passProps),
+                    }, button.passProps, _this8.props.useRowProps && row.rowProps && row.rowProps.buttons && row.rowProps.buttons[idx] ? row.rowProps.buttons[idx] : {}),
                     children: _this8.formatValue({
                       value: typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value,
                       row: row,
@@ -1255,9 +1255,10 @@ var ResponsiveTable = function (_Component) {
                 )
               );
             } else {
+              var rowProps = _this8.props.useRowProps && row.rowProps ? row.rowProps : {};
               return _react2.default.createElement(
                 rb.Td,
-                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, { onClick: function onClick() {
+                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, rowProps, { onClick: function onClick() {
                     if (_this8.props.selectEntireRow) {
                       _this8.selectRow({
                         selectedRowData: row,
