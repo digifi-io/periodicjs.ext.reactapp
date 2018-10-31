@@ -180,7 +180,9 @@ class TableWrapper extends Component {
     let tableheaders = headers.map((header, idx) => (
       <Column content={idx}
         cellRenderer={this.cellRenderer}
-        label={header.label}
+        label = {(!Array.isArray(header.label) && typeof header.label === 'object') 
+          ? this.getRenderedComponent(header.label) 
+          : header.label}
         key={idx}
         dataKey={header.sortid}
         width={width}
