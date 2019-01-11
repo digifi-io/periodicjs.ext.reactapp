@@ -292,7 +292,7 @@ var TableWrapper = function (_Component2) {
       var tableheaders = headers.map(function (header, idx) {
         return _react2.default.createElement(_reactVirtualized.Column, { content: idx,
           cellRenderer: _this5.cellRenderer,
-          label: header.label,
+          label: !Array.isArray(header.label) && (0, _typeof3.default)(header.label) === 'object' ? _this5.getRenderedComponent(header.label) : header.label,
           key: idx,
           dataKey: header.sortid,
           width: width,
