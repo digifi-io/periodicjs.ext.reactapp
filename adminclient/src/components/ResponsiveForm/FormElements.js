@@ -1210,7 +1210,6 @@ export function getSliderInput(options) {
   // const Handle = (
   // );
   let hasError = getErrorStatus(this.state, formElement.name);
-  let hasValue = (formElement.name && this.state[ formElement.name ]) ? true : false;
   let wrapperProps = Object.assign({
     style: {
       overflow: 'auto',
