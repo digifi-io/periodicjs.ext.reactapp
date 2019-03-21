@@ -1210,6 +1210,7 @@ export function getSliderInput(options) {
   // const Handle = (
   // );
   let hasError = getErrorStatus(this.state, formElement.name);
+  let hasValue = (formElement.name && this.state[ formElement.name ]) ? true : false;
   let wrapperProps = Object.assign({
     style: {
       overflow: 'auto',
@@ -1252,13 +1253,19 @@ export function getSliderInput(options) {
       customCallbackfunction(val);
     };
   }
-
+  const initValue = formElement.name && this.state[ formElement.name ] !== undefined ?
+    this.state[ formElement.name ]
+    : formElement.value !== undefined? formElement.value 
+      : formElement.passProps && formElement.passProps.defaultValue ? formElement.passProps.defaultValue
+        : formElement.passProps && formElement.passProps.min ? formElement.passProps.min 
+          : null;
 
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}
     <div {...wrapperProps}>
       <Slider {...passableProps}
         onChange={onValueChange}
+        value={initValue}
       >
         {(formElement.leftLabel)
           ? (<span className="__reactapp_slider__label __reactapp_slider__label_left">{formElement.leftLabel}</span>)
