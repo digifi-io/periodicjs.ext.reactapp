@@ -148,7 +148,8 @@ class ModalWrapper extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this._isEqual(nextProps.notification.modals, this.props.notification.modals)) {
+    const prevProps = this.props;
+    if (!prevProps.ui.sidebar_is_open && this._isEqual(nextProps.notification.modals, this.props.notification.modals)) {
       return false;
     } else {
       return true;
