@@ -1448,6 +1448,7 @@ function getSliderInput(options) {
       customCallbackfunction(val);
     };
   }
+  var initValue = formElement.name && this.state[formElement.name] !== undefined ? this.state[formElement.name] : formElement.value !== undefined ? formElement.value : formElement.passProps && formElement.passProps.defaultValue ? formElement.passProps.defaultValue : formElement.passProps && formElement.passProps.min ? formElement.passProps.min : null;
 
   return _react2.default.createElement(
     _FormItem2.default,
@@ -1459,7 +1460,8 @@ function getSliderInput(options) {
       _react2.default.createElement(
         _rcSlider2.default,
         (0, _extends3.default)({}, passableProps, {
-          onChange: onValueChange
+          onChange: onValueChange,
+          value: initValue
         }),
         formElement.leftLabel ? _react2.default.createElement(
           'span',
