@@ -38,7 +38,8 @@ const getItemStyle = (isDragging, draggableStyle, styleOptions) => {
         padding: grid * 2,
         margin: `0 0 ${grid}px 0`,
         background: isDragging ? styleOptions.dragBackground : styleOptions.nonDragBackground,
-    }, styleOptions, draggableStyle)
+        ...draggableStyle,
+    }, styleOptions)
 };
 
 const getListStyle = (isDraggingOver, styleOptions) => {
@@ -57,6 +58,8 @@ class SwimLane extends Component {
             droppableList: this.props.droppableList,
         };
         this.getRenderedComponent = getRenderedComponent.bind(this);
+        this.getList = this.getList.bind(this);
+        this.onDragEnd = this.onDragEnd.bind(this);
     }
 
     getList(id) {
