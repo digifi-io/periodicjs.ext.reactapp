@@ -38,8 +38,7 @@ const getItemStyle = (isDragging, draggableStyle, styleOptions) => {
         padding: grid * 2,
         margin: `0 0 ${grid}px 0`,
         background: isDragging ? styleOptions.dragBackground : styleOptions.nonDragBackground,
-        ...draggableStyle,
-    }, styleOptions)
+    }, styleOptions, draggableStyle)
 };
 
 const getListStyle = (isDraggingOver, styleOptions) => {
