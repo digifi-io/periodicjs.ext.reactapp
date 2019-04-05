@@ -37,13 +37,8 @@ const getItemStyle = (isDragging, draggableStyle, styleOptions) => {
         userSelect: 'none',
         padding: grid * 2,
         margin: `0 0 ${grid}px 0`,
-
-        // change background colour if dragging
         background: isDragging ? styleOptions.dragBackground : styleOptions.nonDragBackground,
-
-        // styles we need to apply on draggables
-        ...draggableStyle
-    }, styleOptions)
+    }, styleOptions, draggableStyle)
 };
 
 const getListStyle = (isDraggingOver, styleOptions) => {
@@ -64,9 +59,11 @@ class SwimLane extends Component {
         this.getRenderedComponent = getRenderedComponent.bind(this);
     }
 
-    getList = id => this.state.droppableList[id].items;
+    getList(id) {
+        return this.state.droppableList[id].items;
+    } 
 
-    onDragEnd = result => {
+    onDragEnd(result) {
         const { source, destination } = result;
 
         // dropped outside the list
