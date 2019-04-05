@@ -53,6 +53,7 @@
     "rc-tree": "^1.7.4",
     "re-bulma": "^0.4.3",
     "react": "15.3.2",
+    "react-beautiful-dnd": "^10.1.1",
     "react-cropper": "^1.0.1",
     "react-dates": "^16.4.0",
     "react-dom": "15.3.2",
@@ -158,5 +159,5 @@
     "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
     "test": "mocha -R spec --recursive"
   },
-  "version": "12.1.26"
+  "version": "12.1.27"
 }

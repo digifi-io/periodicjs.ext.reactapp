@@ -25,6 +25,7 @@ import CodeMirror from '../RACodeMirror';
 import PreviewEditor from '../PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 import SingleDatePickerWrapper from '../SingleDatePickerWrapper';
+import SwimLane from '../SwimLane';
 import DateRangePickerWrapper from '../DateRangePickerWrapper';
 // import Editor from '../RAEditor';
 import ResponsiveTable from '../ResponsiveTable';
@@ -61,7 +62,7 @@ export function getFunctionFromProps(options) {
 }
 
 export let AppLayoutMap = Object.assign({}, { victory,
-  recharts, ResponsiveForm, ResponsiveNavBar, ResponsiveFormContainer, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, DNDTable, SingleDatePickerWrapper, DateRangePickerWrapper, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, ResponsiveSteps, RemoteDropdown,/* Editor,*/
+  recharts, ResponsiveForm, ResponsiveNavBar, ResponsiveFormContainer, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, DNDTable, SingleDatePickerWrapper, SwimLane, DateRangePickerWrapper, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, ResponsiveSteps, RemoteDropdown,/* Editor,*/
   ResponsiveLink,
   ResponsiveButton,
   ResponsiveCropper,
