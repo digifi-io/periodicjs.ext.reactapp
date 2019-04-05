@@ -57,6 +57,8 @@ class SwimLane extends Component {
             droppableList: this.props.droppableList,
         };
         this.getRenderedComponent = getRenderedComponent.bind(this);
+        this.getList = this.getList.bind(this);
+        this.onDragEnd = this.onDragEnd.bind(this);
     }
 
     getList(id) {

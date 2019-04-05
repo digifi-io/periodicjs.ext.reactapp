@@ -127,6 +127,8 @@ var SwimLane = function (_Component) {
             droppableList: _this.props.droppableList
         };
         _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
+        _this.getList = _this.getList.bind(_this);
+        _this.onDragEnd = _this.onDragEnd.bind(_this);
         return _this;
     }
 
