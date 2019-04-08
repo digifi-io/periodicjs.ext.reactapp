@@ -3,12 +3,10 @@ import { browserHistory, hashHistory, createMemoryHistory, } from 'react-router'
 import { syncHistoryWithStore, } from 'react-router-redux';
 
 
-export * from {
-  historySettings: {
-    browserHistory,
-    hashHistory,
-    createMemoryHistory,
-  }
+export const historySettings = {
+  browserHistory,
+  hashHistory,
+  createMemoryHistory,
 };
 
 export function getHistory (historySettings, AppConfigSettings, store) {

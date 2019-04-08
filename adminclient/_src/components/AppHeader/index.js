@@ -36,6 +36,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _reBulma = require('re-bulma');
 
 var _reactRouter = require('react-router');
@@ -155,13 +159,15 @@ var AppHeader = function (_Component) {
         }
         var userrole = _this2.props.user && _this2.props.user.userdata && _this2.props.user.userdata.userroles[0] && _this2.props.user.userdata.userroles[0].name ? _this2.props.user.userdata.userroles[0].name : 'user';
         var location = userrole && link[userrole] ? link[userrole] : link.location;
+        var locationFunc = location ? _this2.props.reduxRouter.push(location) : link.logoutUser ? _this2.props.logoutUser() : null;
+        var onClickFunc = function onClickFunc() {
+          return locationFunc;
+        };
         return _react2.default.createElement(_semanticUiReact.Dropdown.Item, {
           style: { display: display },
           children: link.reroute ? getRerouteLink(link) : null,
           text: link.reroute ? null : link.text,
-          onClick: function onClick() {
-            location ? _this2.props.reduxRouter.push(location) : link.logoutUser ? _this2.props.logoutUser() : null;
-          },
+          onClick: onClickFunc,
           className: link.className ? link.className : ''
         });
       }) : null;

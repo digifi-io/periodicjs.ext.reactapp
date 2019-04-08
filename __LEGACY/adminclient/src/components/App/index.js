@@ -15,7 +15,7 @@ import utilities from '../../util';
 import AppConfigSettings from '../../content/config/settings.json';
 // import AppLoginSettings from '../../content/config/login.json';
 import { getRoutes, } from '../../routers/routes';
-import CONSTANTS from '../../constants/index';
+import CCONSTANTS from '../../constants/index';
 // import logo from './logo.svg';
 // import './App.css';
 import pluralize from 'pluralize';
@@ -89,12 +89,12 @@ const reduxActions = {
   },
   logoutUser: () => store.dispatch(actions.user.logoutUser()),
   setDynamicData: (prop, val) => store.dispatch(actions.dynamic.setDynamicData(prop, val)),
-  fetchLoginComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.LOGIN_COMPONENT), 'components.login')),
-  fetchMainComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.MAIN_COMPONENT), 'components.main')),
-  fetchErrorComponents: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.ERROR_COMPONENTS), 'components.error')),
-  setLoginComponent: () => store.dispatch(actions.ui.handleFetchedComponent(CONSTANTS.ui.LOGIN_COMPONENT)),
-  setMainComponent: () => store.dispatch(actions.ui.handleFetchedComponent(CONSTANTS.ui.MAIN_COMPONENT)),
-  setErrorComponents: () => store.dispatch(actions.ui.handleFetchedComponent(CONSTANTS.ui.ERROR_COMPONENTS)),
+  fetchLoginComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CCONSTANTS.ui.LOGIN_COMPONENT), 'components.login')),
+  fetchMainComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CCONSTANTS.ui.MAIN_COMPONENT), 'components.main')),
+  fetchErrorComponents: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CCONSTANTS.ui.ERROR_COMPONENTS), 'components.error')),
+  setLoginComponent: () => store.dispatch(actions.ui.handleFetchedComponent(CCONSTANTS.ui.LOGIN_COMPONENT)),
+  setMainComponent: () => store.dispatch(actions.ui.handleFetchedComponent(CCONSTANTS.ui.MAIN_COMPONENT)),
+  setErrorComponents: () => store.dispatch(actions.ui.handleFetchedComponent(CCONSTANTS.ui.ERROR_COMPONENTS)),
   setConfigurationFromCache: () => store.dispatch(utilities.getCacheConfiguration(Object.assign({}, actions, {
     setLoginComponent: reduxActions.setLoginComponent,
     setMainComponent: reduxActions.setMainComponent,

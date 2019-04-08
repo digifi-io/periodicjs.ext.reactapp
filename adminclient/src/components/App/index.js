@@ -9,7 +9,7 @@ import MainApp from './Main';
 import utilities from '../../util';
 import AppConfigSettings from '@digifi/periodicjs.ext.reactapp/adminclient/src/content/config/settings.js';
 import { getRoutes, } from '../../routers/routes';
-import { CONSTANTS } from '../../constants/index';
+import CONSTANTS from '../../constants/index';
 import pluralize from 'pluralize';
 import numeral from 'numeral';
 import capitalize from 'capitalize';

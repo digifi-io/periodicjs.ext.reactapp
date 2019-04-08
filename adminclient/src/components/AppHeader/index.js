@@ -1,4 +1,5 @@
-import React, { Component, } from 'react'; 
+import React, { Component, } from 'react';
+import PropTypes from 'prop-types';
 import { Nav, NavGroup, NavItem, Button, Container, Input, Hero, HeroHead, Icon } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
 import { Link, } from 'react-router';
 // import ResponsiveLink from '../ResponsiveLink';;;
@@ -79,18 +80,20 @@ class AppHeader extends Component {
         }
         let userrole = (this.props.user && this.props.user.userdata && this.props.user.userdata.userroles[ 0 ] && this.props.user.userdata.userroles[ 0 ].name) ? this.props.user.userdata.userroles[ 0 ].name : 'user';
         let location = (userrole && link[ userrole ]) ? link[ userrole ] : link.location;
+        const locationFunc = (location)
+          ? this.props.reduxRouter.push(location)
+          : (link.logoutUser)
+            ? this.props.logoutUser()
+            : null;
+        let onClickFunc = () => {
+          return locationFunc;
+        };
         return (
           <Dropdown.Item
           style={{ display }}
           children={(link.reroute) ? getRerouteLink(link) : null}
           text={(link.reroute) ? null : link.text}
-          onClick={() => {
-              (location)
-                ? this.props.reduxRouter.push(location)
-                : (link.logoutUser)
-                  ? this.props.logoutUser()
-                  : null
-            }}
+          onClick={onClickFunc}
             className={(link.className) ? link.className : ''}
           />
         )

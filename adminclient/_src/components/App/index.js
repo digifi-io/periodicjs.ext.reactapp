@@ -56,6 +56,10 @@ var _util = require('../../util');
 
 var _util2 = _interopRequireDefault(_util);
 
+var _settings = require('@digifi/periodicjs.ext.reactapp/adminclient/src/content/config/settings.js');
+
+var _settings2 = _interopRequireDefault(_settings);
+
 var _routes = require('../../routers/routes');
 
 var _index = require('../../constants/index');
@@ -80,108 +84,7 @@ var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import constants from '../../constants';
-
-// import combinedReducers from '../../reducers';
-
-// import { Notification } from 're-bulma';
-// import { Nav, NavGroup, NavItem, Button, Icon, NavToggle, } from 're-bulma';
-// import { createStore, } from 'redux';
-var AppConfigSettings = {
-  name: 'Admin Panel',
-  basename: 'http://localhost:8786',
-  adminPath: '/r-admin',
-  routerHistory: 'browserHistory',
-  hot_reload: false,
-  disableLogger: false,
-  includeCoreData: {
-    manifest: true,
-    navigation: true
-  },
-  allHistoryOptions: 'browserHistory|hashHistory|createMemoryHistory',
-  application: {
-    environment: 'development',
-    use_offline_cache: false
-  },
-  ui: {
-    initialization: {
-      show_header: false,
-      show_footer: false,
-      show_sidebar_overlay: true,
-      refresh_manifests: true,
-      refresh_navigation: true,
-      refresh_components: true
-    },
-    notifications: {
-      error_timeout: 10000,
-      timed_timeout: 10000,
-      hide_login_notification: false,
-      supressResourceErrors: false
-    },
-    fixedSidebar: true,
-    sidebarBG: '#ffffff',
-    header: {
-      isBold: true,
-      color: 'isBlack',
-      buttonColor: 'isWhite',
-      useGlobalSearch: false,
-      useHeaderLogout: false,
-      productHeader: {
-        layout: false,
-        productLinks: []
-      },
-      customButton: {},
-      profileImageStyle: {},
-      navLabelStyle: {},
-      containerStyle: {},
-      userNameStyle: {}
-    },
-    footer: {
-      navStyle: {}
-    },
-    sidebar: {
-      containerStyle: {},
-      use_floating_nav: false
-    }
-  },
-  auth: {
-    logged_in_homepage: '/r-admin/dashboard',
-    logged_out_path: '/'
-  },
-  login: {
-    url: '/api/jwt/token',
-    devurl: '/api/jwt/token',
-    options: {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        clientid: 'e2852fd35ef3c16ef206d4e34252e0e5',
-        entitytype: 'account'
-      }
-    }
-  },
-  userprofile: {
-    url: '/api/jwt/profile',
-    devurl: '/api/jwt/profile',
-    options: {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        clientid: 'e2852fd35ef3c16ef206d4e34252e0e5',
-        clientid_default: 'clientIDNEEDED',
-        entitytype: 'account'
-      }
-    }
-  }
-};
-// import AppLoginSettings from '../../content/config/login.json';
-
-// import logo from './logo.svg';
-// import './App.css';
-
-// import debounce from 'debounce';
-var history = (0, _history.getHistory)(_history.historySettings, AppConfigSettings, _stores2.default);
+var history = (0, _history.getHistory)(_history.historySettings, _settings2.default, _stores2.default);
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
@@ -224,7 +127,7 @@ var reduxActions = {
   }, //.dispatch(actions.user.getUserStatus()),
   redirect: function redirect(locationURL) {
     // console.debug({ locationURL, });
-    if (typeof location === 'string') {
+    if (typeof window.location === 'string') {
       window.location = locationURL;
     } else {
       window.location = locationURL.location;

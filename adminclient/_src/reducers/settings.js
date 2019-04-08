@@ -12,96 +12,12 @@ var _constants = require('../constants');
 
 var _constants2 = _interopRequireDefault(_constants);
 
+var _settings = require('../content/config/settings');
+
+var _settings2 = _interopRequireDefault(_settings);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var appDefaultSettings = {
-  name: 'Admin Panel',
-  basename: 'http://localhost:8786',
-  adminPath: '/r-admin',
-  routerHistory: 'browserHistory',
-  hot_reload: false,
-  disableLogger: false,
-  includeCoreData: {
-    manifest: true,
-    navigation: true
-  },
-  allHistoryOptions: 'browserHistory|hashHistory|createMemoryHistory',
-  application: {
-    environment: 'development',
-    use_offline_cache: false
-  },
-  ui: {
-    initialization: {
-      show_header: false,
-      show_footer: false,
-      show_sidebar_overlay: true,
-      refresh_manifests: true,
-      refresh_navigation: true,
-      refresh_components: true
-    },
-    notifications: {
-      error_timeout: 10000,
-      timed_timeout: 10000,
-      hide_login_notification: false,
-      supressResourceErrors: false
-    },
-    fixedSidebar: true,
-    sidebarBG: '#ffffff',
-    header: {
-      isBold: true,
-      color: 'isBlack',
-      buttonColor: 'isWhite',
-      useGlobalSearch: false,
-      useHeaderLogout: false,
-      productHeader: {
-        layout: false,
-        productLinks: []
-      },
-      customButton: {},
-      profileImageStyle: {},
-      navLabelStyle: {},
-      containerStyle: {},
-      userNameStyle: {}
-    },
-    footer: {
-      navStyle: {}
-    },
-    sidebar: {
-      containerStyle: {},
-      use_floating_nav: false
-    }
-  },
-  auth: {
-    logged_in_homepage: '/r-admin/dashboard',
-    logged_out_path: '/'
-  },
-  login: {
-    url: '/api/jwt/token',
-    devurl: '/api/jwt/token',
-    options: {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        clientid: 'e2852fd35ef3c16ef206d4e34252e0e5',
-        entitytype: 'account'
-      }
-    }
-  },
-  userprofile: {
-    url: '/api/jwt/profile',
-    devurl: '/api/jwt/profile',
-    options: {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        clientid: 'e2852fd35ef3c16ef206d4e34252e0e5',
-        clientid_default: 'clientIDNEEDED',
-        entitytype: 'account'
-      }
-    }
-  }
-};
 var defaultUserNavigation = {
   wrapper: {
     style: {}
@@ -147,7 +63,6 @@ var packageJSON = {
   devDependencies: {
     'animate.css': '^3.5.2',
     capitalize: '^1.0.0',
-    eslint: '^3.14.1',
     'font-awesome': '^4.7.0',
     'google-map-react': '^0.24.0',
     moment: '^2.17.1',
@@ -160,7 +75,7 @@ var packageJSON = {
     'react-redux': '^4.4.6',
     'react-router': '^3.0.0',
     'react-router-redux': '^4.0.7',
-    'react-scripts': '0.8.4',
+    'react-scripts': '2.0.3',
     recharts: '^1.0.0-beta.1',
     redux: '^3.6.0',
     'redux-logger': '^2.7.4',
@@ -174,8 +89,7 @@ var packageJSON = {
     'babel-polyfill': '^6.23.0',
     debounce: '^1.0.0',
     'draft-js': '^0.10.0',
-    eslint: '^3.14.1',
-    'eslint-plugin-react': '^6.9.0',
+    'eslint-plugin-react': '^7.12.4',
     'file-saver': '^1.3.3',
     flat: '^2.0.1',
     'json-2-csv': '^2.1.0',
@@ -214,12 +128,13 @@ var packageJSON = {
     eject: 'react-scripts eject'
   },
   proxy: 'https://localhost:8787',
-  homepage: '/extensions/periodicjs.ext.reactapp'
+  homepage: '/extensions/periodicjs.ext.reactapp',
+  browserslist: ['>0.2%', 'not dead', 'not ie <= 11', 'not op_mini all']
 };
 
 var windowState = typeof window !== 'undefined' && window.__padmin ? window.__padmin : {};
 
-var initialState = (0, _assign2.default)({ version: packageJSON.version }, appDefaultSettings, windowState);
+var initialState = (0, _assign2.default)({ version: packageJSON.version }, _settings2.default, windowState);
 initialState.user = (0, _assign2.default)({
   navigation: defaultUserNavigation
 }, initialState.user);
