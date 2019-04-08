@@ -248,7 +248,8 @@ var ModalWrapper = function (_Component3) {
   }, {
     key: 'shouldComponentUpdate',
     value: function shouldComponentUpdate(nextProps, nextState) {
-      if (this._isEqual(nextProps.notification.modals, this.props.notification.modals)) {
+      var prevProps = this.props;
+      if (!prevProps.ui.sidebar_is_open && this._isEqual(nextProps.notification.modals, this.props.notification.modals)) {
         return false;
       } else {
         return true;
