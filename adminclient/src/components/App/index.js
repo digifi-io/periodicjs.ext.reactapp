@@ -1,28 +1,19 @@
 import React, { Component, } from 'react';
-// import { Notification } from 're-bulma';
-// import { Nav, NavGroup, NavItem, Button, Icon, NavToggle, } from 're-bulma';
-// import { createStore, } from 'redux';
 import { applyRouterMiddleware, Router, /*, Route, IndexRoute,*/ } from 'react-router';
 import { connect, Provider, } from 'react-redux';
 import { push, replace, go, goForward, goBack, } from 'react-router-redux';
-import { historySettings, getHistory, } from '../../routers/history';
-// import combinedReducers from '../../reducers';
+import { getHistory, historySettings } from '../../routers/history';
 import store from '../../stores';
 import actions from '../../actions';
-// import constants from '../../constants';
 import MainApp from './Main';
 import utilities from '../../util';
-import AppConfigSettings from '../../content/config/settings.json';
-// import AppLoginSettings from '../../content/config/login.json';
+import AppConfigSettings from '@digifi/periodicjs.ext.reactapp/adminclient/src/content/config/settings.js';
 import { getRoutes, } from '../../routers/routes';
-import CONSTANTS from '../../constants/index';
-// import logo from './logo.svg';
-// import './App.css';
+import { CONSTANTS } from '../../constants/index';
 import pluralize from 'pluralize';
 import numeral from 'numeral';
 import capitalize from 'capitalize';
 import moment from 'moment';
-// import debounce from 'debounce';
 const history = getHistory(historySettings, AppConfigSettings, store);
 
 const mapStateToProps = (state) => {
@@ -60,7 +51,7 @@ const reduxActions = {
   }, //.dispatch(actions.user.getUserStatus()),
   redirect: (locationURL) => {
     // console.debug({ locationURL, });
-    if (typeof location === 'string') {
+    if (typeof window.location === 'string') {
       window.location = locationURL;
     } else {
       window.location = locationURL.location;

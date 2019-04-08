@@ -1,5 +1,5 @@
 import constants from '../constants';
-import appDefaultSettings from '../content/config/settings.json';
+import appDefaultSettings from '../content/config/settings';
 import defaultUserNavigation from '../content/config/navigation.json';
 import packageJSON from '../../package.json';
 let windowState = (typeof window !=='undefined' && window.__padmin) ? window.__padmin : {};

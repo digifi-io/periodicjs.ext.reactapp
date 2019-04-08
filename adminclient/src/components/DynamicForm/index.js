@@ -2,7 +2,33 @@ import React, { Component, } from 'react';
 import { Columns, Column, Label, } from 're-bulma'; 
 import { getRenderedComponent, } from '../AppLayoutMap';
 // import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormSingleDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from '../ResponsiveForm/FormElements';
+import { getPropertyAttribute,
+  getFormDNDTable,
+  getFormDatatable,
+  getFormDatalist,
+  getFormDropdown,
+  getFormRemoteDropdown,
+  getFormMaskedInput,
+  getFormTextInputArea,
+  getFormImageCropper,
+  getFormTextArea,
+  getFormSelect,
+  getFormCheckbox,
+  getFormButton,
+  getFormSemanticCheckbox,
+  getFormSwitch,
+  getRawInput,
+  getSliderInput,
+  getHiddenInput,
+  getImage,
+  getFormLink,
+  getFormGroup,
+  getFormTabs,
+  getFormCode,
+  getFormDatePicker,
+  getFormEditor,
+  getFormSubmit,
+  getCardFooterItem, } from '../ResponsiveForm/FormElements';
 import flatten from 'flat';
 
 class DynamicForm extends Component{
@@ -27,7 +53,7 @@ class DynamicForm extends Component{
     this.getFormSubmit = getFormSubmit.bind(this);
     this.getFormDatalist = getFormDatalist.bind(this);
     this.getFormCode = getFormCode.bind(this);
-    this.getFormSingleDatePicker = getFormSingleDatePicker.bind(this);
+    // this.getFormSingleDatePicker = getFormSingleDatePicker.bind(this);
     this.getFormTextInputArea = getFormTextInputArea.bind(this);
     this.getFormTextArea = getFormTextArea.bind(this);
     this.getFormCheckbox = getFormCheckbox.bind(this);
@@ -105,7 +131,7 @@ class DynamicForm extends Component{
         } else if (formElement.type === 'code') {
           return this.getFormCode({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'singleDatePicker') {
-          return this.getFormSingleDatePicker({ formElement, i:j, formgroup, });
+          // return this.getFormSingleDatePicker({ formElement, i:j, formgroup, });
         } else if (formElement.type === 'editor') {
           return this.getFormEditor({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'link') {

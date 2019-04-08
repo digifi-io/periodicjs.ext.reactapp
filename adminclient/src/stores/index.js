@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import combinedReducers from '../reducers';
 import { routerMiddleware, } from 'react-router-redux';
 import { browserHistory, hashHistory, } from 'react-router';
-import AppConfigSettings from '../content/config/settings.json'; // import promise from 'redux-promise';
+import AppConfigSettings from '@digifi/periodicjs.ext.reactapp/adminclient/src/content/config/settings.js'; // import promise from 'redux-promise';
 import createLogger from 'redux-logger';
 const windowState = (typeof window !=='undefined' && window.__padmin) ? window.__padmin : {};
 const disableLogger = (store) => (next) => (action) => {
