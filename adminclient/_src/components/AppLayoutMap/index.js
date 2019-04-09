@@ -171,6 +171,8 @@ var _ResponsiveButton = require('../ResponsiveButton');
 
 var _ResponsiveButton2 = _interopRequireDefault(_ResponsiveButton);
 
+var _boxUiElements = require('box-ui-elements');
+
 var _ResponsiveCropper = require('../ResponsiveCropper');
 
 var _ResponsiveCropper2 = _interopRequireDefault(_ResponsiveCropper);
@@ -191,8 +193,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import Editor from '../RAEditor';
 var advancedBinding = (0, _advancedBinding.getAdvancedBinding)();
+// import Editor from '../RAEditor';
+
 var renderIndex = 0;
 
 function getFunctionFromProps(options) {
@@ -222,7 +225,8 @@ var AppLayoutMap = exports.AppLayoutMap = (0, _assign2.default)({}, { victory: v
   RCTree: _rcTree2.default,
   RCTreeNode: _rcTree.TreeNode,
   RCSwitch: _rcSwitch2.default,
-  Slick: _reactSlick2.default
+  Slick: _reactSlick2.default,
+  ContentPicker: _boxUiElements.ContentPicker
 }, _react2.default.DOM, rebulma, window.__ra_custom_elements, { Link: _reactRouter.Link });
 
 function getComponentFromMap() {
