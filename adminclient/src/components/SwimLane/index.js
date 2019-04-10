@@ -137,6 +137,7 @@ class SwimLane extends Component {
 
     render() {
         const itemStyle = this.props.itemProps && this.props.itemProps.style ? this.props.itemProps.style : {};
+        const imageStyle = this.props.imageStyle ? this.props.imageStyle : {};
         const contextStyle = this.props.contextProps && this.props.contextProps.style ? this.props.contextProps.style : {};
         const droppableListStyle = this.props.droppableListProps && this.props.droppableListProps.style ? this.props.droppableListProps.style : {};
         const droppableProps = this.props.droppableListProps ? this.props.droppableListProps : {};
@@ -164,7 +165,21 @@ class SwimLane extends Component {
                                     provided.draggableProps.style,
                                     draggableStyle
                                 )}>
-                                <ResponsiveButton {...Object.assign({}, this.props, titleButtonProps, { onclickPropObject: item } )} style={Object.assign({border:'none'}, titleTextStyle)}>{item.itemName}</ResponsiveButton>
+                                <div style={Object.assign({display:'flex', alignItems: 'center'},)}>
+                                    <span style={Object.assign({
+                                        width: '25px', 
+                                        height: '25px', 
+                                        borderRadius: '100px', 
+                                        background: '#ccc', 
+                                        flex:'none', 
+                                        backgroundSize: 'cover',
+                                        backgroundRepeat: 'no-repeat',
+                                        backgroundImage: (item.image) ? `url(${item.image})` : undefined,
+                                        marginRight: '8px'
+                                        }, imageStyle)} >
+                                    </span>
+                                    <ResponsiveButton {...Object.assign({}, this.props, titleButtonProps, { onclickPropObject: item } )} style={Object.assign({border:'none'}, titleTextStyle)}>{item.itemName}</ResponsiveButton>
+                                </div>
                                 <div style={Object.assign({display:'flex',justifyContent: 'space-between'}, itemStyle)}>
                                     <span>{item.amount}</span>
                                     <span>{item.date}</span>

@@ -74,7 +74,7 @@ function getCustomErrorLabel(hasError, state, formelement) {
 function getCustomErrorIcon(hasError, isValid, state, formelement) {
   let iconStyle = formelement.customIconStyle;
   let iconVar = (hasError)
-    ? formelement.errorIcon || 'fa fa-warning'
+    ? formelement.errorIcon || 'fa fa-exclamation'
     : (isValid)
       ? formelement.validIcon || 'fa fa-check'
       : (formelement.initialIcon)
@@ -458,7 +458,7 @@ export function getFormDatalist(options) {
       passableProps: {
         help: getFormElementHelp(hasError, this.state, formElement.name),
         color: (hasError) ? 'isDanger' : undefined,
-        icon: (hasError) ? formElement.errorIcon || 'fa fa-warning' : undefined,
+        icon: (hasError) ? formElement.errorIcon || 'fa fa-exclamation' : undefined,
         placeholder: formElement.placeholder,
         style: {
           width: '100%',
@@ -842,7 +842,7 @@ export function getFormTextInputArea(options) {
     <Input {...passableProps}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
       color={(hasError) ? 'isDanger' : undefined}
-      icon={(hasError) ? formElement.errorIcon || 'fa fa-warning' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
+      icon={(hasError) ? formElement.errorIcon || 'fa fa-exclamation' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
       hasIconRight={formElement.errorIconRight}
       onChange={onChange}
       placeholder={formElement.placeholder}
@@ -918,7 +918,7 @@ export function getFormTextArea(options) {
       <Textarea {...passableProps}
         onChange={(event) => onChange()(event)}
         help={getFormElementHelp(hasError, this.state, formElement.name)}
-        icon={(hasError) ? formElement.errorIcon || 'fa fa-warning' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
+        icon={(hasError) ? formElement.errorIcon || 'fa fa-exclamation' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
         color={(hasError) ? 'isDanger' : undefined}
         hasIconRight={formElement.errorIconRight}
         placeholder={formElement.placeholder || formElement.label}
