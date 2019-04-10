@@ -38,7 +38,7 @@ import ResponsiveBar from '../ResponsiveBar';
 import ResponsiveLink from '../ResponsiveLink';
 import ResponsiveFormContainer from '../ResponsiveFormContainer';
 import ResponsiveButton from '../ResponsiveButton';
-import { ContentPicker } from 'box-ui-elements';
+import BoxContentExplorer from '../BoxContentExplorer';
 import ResponsiveCropper from '../ResponsiveCropper';
 import ResponsiveSteps from '../ResponsiveSteps';
 import FormItem from '../FormItem';
@@ -73,7 +73,7 @@ export let AppLayoutMap = Object.assign({}, { victory,
   RCTreeNode,
   RCSwitch,
   Slick,
-  ContentPicker,
+  BoxContentExplorer,
 }, React.DOM, rebulma, window.__ra_custom_elements, { Link, });
 
 export function getComponentFromMap(options = {}) {

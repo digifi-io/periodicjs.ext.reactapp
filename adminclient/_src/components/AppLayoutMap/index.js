@@ -171,7 +171,9 @@ var _ResponsiveButton = require('../ResponsiveButton');
 
 var _ResponsiveButton2 = _interopRequireDefault(_ResponsiveButton);
 
-var _boxUiElements = require('box-ui-elements');
+var _BoxContentExplorer = require('../BoxContentExplorer');
+
+var _BoxContentExplorer2 = _interopRequireDefault(_BoxContentExplorer);
 
 var _ResponsiveCropper = require('../ResponsiveCropper');
 
@@ -226,7 +228,7 @@ var AppLayoutMap = exports.AppLayoutMap = (0, _assign2.default)({}, { victory: v
   RCTreeNode: _rcTree.TreeNode,
   RCSwitch: _rcSwitch2.default,
   Slick: _reactSlick2.default,
-  ContentPicker: _boxUiElements.ContentPicker
+  BoxContentExplorer: _BoxContentExplorer2.default
 }, _react2.default.DOM, rebulma, window.__ra_custom_elements, { Link: _reactRouter.Link });
 
 function getComponentFromMap() {
