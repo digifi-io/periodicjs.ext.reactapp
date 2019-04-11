@@ -1119,10 +1119,11 @@ class ResponsiveTable extends Component {
       };
       filterOnChange = filterOnChange.bind(this);
       let filterLayout = function (passProps, idx) {
-        let { labelProps, ...dropdownProps } = passProps;
+        let { labelProps, } = passProps;
+        let dropdownProps = Object.assign({}, passProps, { labelProps: undefined });
         return (
           <div key={idx} className="header_filter_button" >
-            <rb.Label {...labelProps}> {passProps.label} </rb.Label>
+            <rb.Label {...labelProps}> {dropdownProps.label} </rb.Label>
           <Dropdown {...dropdownProps}
               onChange={filterOnChange}
           />
