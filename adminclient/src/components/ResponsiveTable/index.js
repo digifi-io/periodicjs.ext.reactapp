@@ -402,13 +402,13 @@ class ResponsiveTable extends Component {
       if (this.props.filterSearch && this.props.simpleSearchFilter && this.props.useHeaderFilters && this.props.filterButtons) {
 
         this.props.filterButtons.forEach(headerFilter => {
-          if (this.state.headerFilters[ headerFilter.header ]) {
-              headerFilterQueries.push(`${headerFilter.header}=${this.state.headerFilters[ headerFilter.header ].join(',')}`);
+          if (this.state.headerFilters[ headerFilter.headername ]) {
+              headerFilterQueries.push(`${headerFilter.headername}=${this.state.headerFilters[ headerFilter.headername ].join(',')}`);
             }
           });
         }
         this.setState({ isLoading: true, });
-        let stateProps = this.props.getState();
+      let stateProps = this.props.getState();
         let fetchURL = `${stateProps.settings.basename}${this.props.baseUrl}&${qs.stringify({
         limit: this.state.limit || this.props.limit,
         sort: (newSortOptions.sortProp)
@@ -1112,15 +1112,15 @@ class ResponsiveTable extends Component {
     let filterButtons = [];
     if (this.props.tableSearch && this.props.simpleSearchFilter && this.props.useHeaderFilters && this.props.filterButtons) {
       let filterOnChange = function (event, newvalue) {
-        let newState = Object.assign({}, this.state.headerFilters, { [ newvalue.header ]: newvalue.value, });
+        let newState = Object.assign({}, this.state.headerFilters, { [ newvalue.headername ]: newvalue.value, });
         this.setState({ headerFilters: newState }, () => {
-          this.updateTableData({});
+          this.updateTableData({ search: this.searchInputTextVal, });
         });
       };
       filterOnChange = filterOnChange.bind(this);
       let filterLayout = function (passProps, idx) {
         let { labelProps, } = passProps;
-        let dropdownProps = Object.assign({}, passProps, { labelProps: undefined });
+        let dropdownProps = Object.assign({}, passProps, { labelProps: undefined, });
         return (
           <div key={idx} className="header_filter_button" >
             <rb.Label {...labelProps}> {dropdownProps.label} </rb.Label>
