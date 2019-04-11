@@ -542,8 +542,8 @@ var ResponsiveTable = function (_Component) {
         if (this.props.filterSearch && this.props.simpleSearchFilter && this.props.useHeaderFilters && this.props.filterButtons) {
 
           this.props.filterButtons.forEach(function (headerFilter) {
-            if (_this5.state.headerFilters[headerFilter.header]) {
-              headerFilterQueries.push(headerFilter.header + '=' + _this5.state.headerFilters[headerFilter.header].join(','));
+            if (_this5.state.headerFilters[headerFilter.headername]) {
+              headerFilterQueries.push(headerFilter.headername + '=' + _this5.state.headerFilters[headerFilter.headername].join(','));
             }
           });
         }
@@ -1312,9 +1312,9 @@ var ResponsiveTable = function (_Component) {
         var filterOnChange = function filterOnChange(event, newvalue) {
           var _this9 = this;
 
-          var newState = (0, _assign2.default)({}, this.state.headerFilters, (0, _defineProperty3.default)({}, newvalue.header, newvalue.value));
+          var newState = (0, _assign2.default)({}, this.state.headerFilters, (0, _defineProperty3.default)({}, newvalue.headername, newvalue.value));
           this.setState({ headerFilters: newState }, function () {
-            _this9.updateTableData({});
+            _this9.updateTableData({ search: _this9.searchInputTextVal });
           });
         };
         filterOnChange = filterOnChange.bind(this);
