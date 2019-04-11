@@ -67,6 +67,8 @@ class ResponsiveTable extends Component {
       newRowData: {},
       selectedRowData: {},
       selectedRowIndex: {},
+      filterButtons: [],
+      headerFilters: {},
       showFilterSearch: props.showFilterSearch,
       disableSort: props.disableSort,
       
@@ -395,6 +397,16 @@ class ResponsiveTable extends Component {
         if (options.pagenum < 1) {
           options.pagenum = 1;
         }
+      
+      let headerFilterQueries = [];
+      if (this.props.filterSearch && this.props.simpleSearchFilter && this.props.useHeaderFilters && this.props.filterButtons) {
+
+        this.props.filterButtons.forEach(headerFilter => {
+          if (this.state.headerFilters[ headerFilter.header ]) {
+              headerFilterQueries.push(`${headerFilter.header}=${this.state.headerFilters[ headerFilter.header ].join(',')}`);
+            }
+          });
+        }
         this.setState({ isLoading: true, });
         let stateProps = this.props.getState();
         let fetchURL = `${stateProps.settings.basename}${this.props.baseUrl}&${qs.stringify({
@@ -406,7 +418,8 @@ class ResponsiveTable extends Component {
           ? this.state.filterRowData.map(frd => {
             return `${frd.property}|||${frd.filter_value}|||${frd.value}`;
           })
-          : undefined,
+            : undefined,
+        headerFilters: headerFilterQueries,
         query: options.search,
         allowSpecialCharacters: true,
         pagenum: options.pagenum || 1,
@@ -1095,6 +1108,31 @@ class ResponsiveTable extends Component {
         })}
       </rb.Tr>
     ));
+
+    let filterButtons = [];
+    if (this.props.tableSearch && this.props.simpleSearchFilter && this.props.useHeaderFilters && this.props.filterButtons) {
+      let filterOnChange = function (event, newvalue) {
+        let newState = Object.assign({}, this.state.headerFilters, { [ newvalue.header ]: newvalue.value, });
+        this.setState({ headerFilters: newState }, () => {
+          this.updateTableData({});
+        });
+      };
+      filterOnChange = filterOnChange.bind(this);
+      let filterLayout = function (passProps, idx) {
+        let { labelProps, ...dropdownProps } = passProps;
+        return (
+          <div key={idx} className="header_filter_button" >
+            <rb.Label {...labelProps}> {passProps.label} </rb.Label>
+          <Dropdown {...dropdownProps}
+              onChange={filterOnChange}
+          />
+          </div>
+        );
+      };
+      filterButtons = this.props.filterButtons.map(filterProps => filterLayout(filterProps))
+    }
+
+
     return (
       <rb.Container {...this.props.containerProps}>
         
@@ -1134,7 +1172,19 @@ class ResponsiveTable extends Component {
                 
               />
             )
-            : null }
+            : null}
+        
+
+
+
+
+        {
+          (this.props.useHeaderFilters && this.props.filterButtons && this.props.filterButtons.length) ? <div className="header_filter_button_group">{filterButtons}</div> : undefined
+        }
+
+
+
+
         {(this.state.showFilterSearch)
           ? <div className="__ra_rt_asf" {...this.props.searchFilterContainerProps}>
             <rb.Message header="Advanced Search Filters" > 
