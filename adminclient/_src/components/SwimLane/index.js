@@ -208,6 +208,7 @@ var SwimLane = function (_Component) {
             var _this2 = this;
 
             var itemStyle = this.props.itemProps && this.props.itemProps.style ? this.props.itemProps.style : {};
+            var imageStyle = this.props.imageStyle ? this.props.imageStyle : {};
             var contextStyle = this.props.contextProps && this.props.contextProps.style ? this.props.contextProps.style : {};
             var droppableListStyle = this.props.droppableListProps && this.props.droppableListProps.style ? this.props.droppableListProps.style : {};
             var droppableProps = this.props.droppableListProps ? this.props.droppableListProps : {};
@@ -244,9 +245,24 @@ var SwimLane = function (_Component) {
                                                 }, provided.draggableProps, provided.dragHandleProps, {
                                                     style: getItemStyle(snapshot.isDragging, provided.draggableProps.style, draggableStyle) }),
                                                 _react2.default.createElement(
-                                                    _ResponsiveButton2.default,
-                                                    (0, _extends3.default)({}, (0, _assign2.default)({}, _this2.props, titleButtonProps, { onclickPropObject: item }), { style: (0, _assign2.default)({ border: 'none' }, titleTextStyle) }),
-                                                    item.itemName
+                                                    'div',
+                                                    { style: (0, _assign2.default)({ display: 'flex', alignItems: 'center' }) },
+                                                    _react2.default.createElement('span', { style: (0, _assign2.default)({
+                                                            width: '25px',
+                                                            height: '25px',
+                                                            borderRadius: '100px',
+                                                            background: '#ccc',
+                                                            flex: 'none',
+                                                            backgroundSize: 'cover',
+                                                            backgroundRepeat: 'no-repeat',
+                                                            backgroundImage: item.image ? 'url(' + item.image + ')' : undefined,
+                                                            marginRight: '8px'
+                                                        }, imageStyle) }),
+                                                    _react2.default.createElement(
+                                                        _ResponsiveButton2.default,
+                                                        (0, _extends3.default)({}, (0, _assign2.default)({}, _this2.props, titleButtonProps, { onclickPropObject: item }), { style: (0, _assign2.default)({ border: 'none' }, titleTextStyle) }),
+                                                        item.itemName
+                                                    )
                                                 ),
                                                 _react2.default.createElement(
                                                     'div',
