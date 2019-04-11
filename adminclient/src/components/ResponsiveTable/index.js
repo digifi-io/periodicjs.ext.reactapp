@@ -1173,18 +1173,9 @@ class ResponsiveTable extends Component {
               />
             )
             : null}
-        
-
-
-
-
         {
           (this.props.useHeaderFilters && this.props.filterButtons && this.props.filterButtons.length) ? <div className="header_filter_button_group">{filterButtons}</div> : undefined
         }
-
-
-
-
         {(this.state.showFilterSearch)
           ? <div className="__ra_rt_asf" {...this.props.searchFilterContainerProps}>
             <rb.Message header="Advanced Search Filters" > 
