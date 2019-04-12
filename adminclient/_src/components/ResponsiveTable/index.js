@@ -540,10 +540,13 @@ var ResponsiveTable = function (_Component) {
 
         var headerFilterQueries = [];
         if (this.props.filterSearch && this.props.simpleSearchFilter && this.props.useHeaderFilters && this.props.filterButtons) {
-
           this.props.filterButtons.forEach(function (headerFilter) {
-            if (_this5.state.headerFilters[headerFilter.headername]) {
-              headerFilterQueries.push(headerFilter.headername + '=' + _this5.state.headerFilters[headerFilter.headername].join(','));
+            if (_this5.state.headerFilters[headerFilter.headername] !== undefined) {
+              if (headerFilter.multiple) {
+                headerFilterQueries.push(headerFilter.headername + '=' + _this5.state.headerFilters[headerFilter.headername].join(','));
+              } else {
+                headerFilterQueries.push(headerFilter.headername + '=' + _this5.state.headerFilters[headerFilter.headername]);
+              }
             }
           });
         }
