@@ -168,6 +168,8 @@ var ResponsiveTable = function (_Component) {
       newRowData: {},
       selectedRowData: {},
       selectedRowIndex: {},
+      filterButtons: [],
+      headerFilters: {},
       showFilterSearch: props.showFilterSearch,
       disableSort: props.disableSort
 
@@ -535,6 +537,19 @@ var ResponsiveTable = function (_Component) {
         if (options.pagenum < 1) {
           options.pagenum = 1;
         }
+
+        var headerFilterQueries = [];
+        if (this.props.filterSearch && this.props.simpleSearchFilter && this.props.useHeaderFilters && this.props.filterButtons) {
+          this.props.filterButtons.forEach(function (headerFilter) {
+            if (_this5.state.headerFilters[headerFilter.headername] !== undefined) {
+              if (headerFilter.multiple) {
+                headerFilterQueries.push(headerFilter.headername + '=' + _this5.state.headerFilters[headerFilter.headername].join(','));
+              } else {
+                headerFilterQueries.push(headerFilter.headername + '=' + _this5.state.headerFilters[headerFilter.headername]);
+              }
+            }
+          });
+        }
         this.setState({ isLoading: true });
         var stateProps = this.props.getState();
         var fetchURL = '' + stateProps.settings.basename + this.props.baseUrl + '&' + _querystring2.default.stringify({
@@ -543,6 +558,7 @@ var ResponsiveTable = function (_Component) {
           fq: this.state.filterRowData && this.state.filterRowData.length ? this.state.filterRowData.map(function (frd) {
             return frd.property + '|||' + frd.filter_value + '|||' + frd.value;
           }) : undefined,
+          headerFilters: headerFilterQueries,
           query: options.search,
           allowSpecialCharacters: true,
           pagenum: options.pagenum || 1
@@ -1293,6 +1309,42 @@ var ResponsiveTable = function (_Component) {
           })
         );
       });
+
+      var filterButtons = [];
+      if (this.props.tableSearch && this.props.simpleSearchFilter && this.props.useHeaderFilters && this.props.filterButtons) {
+        var filterOnChange = function filterOnChange(event, newvalue) {
+          var _this9 = this;
+
+          var newState = (0, _assign2.default)({}, this.state.headerFilters, (0, _defineProperty3.default)({}, newvalue.headername, newvalue.value));
+          this.setState({ headerFilters: newState }, function () {
+            _this9.updateTableData({ search: _this9.searchInputTextVal });
+          });
+        };
+        filterOnChange = filterOnChange.bind(this);
+        var filterLayout = function filterLayout(passProps, idx) {
+          var labelProps = passProps.labelProps;
+
+          var dropdownProps = (0, _assign2.default)({}, passProps, { labelProps: undefined });
+          return _react2.default.createElement(
+            'div',
+            { key: idx, className: 'header_filter_button' },
+            _react2.default.createElement(
+              rb.Label,
+              labelProps,
+              ' ',
+              dropdownProps.label,
+              ' '
+            ),
+            _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({}, dropdownProps, {
+              onChange: filterOnChange
+            }))
+          );
+        };
+        filterButtons = this.props.filterButtons.map(function (filterProps) {
+          return filterLayout(filterProps);
+        });
+      }
+
       return _react2.default.createElement(
         rb.Container,
         this.props.containerProps,
@@ -1331,6 +1383,11 @@ var ResponsiveTable = function (_Component) {
           }
 
         })) : null,
+        this.props.useHeaderFilters && this.props.filterButtons && this.props.filterButtons.length ? _react2.default.createElement(
+          'div',
+          { className: 'header_filter_button_group' },
+          filterButtons
+        ) : undefined,
         this.state.showFilterSearch ? _react2.default.createElement(
           'div',
           (0, _extends3.default)({ className: '__ra_rt_asf' }, this.props.searchFilterContainerProps),
