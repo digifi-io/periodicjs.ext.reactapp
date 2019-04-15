@@ -3,6 +3,9 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ResponsiveCard from '../ResponsiveCard';
 import ResponsiveButton from '../ResponsiveButton';
 import { getRenderedComponent, } from '../AppLayoutMap';
+import numeral from 'numeral';
+import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, Image } from 're-bulma';
+// import console = require('console');
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -55,6 +58,7 @@ class SwimLane extends Component {
         super(props);
         this.state = {
             droppableList: this.props.droppableList,
+            headerInfo: {},
         };
         this.getRenderedComponent = getRenderedComponent.bind(this);
         this.getList = this.getList.bind(this);
@@ -65,6 +69,21 @@ class SwimLane extends Component {
         return this.state.droppableList[id].items;
     } 
 
+    componentWillMount() {
+        this.updateHeaderInfo();
+    }
+
+    updateHeaderInfo() {
+        let newHeaderInfo = this.state.headerInfo;
+        this.state.droppableList.map((listItem, idx) => {
+            let newAmount = listItem.items.reduce(function (a, b) {
+                return a + b.amountNum;
+            }, 0);
+            newHeaderInfo[idx] = `${listItem.items.length} for ${numeral(newAmount).format('$0,0')}`;
+        })
+        this.setState({headerInfo: newHeaderInfo});
+    }
+
     onDragEnd(result) {
         const { source, destination } = result;
 
@@ -72,42 +91,6 @@ class SwimLane extends Component {
         if (!destination) {
             return;
         }
-        // if (source.droppableId === destination.droppableId) {
-        //     if (source.index !== destination.index) {
-        //         const items = reorder(
-        //             this.getList(source.droppableId),
-        //             source.index,
-        //             destination.index
-        //         )
-        //         const droppableList = this.state.droppableList;
-        //         droppableList[source.droppableId].items = items;
-        //         let state = { droppableList };
-        //         this.setState(state, () => {
-        //             if (fetchUrl) {
-        //                 fetch(fetchUrl, Object.assign(fetchOptions, { body: JSON.stringify(droppableList) }))
-        //                     .then(res => res.json())
-        //                     .then(json => console.log(json));
-        //             }
-        //         });
-        //     }
-        // } else {
-        //     const droppableList = move(
-        //         this.state.droppableList,
-        //         this.getList(source.droppableId),
-        //         this.getList(destination.droppableId),
-        //         source,
-        //         destination
-        //     );
-        //     body[ 'sourceIdx' ] = source.droppableId;
-        //     body[ 'destinationIdx' ] = destination.droppableId;
-        //     this.setState({ droppableList }, () => {
-        //         if (fetchUrl) {
-        //             fetch(fetchUrl, Object.assign(fetchOptions, { body: JSON.stringify(droppableList) }))
-        //                 .then(res => res.json())
-        //                 .then(json => console.log(json));
-        //         }
-        //     });
-        // }
         if (source.droppableId !== destination.droppableId) {
             const token = localStorage.getItem('Admin Panel_jwt_token');
             let fetchUrl = this.props.fetchOptions && this.props.fetchOptions.url ? this.props.fetchOptions.url : '';
@@ -132,9 +115,9 @@ class SwimLane extends Component {
                     fetch(fetchUrl, Object.assign(fetchOptions, { body: JSON.stringify(body) }))
                 }
             });
+            this.updateHeaderInfo();
         }
     };
-
     render() {
         const itemStyle = this.props.itemProps && this.props.itemProps.style ? this.props.itemProps.style : {};
         const imageStyle = this.props.imageStyle ? this.props.imageStyle : {};
@@ -145,52 +128,65 @@ class SwimLane extends Component {
         const contextProps = this.props.contexProps ? this.props.contextProps : {};
         const titleTextStyle = this.props.itemTitleProps && this.props.itemTitleProps.style ? this.props.itemTitleProps.style : {};
         const titleButtonProps = this.props.itemTitleProps && this.props.itemTitleProps.buttonProps ? this.props.itemTitleProps.buttonProps : {};
-        const droppables = this.state.droppableList.map((listItem, idx) => <ResponsiveCard {...listItem.cardProps}><Droppable {...droppableProps} droppableId={`${idx}`}>
-            {(provided, snapshot) => <div
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver, droppableListStyle)}>
-                {listItem.items.map((item, index) => {
-                    return (<Draggable
-                        key={`item-${idx}-${index}`}
-                        draggableId={item.id}
-                        index={index}
-                        >
-                        {(provided, snapshot) => (
-                            <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                style={getItemStyle(
-                                    snapshot.isDragging,
-                                    provided.draggableProps.style,
-                                    draggableStyle
-                                )}>
-                                <div style={Object.assign({display:'flex', alignItems: 'center'},)}>
-                                    <span style={Object.assign({
-                                        width: '25px', 
-                                        height: '25px', 
-                                        borderRadius: '100px', 
-                                        background: '#ccc', 
-                                        flex:'none', 
-                                        backgroundSize: 'cover',
-                                        backgroundRepeat: 'no-repeat',
-                                        backgroundImage: (item.image) ? `url(${item.image})` : undefined,
-                                        marginRight: '8px'
-                                        }, imageStyle)} >
-                                    </span>
-                                    <ResponsiveButton {...Object.assign({}, this.props, titleButtonProps, { onclickPropObject: item } )} style={Object.assign({border:'none'}, titleTextStyle)}>{item.itemName}</ResponsiveButton>
+
+        const droppables = this.state.droppableList.map((listItem, idx) =>
+            <Card {...listItem.cardProps.cardProps} isFullwidth>
+            <CardHeader style={Object.assign({ cursor:'pointer', }, listItem.cardProps.headerStyle)}>
+            <CardHeaderTitle style={listItem.cardProps.headerTitleStyle}>
+                {(!listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle ==='string')? listItem.cardProps.cardTitle
+                : this.getRenderedComponent(listItem.cardProps.cardTitle)}
+                <div {...listItem.headerInfoProps}>{this.state.headerInfo[idx]}</div>
+            </CardHeaderTitle>
+            </CardHeader>
+            <CardContent {...listItem.cardProps.cardContentProps}>
+                <Droppable {...droppableProps} droppableId={`${idx}`}>
+                {(provided, snapshot) => <div
+                    ref={provided.innerRef}
+                    style={getListStyle(snapshot.isDraggingOver, droppableListStyle)}>
+                    {listItem.items.map((item, index) => {
+                        return (<Draggable
+                            key={`item-${idx}-${index}`}
+                            draggableId={item.id}
+                            index={index}
+                            >
+                            {(provided, snapshot) => (
+                                <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    style={getItemStyle(
+                                        snapshot.isDragging,
+                                        provided.draggableProps.style,
+                                        draggableStyle
+                                    )}>
+                                    <div style={Object.assign({display:'flex', alignItems: 'center'},)}>
+                                        <span style={Object.assign({
+                                            width: '25px', 
+                                            height: '25px', 
+                                            borderRadius: '100px', 
+                                            background: '#ccc', 
+                                            flex:'none', 
+                                            backgroundSize: 'cover',
+                                            backgroundRepeat: 'no-repeat',
+                                            backgroundImage: (item.image) ? `url(${item.image})` : undefined,
+                                            marginRight: '8px'
+                                            }, imageStyle)} >
+                                        </span>
+                                        <ResponsiveButton {...Object.assign({}, this.props, titleButtonProps, { onclickPropObject: item } )} style={Object.assign({border:'none'}, titleTextStyle)}>{item.itemName}</ResponsiveButton>
+                                    </div>
+                                    <div style={Object.assign({display:'flex',justifyContent: 'space-between'}, itemStyle)}>
+                                        <span>{item.amount}</span>
+                                        <span>{item.date}</span>
+                                    </div>
                                 </div>
-                                <div style={Object.assign({display:'flex',justifyContent: 'space-between'}, itemStyle)}>
-                                    <span>{item.amount}</span>
-                                    <span>{item.date}</span>
-                                </div>
-                            </div>
-                        )}
-                    </Draggable>)
-                })}
-                {provided.placeholder}
-                </div>}
-            </Droppable></ResponsiveCard>)
+                            )}
+                        </Draggable>)
+                    })}
+                    {provided.placeholder}
+                    </div>}
+                </Droppable>
+            </CardContent>
+        </Card>)
         return (
             <DragDropContext {...contextProps} onDragEnd={this.onDragEnd}>
                 <div style={Object.assign({display:'flex'}, contextStyle)}>

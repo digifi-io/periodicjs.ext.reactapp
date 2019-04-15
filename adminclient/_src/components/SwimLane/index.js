@@ -60,7 +60,15 @@ var _ResponsiveButton2 = _interopRequireDefault(_ResponsiveButton);
 
 var _AppLayoutMap = require('../AppLayoutMap');
 
+var _numeral = require('numeral');
+
+var _numeral2 = _interopRequireDefault(_numeral);
+
+var _reBulma = require('re-bulma');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import console = require('console');
 
 // a little function to help us with reordering the result
 var reorder = function reorder(list, startIndex, endIndex) {
@@ -124,7 +132,8 @@ var SwimLane = function (_Component) {
         var _this = (0, _possibleConstructorReturn3.default)(this, (SwimLane.__proto__ || (0, _getPrototypeOf2.default)(SwimLane)).call(this, props));
 
         _this.state = {
-            droppableList: _this.props.droppableList
+            droppableList: _this.props.droppableList,
+            headerInfo: {}
         };
         _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
         _this.getList = _this.getList.bind(_this);
@@ -138,6 +147,23 @@ var SwimLane = function (_Component) {
             return this.state.droppableList[id].items;
         }
     }, {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            this.updateHeaderInfo();
+        }
+    }, {
+        key: 'updateHeaderInfo',
+        value: function updateHeaderInfo() {
+            var newHeaderInfo = this.state.headerInfo;
+            this.state.droppableList.map(function (listItem, idx) {
+                var newAmount = listItem.items.reduce(function (a, b) {
+                    return a + b.amountNum;
+                }, 0);
+                newHeaderInfo[idx] = listItem.items.length + ' for ' + (0, _numeral2.default)(newAmount).format('$0,0');
+            });
+            this.setState({ headerInfo: newHeaderInfo });
+        }
+    }, {
         key: 'onDragEnd',
         value: function onDragEnd(result) {
             var source = result.source,
@@ -148,42 +174,6 @@ var SwimLane = function (_Component) {
             if (!destination) {
                 return;
             }
-            // if (source.droppableId === destination.droppableId) {
-            //     if (source.index !== destination.index) {
-            //         const items = reorder(
-            //             this.getList(source.droppableId),
-            //             source.index,
-            //             destination.index
-            //         )
-            //         const droppableList = this.state.droppableList;
-            //         droppableList[source.droppableId].items = items;
-            //         let state = { droppableList };
-            //         this.setState(state, () => {
-            //             if (fetchUrl) {
-            //                 fetch(fetchUrl, Object.assign(fetchOptions, { body: JSON.stringify(droppableList) }))
-            //                     .then(res => res.json())
-            //                     .then(json => console.log(json));
-            //             }
-            //         });
-            //     }
-            // } else {
-            //     const droppableList = move(
-            //         this.state.droppableList,
-            //         this.getList(source.droppableId),
-            //         this.getList(destination.droppableId),
-            //         source,
-            //         destination
-            //     );
-            //     body[ 'sourceIdx' ] = source.droppableId;
-            //     body[ 'destinationIdx' ] = destination.droppableId;
-            //     this.setState({ droppableList }, () => {
-            //         if (fetchUrl) {
-            //             fetch(fetchUrl, Object.assign(fetchOptions, { body: JSON.stringify(droppableList) }))
-            //                 .then(res => res.json())
-            //                 .then(json => console.log(json));
-            //         }
-            //     });
-            // }
             if (source.droppableId !== destination.droppableId) {
                 var token = localStorage.getItem('Admin Panel_jwt_token');
                 var fetchUrl = this.props.fetchOptions && this.props.fetchOptions.url ? this.props.fetchOptions.url : '';
@@ -200,6 +190,7 @@ var SwimLane = function (_Component) {
                         fetch(fetchUrl, (0, _assign2.default)(fetchOptions, { body: (0, _stringify2.default)(body) }));
                     }
                 });
+                this.updateHeaderInfo();
             }
         }
     }, {
@@ -216,75 +207,94 @@ var SwimLane = function (_Component) {
             var contextProps = this.props.contexProps ? this.props.contextProps : {};
             var titleTextStyle = this.props.itemTitleProps && this.props.itemTitleProps.style ? this.props.itemTitleProps.style : {};
             var titleButtonProps = this.props.itemTitleProps && this.props.itemTitleProps.buttonProps ? this.props.itemTitleProps.buttonProps : {};
+
             var droppables = this.state.droppableList.map(function (listItem, idx) {
                 return _react2.default.createElement(
-                    _ResponsiveCard2.default,
-                    listItem.cardProps,
+                    _reBulma.Card,
+                    (0, _extends3.default)({}, listItem.cardProps.cardProps, { isFullwidth: true }),
                     _react2.default.createElement(
-                        _reactBeautifulDnd.Droppable,
-                        (0, _extends3.default)({}, droppableProps, { droppableId: '' + idx }),
-                        function (provided, snapshot) {
-                            return _react2.default.createElement(
+                        _reBulma.CardHeader,
+                        { style: (0, _assign2.default)({ cursor: 'pointer' }, listItem.cardProps.headerStyle) },
+                        _react2.default.createElement(
+                            _reBulma.CardHeaderTitle,
+                            { style: listItem.cardProps.headerTitleStyle },
+                            !listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle === 'string' ? listItem.cardProps.cardTitle : _this2.getRenderedComponent(listItem.cardProps.cardTitle),
+                            _react2.default.createElement(
                                 'div',
-                                {
-                                    ref: provided.innerRef,
-                                    style: getListStyle(snapshot.isDraggingOver, droppableListStyle) },
-                                listItem.items.map(function (item, index) {
-                                    return _react2.default.createElement(
-                                        _reactBeautifulDnd.Draggable,
-                                        {
-                                            key: 'item-' + idx + '-' + index,
-                                            draggableId: item.id,
-                                            index: index
-                                        },
-                                        function (provided, snapshot) {
-                                            return _react2.default.createElement(
-                                                'div',
-                                                (0, _extends3.default)({
-                                                    ref: provided.innerRef
-                                                }, provided.draggableProps, provided.dragHandleProps, {
-                                                    style: getItemStyle(snapshot.isDragging, provided.draggableProps.style, draggableStyle) }),
-                                                _react2.default.createElement(
+                                listItem.headerInfoProps,
+                                _this2.state.headerInfo[idx]
+                            )
+                        )
+                    ),
+                    _react2.default.createElement(
+                        _reBulma.CardContent,
+                        listItem.cardProps.cardContentProps,
+                        _react2.default.createElement(
+                            _reactBeautifulDnd.Droppable,
+                            (0, _extends3.default)({}, droppableProps, { droppableId: '' + idx }),
+                            function (provided, snapshot) {
+                                return _react2.default.createElement(
+                                    'div',
+                                    {
+                                        ref: provided.innerRef,
+                                        style: getListStyle(snapshot.isDraggingOver, droppableListStyle) },
+                                    listItem.items.map(function (item, index) {
+                                        return _react2.default.createElement(
+                                            _reactBeautifulDnd.Draggable,
+                                            {
+                                                key: 'item-' + idx + '-' + index,
+                                                draggableId: item.id,
+                                                index: index
+                                            },
+                                            function (provided, snapshot) {
+                                                return _react2.default.createElement(
                                                     'div',
-                                                    { style: (0, _assign2.default)({ display: 'flex', alignItems: 'center' }) },
-                                                    _react2.default.createElement('span', { style: (0, _assign2.default)({
-                                                            width: '25px',
-                                                            height: '25px',
-                                                            borderRadius: '100px',
-                                                            background: '#ccc',
-                                                            flex: 'none',
-                                                            backgroundSize: 'cover',
-                                                            backgroundRepeat: 'no-repeat',
-                                                            backgroundImage: item.image ? 'url(' + item.image + ')' : undefined,
-                                                            marginRight: '8px'
-                                                        }, imageStyle) }),
+                                                    (0, _extends3.default)({
+                                                        ref: provided.innerRef
+                                                    }, provided.draggableProps, provided.dragHandleProps, {
+                                                        style: getItemStyle(snapshot.isDragging, provided.draggableProps.style, draggableStyle) }),
                                                     _react2.default.createElement(
-                                                        _ResponsiveButton2.default,
-                                                        (0, _extends3.default)({}, (0, _assign2.default)({}, _this2.props, titleButtonProps, { onclickPropObject: item }), { style: (0, _assign2.default)({ border: 'none' }, titleTextStyle) }),
-                                                        item.itemName
-                                                    )
-                                                ),
-                                                _react2.default.createElement(
-                                                    'div',
-                                                    { style: (0, _assign2.default)({ display: 'flex', justifyContent: 'space-between' }, itemStyle) },
-                                                    _react2.default.createElement(
-                                                        'span',
-                                                        null,
-                                                        item.amount
+                                                        'div',
+                                                        { style: (0, _assign2.default)({ display: 'flex', alignItems: 'center' }) },
+                                                        _react2.default.createElement('span', { style: (0, _assign2.default)({
+                                                                width: '25px',
+                                                                height: '25px',
+                                                                borderRadius: '100px',
+                                                                background: '#ccc',
+                                                                flex: 'none',
+                                                                backgroundSize: 'cover',
+                                                                backgroundRepeat: 'no-repeat',
+                                                                backgroundImage: item.image ? 'url(' + item.image + ')' : undefined,
+                                                                marginRight: '8px'
+                                                            }, imageStyle) }),
+                                                        _react2.default.createElement(
+                                                            _ResponsiveButton2.default,
+                                                            (0, _extends3.default)({}, (0, _assign2.default)({}, _this2.props, titleButtonProps, { onclickPropObject: item }), { style: (0, _assign2.default)({ border: 'none' }, titleTextStyle) }),
+                                                            item.itemName
+                                                        )
                                                     ),
                                                     _react2.default.createElement(
-                                                        'span',
-                                                        null,
-                                                        item.date
+                                                        'div',
+                                                        { style: (0, _assign2.default)({ display: 'flex', justifyContent: 'space-between' }, itemStyle) },
+                                                        _react2.default.createElement(
+                                                            'span',
+                                                            null,
+                                                            item.amount
+                                                        ),
+                                                        _react2.default.createElement(
+                                                            'span',
+                                                            null,
+                                                            item.date
+                                                        )
                                                     )
-                                                )
-                                            );
-                                        }
-                                    );
-                                }),
-                                provided.placeholder
-                            );
-                        }
+                                                );
+                                            }
+                                        );
+                                    }),
+                                    provided.placeholder
+                                );
+                            }
+                        )
                     )
                 );
             });
