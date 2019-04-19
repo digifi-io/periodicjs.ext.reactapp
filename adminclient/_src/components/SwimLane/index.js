@@ -60,11 +60,29 @@ var _ResponsiveButton2 = _interopRequireDefault(_ResponsiveButton);
 
 var _AppLayoutMap = require('../AppLayoutMap');
 
+var _semanticUiReact = require('semantic-ui-react');
+
+var _util = require('../../util');
+
+var _util2 = _interopRequireDefault(_util);
+
+var _querystring = require('querystring');
+
+var _querystring2 = _interopRequireDefault(_querystring);
+
+var _debounce = require('debounce');
+
+var _debounce2 = _interopRequireDefault(_debounce);
+
+var _reBulma = require('re-bulma');
+
+var rb = _interopRequireWildcard(_reBulma);
+
 var _numeral = require('numeral');
 
 var _numeral2 = _interopRequireDefault(_numeral);
 
-var _reBulma = require('re-bulma');
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -133,10 +151,14 @@ var SwimLane = function (_Component) {
 
         _this.state = {
             droppableList: _this.props.droppableList,
-            headerInfo: {}
+            headerInfo: {},
+            searchTextInput: '',
+            teamMembers: []
         };
         _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
         _this.getList = _this.getList.bind(_this);
+        _this.searchDebounced = (0, _debounce2.default)(_this.searchFetch, 200);
+        _this.search = _this.search.bind(_this);
         _this.onDragEnd = _this.onDragEnd.bind(_this);
         return _this;
     }
@@ -194,9 +216,40 @@ var SwimLane = function (_Component) {
             }
         }
     }, {
+        key: 'search',
+        value: function search(e) {
+            var _this2 = this;
+
+            e.preventDefault();
+            this.setState({ searchTextInput: e.target.value }, function () {
+                _this2.searchDebounced(_this2.state.searchTextInput);
+            });
+        }
+    }, {
+        key: 'searchFetch',
+        value: function searchFetch(queryString) {
+            var _this3 = this;
+
+            var searchOptions = this.props.searchOptions;
+            var token = localStorage.getItem('Admin Panel_jwt_token');
+            var fetchUrl = searchOptions && searchOptions.url ? searchOptions.url : '';
+            fetchUrl = fetchUrl + '&' + _querystring2.default.stringify({
+                headerFilters: 'team_members=' + (this.state.teamMembers.join(',') || ''),
+                query: queryString
+            });
+            var headers = (0, _assign2.default)({
+                'x-access-token': token
+            });
+            _util2.default.fetchComponent(fetchUrl, { headers: headers })().then(function (data) {
+                _this3.setState({ droppableList: data.droppableList }, function () {
+                    _this3.updateHeaderInfo();
+                });
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _this5 = this;
 
             var itemStyle = this.props.itemProps && this.props.itemProps.style ? this.props.itemProps.style : {};
             var imageStyle = this.props.imageStyle ? this.props.imageStyle : {};
@@ -207,6 +260,18 @@ var SwimLane = function (_Component) {
             var contextProps = this.props.contexProps ? this.props.contextProps : {};
             var titleTextStyle = this.props.itemTitleProps && this.props.itemTitleProps.style ? this.props.itemTitleProps.style : {};
             var titleButtonProps = this.props.itemTitleProps && this.props.itemTitleProps.buttonProps ? this.props.itemTitleProps.buttonProps : {};
+            var filterOptions = this.props.filterOptions || {};
+            var labelProps = filterOptions.labelProps ? filterOptions.labelProps : {};
+            var dropdownProps = filterOptions.dropdownProps ? filterOptions.dropdownProps : {};
+            var searchProps = this.props.searchOptions ? this.props.searchOptions.searchProps : {};
+            var filterOnChange = function filterOnChange(event, newvalue) {
+                var _this4 = this;
+
+                this.setState({ teamMembers: newvalue.value }, function () {
+                    _this4.searchFetch(_this4.state.searchTextInput);
+                });
+            };
+            filterOnChange = filterOnChange.bind(this);
 
             var droppables = this.state.droppableList.map(function (listItem, idx) {
                 return _react2.default.createElement(
@@ -218,11 +283,11 @@ var SwimLane = function (_Component) {
                         _react2.default.createElement(
                             _reBulma.CardHeaderTitle,
                             { style: listItem.cardProps.headerTitleStyle },
-                            !listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle === 'string' ? listItem.cardProps.cardTitle : _this2.getRenderedComponent(listItem.cardProps.cardTitle),
+                            !listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle === 'string' ? listItem.cardProps.cardTitle : _this5.getRenderedComponent(listItem.cardProps.cardTitle),
                             _react2.default.createElement(
                                 'div',
                                 listItem.headerInfoProps,
-                                _this2.state.headerInfo[idx]
+                                _this5.state.headerInfo[idx]
                             )
                         )
                     ),
@@ -269,7 +334,7 @@ var SwimLane = function (_Component) {
                                                             }, imageStyle) }),
                                                         _react2.default.createElement(
                                                             _ResponsiveButton2.default,
-                                                            (0, _extends3.default)({}, (0, _assign2.default)({}, _this2.props, titleButtonProps, { onclickPropObject: item }), { style: (0, _assign2.default)({ border: 'none' }, titleTextStyle) }),
+                                                            (0, _extends3.default)({}, (0, _assign2.default)({}, _this5.props, titleButtonProps, { onclickPropObject: item }), { style: (0, _assign2.default)({ border: 'none' }, titleTextStyle) }),
                                                             item.itemName
                                                         )
                                                     ),
@@ -304,7 +369,30 @@ var SwimLane = function (_Component) {
                 _react2.default.createElement(
                     'div',
                     { style: (0, _assign2.default)({ display: 'flex' }, contextStyle) },
-                    droppables
+                    _react2.default.createElement(rb.Input, (0, _extends3.default)({
+                        hasIconRight: true,
+                        icon: 'fa fa-search'
+                    }, searchProps, {
+                        onChange: function onChange(data) {
+                            return _this5.search(data);
+                        },
+                        ref: function ref(input) {
+                            _this5.searchTextInput = input;
+                        }
+                    })),
+                    droppables,
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'header_filter_button' },
+                        _react2.default.createElement(
+                            rb.Label,
+                            labelProps,
+                            dropdownProps.label
+                        ),
+                        _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({}, dropdownProps, {
+                            onChange: filterOnChange
+                        }))
+                    )
                 )
             );
         }
