@@ -3,6 +3,11 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ResponsiveCard from '../ResponsiveCard';
 import ResponsiveButton from '../ResponsiveButton';
 import { getRenderedComponent, } from '../AppLayoutMap';
+import { Dropdown } from 'semantic-ui-react';
+import utilities from '../../util';
+import qs from 'querystring';
+import debounce from 'debounce';
+import * as rb from 're-bulma';
 import numeral from 'numeral';
 import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, Image } from 're-bulma';
 // import console = require('console');
@@ -59,9 +64,13 @@ class SwimLane extends Component {
         this.state = {
             droppableList: this.props.droppableList,
             headerInfo: {},
+            searchTextInput: '',
+            teamMembers: [],
         };
         this.getRenderedComponent = getRenderedComponent.bind(this);
         this.getList = this.getList.bind(this);
+        this.searchDebounced = debounce(this.searchFetch, 200);
+        this.search = this.search.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
     }
 
@@ -118,6 +127,33 @@ class SwimLane extends Component {
             this.updateHeaderInfo();
         }
     };
+
+    search(e) {
+        e.preventDefault();
+        this.setState({ searchTextInput: e.target.value }, () => {
+            this.searchDebounced(this.state.searchTextInput);
+        });
+    }
+    
+    searchFetch(queryString) { 
+        const searchOptions = this.props.searchOptions;
+        const token = localStorage.getItem('Admin Panel_jwt_token');
+        let fetchUrl = searchOptions && searchOptions.url ? searchOptions.url : '';
+        fetchUrl = `${fetchUrl}&${qs.stringify({
+            headerFilters: 'team_members=' + (this.state.teamMembers.join(',') || ''),
+            query: queryString,
+        })}`;
+        let headers = Object.assign({
+            'x-access-token': token,
+        });
+        utilities.fetchComponent(fetchUrl, { headers, })()
+            .then(data => {
+                this.setState({ droppableList: data.droppableList }, () => {
+                    this.updateHeaderInfo();
+                })
+            })
+    }
+
     render() {
         const itemStyle = this.props.itemProps && this.props.itemProps.style ? this.props.itemProps.style : {};
         const imageStyle = this.props.imageStyle ? this.props.imageStyle : {};
@@ -128,7 +164,17 @@ class SwimLane extends Component {
         const contextProps = this.props.contexProps ? this.props.contextProps : {};
         const titleTextStyle = this.props.itemTitleProps && this.props.itemTitleProps.style ? this.props.itemTitleProps.style : {};
         const titleButtonProps = this.props.itemTitleProps && this.props.itemTitleProps.buttonProps ? this.props.itemTitleProps.buttonProps : {};
-
+        const filterOptions = this.props.filterOptions || {};
+        const labelProps = filterOptions.labelProps ? filterOptions.labelProps : {};
+        const dropdownProps = filterOptions.dropdownProps ? filterOptions.dropdownProps : {};
+        const searchProps = this.props.searchOptions ? this.props.searchOptions.searchProps : {};
+        let filterOnChange = function (event, newvalue) {
+            this.setState({ teamMembers: newvalue.value }, () => {
+                this.searchFetch(this.state.searchTextInput);
+            });
+        };
+        filterOnChange = filterOnChange.bind(this);
+        
         const droppables = this.state.droppableList.map((listItem, idx) =>
             <Card {...listItem.cardProps.cardProps} isFullwidth>
             <CardHeader style={Object.assign({ cursor:'pointer', }, listItem.cardProps.headerStyle)}>
@@ -189,8 +235,23 @@ class SwimLane extends Component {
         </Card>)
         return (
             <DragDropContext {...contextProps} onDragEnd={this.onDragEnd}>
-                <div style={Object.assign({display:'flex'}, contextStyle)}>
+                <div style={Object.assign({ display: 'flex' }, contextStyle)}>    
+                <rb.Input
+                    hasIconRight
+                    icon="fa fa-search"
+                    {...searchProps}
+                    onChange={(data) => this.search(data)}
+                    ref={(input) => {
+                        this.searchTextInput = input;
+                    }}
+                />
                 {droppables}
+                <div className="header_filter_button" >
+                    <rb.Label {...labelProps}>{dropdownProps.label}</rb.Label>
+                    <Dropdown {...dropdownProps}
+                        onChange={filterOnChange}
+                    />
+                </div>
                 </div>
             </DragDropContext>
         );
