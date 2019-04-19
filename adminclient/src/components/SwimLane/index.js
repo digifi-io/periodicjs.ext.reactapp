@@ -247,7 +247,7 @@ class SwimLane extends Component {
                 />
                 {droppables}
                 <div className="header_filter_button" >
-                    <rb.Label {...labelProps}> {dropdownProps.label} </rb.Label>
+                    <rb.Label {...labelProps}>{dropdownProps.label}</rb.Label>
                     <Dropdown {...dropdownProps}
                         onChange={filterOnChange}
                     />
