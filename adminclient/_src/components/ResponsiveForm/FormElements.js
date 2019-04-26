@@ -619,20 +619,21 @@ function getFormDropdown(options) {
   var dropdowndata = [];
   var displayField = formElement.passProps.displayField ? formElement.passProps.displayField : 'label';
   var valueField = formElement.passProps.valueField ? formElement.passProps.valueField : 'value';
+  var imageField = formElement.passProps.imageField ? formElement.passProps.imageField : 'image';
   if (this.props.__formOptions && formElement.formoptions_field && this.props.__formOptions[formElement.formoptions_field]) {
     dropdowndata = this.props.__formOptions[formElement.formoptions_field];
     dropdowndata = dropdowndata.map(function (option) {
-      return { text: option[displayField], value: option[valueField], key: option[valueField] };
+      return option[imageField] ? { text: option[displayField], value: option[valueField], key: option[valueField], image: { avatar: true, src: option[imageField] } } : { text: option[displayField], value: option[valueField], key: option[valueField] };
     });
   } else if (this.props.__formOptions && this.props.__formOptions[formElement.name]) {
     dropdowndata = this.props.__formOptions[formElement.name];
     dropdowndata = dropdowndata.map(function (option) {
-      return { text: option[displayField], value: option[valueField], key: option[valueField] };
+      return option[imageField] ? { text: option[displayField], value: option[valueField], key: option[valueField], image: { avatar: true, src: option[imageField] } } : { text: option[displayField], value: option[valueField], key: option[valueField] };
     });
   } else {
     dropdowndata = formElement.options || [];
     dropdowndata = dropdowndata.map(function (option) {
-      return { text: option[displayField], value: option[valueField], key: option[valueField] };
+      return option[imageField] ? { text: option[displayField], value: option[valueField], key: option[valueField], image: { avatar: true, src: option[imageField] } } : { text: option[displayField], value: option[valueField], key: option[valueField] };
     });
   }
   passedProps.options = dropdowndata;
