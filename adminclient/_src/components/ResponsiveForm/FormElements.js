@@ -59,6 +59,7 @@ exports.getFormLink = getFormLink;
 exports.getFormGroup = getFormGroup;
 exports.getFormTabs = getFormTabs;
 exports.getFormCode = getFormCode;
+exports.getFormColorPicker = getFormColorPicker;
 exports.getFormDatePicker = getFormDatePicker;
 exports.getFormEditor = getFormEditor;
 exports.getFormSubmit = getFormSubmit;
@@ -107,6 +108,10 @@ var _SingleDatePickerWrapper2 = _interopRequireDefault(_SingleDatePickerWrapper)
 var _DateRangePickerWrapper = require('../DateRangePickerWrapper');
 
 var _DateRangePickerWrapper2 = _interopRequireDefault(_DateRangePickerWrapper);
+
+var _ColorPicker = require('../ColorPicker');
+
+var _ColorPicker2 = _interopRequireDefault(_ColorPicker);
 
 var _createNumberMask = require('text-mask-addons/dist/createNumberMask');
 
@@ -1647,6 +1652,57 @@ function getFormCode(options) {
     formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(_RACodeMirror2.default, (0, _extends3.default)({ key: i }, CodeMirrorProps)),
     getCustomErrorLabel(hasError, this.state, formElement)
+  );
+}
+
+function getFormColorPicker(options) {
+  var formElement = options.formElement,
+      i = options.i,
+      onValueChange = options.onValueChange;
+
+  var hasError = getErrorStatus(this.state, formElement.name);
+  var isValid = getValidStatus(this.state, formElement.name);
+  var initialVal = getInitialValue(formElement, this.state) || '';
+  var customLabel = getCustomFormLabel.bind(this);
+  var ColorPickerProps = (0, _assign2.default)({
+    onChange: !onValueChange ? function (newvalue) {
+      if ((typeof newvalue === 'undefined' ? 'undefined' : (0, _typeof3.default)(newvalue)) === 'object' && newvalue.hex) {
+        newvalue = newvalue.hex;
+      }
+      newvalue = formElement.stringify ? JSON.parse(newvalue) : newvalue;
+      var updatedStateProp = {};
+      updatedStateProp[formElement.name] = newvalue;
+      if (formElement.onChangeFilter) {
+        var onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(this, (0, _assign2.default)({}, this.state, updatedStateProp), updatedStateProp);
+      }
+      this.setState(updatedStateProp);
+    }.bind(this) : onValueChange
+  }, formElement.passProps);
+
+  var passableProps = (0, _assign2.default)({
+    type: formElement.type || 'text'
+  }, formElement.passProps);
+  if (typeof initialVal !== 'string') {
+    initialVal = (0, _stringify2.default)(initialVal, null, 2);
+  }
+
+  var handleOnChange = function handleOnChange(e, second) {
+    this.setState((0, _defineProperty3.default)({}, formElement.name, e.target.value));
+  };
+  return _react2.default.createElement(
+    _FormItem2.default,
+    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
+    _react2.default.createElement(_ColorPicker2.default, (0, _extends3.default)({ key: i }, ColorPickerProps, { color: this.state[formElement.name] }, this.state)),
+    _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
+      help: getFormElementHelp(hasError, this.state, formElement.name),
+      color: hasError ? 'isDanger' : undefined,
+      icon: hasError ? formElement.errorIcon || 'fa fa-exclamation' : isValid ? formElement.validIcon || 'fa fa-check' : formElement.initialIcon ? formElement.initialIcon : undefined,
+      hasIconRight: formElement.errorIconRight,
+      onChange: handleOnChange.bind(this),
+      placeholder: formElement.placeholder,
+      value: initialVal }))
   );
 }
 

@@ -3,7 +3,7 @@ import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, Ca
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormRemoteDropdown, getFormCheckbox, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getFormTabs, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, getFormImageCropper } from './FormElements';
+import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormRemoteDropdown, getFormCheckbox, getFormColorPicker, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getFormTabs, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, getFormImageCropper } from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, valueCheckFormElement } from './FormHelpers';
 import flatten, { unflatten, } from 'flat';
 import qs from 'querystring';
@@ -119,6 +119,7 @@ class ResponsiveForm extends Component {
     this.getFormTextInputArea = getFormTextInputArea.bind(this);
     this.getFormMaskedInput = getFormMaskedInput.bind(this);
     this.getFormDropdown = getFormDropdown.bind(this);
+    this.getFormColorPicker = getFormColorPicker.bind(this);
     this.getFormTextArea = getFormTextArea.bind(this);
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getFormButton = getFormButton.bind(this);
@@ -472,6 +473,8 @@ class ResponsiveForm extends Component {
           return this.getFormDatalist({ formElement, i: j, formgroup, });
         } else if (formElement.type === 'dropdown') {
           return this.getFormDropdown({ formElement, i: j, formgroup, });
+        } else if (formElement.type === 'colorpicker') {
+          return this.getFormColorPicker({ formElement, i: j, formgroup, });
         } else if (formElement.type === 'remote_dropdown') {
           return this.getFormRemoteDropdown({ formElement, i: j, formgroup, });
         } else if (formElement.type === 'datatable') {
