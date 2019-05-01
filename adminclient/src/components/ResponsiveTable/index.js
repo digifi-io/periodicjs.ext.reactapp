@@ -1,7 +1,7 @@
 import React, { Component, /*PropTypes,*/ } from 'react';
 import { Link, } from 'react-router';
 import * as rb from 're-bulma';
-import { Dropdown, Progress, Checkbox } from 'semantic-ui-react';
+import { Dropdown, Progress, Checkbox, Tab } from 'semantic-ui-react';
 import moment from 'moment';
 import numeral from 'numeral';
 import utilities from '../../util';
@@ -1120,18 +1120,38 @@ class ResponsiveTable extends Component {
           this.updateTableData({ search: this.searchInputTextVal, });
         });
       };
+      let tabFilterOnChange = function (event, newvalue) {
+        let newValueState = newvalue.panes[newvalue.activeIndex];
+        let newState = Object.assign({}, this.state.headerFilters, {
+          [newvalue.headername]: newValueState.value,
+        });
+        this.setState({ headerFilters: newState }, () => {
+          this.updateTableData({ search: this.searchInputTextVal, });
+        });
+        console.log(newvalue,event, "FANIE")
+      };
       filterOnChange = filterOnChange.bind(this);
+      tabFilterOnChange = tabFilterOnChange.bind(this);
       let filterLayout = function (passProps, idx) {
         let { labelProps, } = passProps;
         let dropdownProps = Object.assign({}, passProps, { labelProps: undefined, });
-        return (
+        if (passProps.tabFilter) {
+          return (
           <div key={idx} className="header_filter_button" >
-            <rb.Label {...labelProps}> {dropdownProps.label} </rb.Label>
-            <Dropdown {...dropdownProps}
-              onChange={filterOnChange}
-            />
+            <rb.Label {...labelProps}>{dropdownProps.label}</rb.Label>
+            <Tab menu={{ attached: false, tabular: false }} {...dropdownProps} onTabChange={tabFilterOnChange}/>
           </div>
-        );
+          )
+        } else {
+          return (
+            <div key={idx} className="header_filter_button" >
+              <rb.Label {...labelProps}>{dropdownProps.label}</rb.Label>
+              <Dropdown {...dropdownProps}
+                onChange={filterOnChange} 
+              />
+            </div>
+          );
+        }
       };
       filterButtons = this.props.filterButtons.map(filterProps => filterLayout(filterProps))
     }
