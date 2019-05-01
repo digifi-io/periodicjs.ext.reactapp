@@ -77,7 +77,6 @@ var ColorPicker = function (_React$Component) {
   }, {
     key: 'handleChange',
     value: function handleChange(color) {
-      console.log({ color: color });
       this.setState({ color: color.hex });
     }
   }, {
