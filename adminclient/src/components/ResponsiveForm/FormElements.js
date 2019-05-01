@@ -9,6 +9,7 @@ import RemoteDropdown from '../RemoteDropdown';
 import ResponsiveTabs from '../ResponsiveTabs';
 import SingleDatePickerWrapper from '../SingleDatePickerWrapper';
 import DateRangePickerWrapper from '../DateRangePickerWrapper';
+import ColorPicker from '../ColorPicker';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import capitalize from 'capitalize';
 import utilities from '../../util';
@@ -1412,6 +1413,53 @@ export function getFormCode(options) {
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <RACodeMirror key={i} {...CodeMirrorProps} />
     {getCustomErrorLabel(hasError, this.state, formElement)}
+  </FormItem>
+  );
+}
+
+export function getFormColorPicker(options) {
+  let { formElement, i, onValueChange, } = options;
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let isValid = getValidStatus(this.state, formElement.name);
+  let initialVal = getInitialValue(formElement, this.state) || '';
+  let customLabel = getCustomFormLabel.bind(this);
+  let ColorPickerProps = Object.assign({
+    onChange: (!onValueChange) ? function (newvalue) {
+      if (typeof newvalue === 'object' && newvalue.hex) {
+        newvalue = newvalue.hex;
+      }
+      newvalue = (formElement.stringify) ? JSON.parse(newvalue) : newvalue;
+      let updatedStateProp = {};
+      updatedStateProp[ formElement.name ] = newvalue;
+      if (formElement.onChangeFilter) {
+        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(this, Object.assign({}, this.state, updatedStateProp), updatedStateProp);
+      }
+      this.setState(updatedStateProp);
+    }.bind(this) : onValueChange,
+  }, formElement.passProps);
+
+  let passableProps = Object.assign({
+    type: formElement.type || 'text',
+  }, formElement.passProps);
+  if (typeof initialVal !== 'string') {
+    initialVal = JSON.stringify(initialVal, null, 2);
+  }
+
+  let handleOnChange = function (e, second) {
+    this.setState({ [formElement.name]: e.target.value });
+  };  
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
+    <ColorPicker key={i} {...ColorPickerProps} color={this.state[ formElement.name ]} {...this.state} />
+    <Input {...passableProps}
+      help={getFormElementHelp(hasError, this.state, formElement.name)}
+      color={(hasError) ? 'isDanger' : undefined}
+      icon={(hasError) ? formElement.errorIcon || 'fa fa-exclamation' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
+      hasIconRight={formElement.errorIconRight}
+      onChange={handleOnChange.bind(this)}
+      placeholder={formElement.placeholder}
+      value={initialVal} />
   </FormItem>
   );
 }
