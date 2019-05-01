@@ -923,8 +923,9 @@ class ResponsiveTable extends Component {
         {this.state.headers.map((header, colIndex) => {
           // console.debug({header});
           if (header.link) {
+            let rowProps = (this.props.useRowProps && row.rowProps) ? row.rowProps : {};
             return (
-              <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps}>
+              <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps} {...rowProps}>
                 <Link {...header.linkProps} to={this.getHeaderLinkURL(header.link, row)}>{
                   this.formatValue({
                     value: (typeof row[ header.sortid ] !== 'undefined')
@@ -1128,7 +1129,6 @@ class ResponsiveTable extends Component {
         this.setState({ headerFilters: newState }, () => {
           this.updateTableData({ search: this.searchInputTextVal, });
         });
-        console.log(newvalue,event, "FANIE")
       };
       filterOnChange = filterOnChange.bind(this);
       tabFilterOnChange = tabFilterOnChange.bind(this);
