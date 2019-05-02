@@ -2,6 +2,7 @@ import React, { Component, } from 'react';
 import { Nav, NavGroup, NavItem, Container, /*, Button,*/ } from 're-bulma'; 
 import { getRenderedComponent, } from '../AppLayoutMap';
 import 'font-awesome/css/font-awesome.css';
+import '@fortawesome/fontawesome-pro/css/all.css';
 import styles from '../../styles';
 
 

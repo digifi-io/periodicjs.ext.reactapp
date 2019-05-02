@@ -3,6 +3,7 @@ import { Nav, NavGroup, NavItem, Button, Container, Input, Hero, HeroHead, Icon 
 import { Link, } from 'react-router';
 // import ResponsiveLink from '../ResponsiveLink';;;
 import 'font-awesome/css/font-awesome.css';
+import '@fortawesome/fontawesome-pro/css/all.css';
 import styles from '../../styles';
 import { all_prefixes, } from '../../../../utilities/route_prefixes';
 import capitalize from 'capitalize';
