@@ -80,6 +80,7 @@
   "deprecated": false,
   "description": "react based admin.",
   "devDependencies": {
+    "@fortawesome/fontawesome-pro": "^5.8.1",
     "babel-cli": "^6.23.0",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
