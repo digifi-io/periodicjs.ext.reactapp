@@ -1,7 +1,7 @@
 import { Component } from 'react';
 // import { Container, Content, } from 're-bulma';
-import 'font-awesome/css/font-awesome.css';
 import '@fortawesome/fontawesome-pro/css/all.css';
+import 'font-awesome/css/font-awesome.css';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
 
 function getTestChart() {
