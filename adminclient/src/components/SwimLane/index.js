@@ -224,6 +224,7 @@ class SwimLane extends Component {
                                         <span>{item.amount}</span>
                                         <span>{item.date}</span>
                                     </div>
+                                    {(item.footer && !Array.isArray(item.footer) && typeof item.footer === 'object') ? this.getRenderedComponent(item.footer) : null}
                                 </div>
                             )}
                         </Draggable>)
