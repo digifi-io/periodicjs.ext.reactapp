@@ -1140,9 +1140,10 @@ var ResponsiveTable = function (_Component) {
           _this8.state.headers.map(function (header, colIndex) {
             // console.debug({header});
             if (header.link) {
+              var rowProps = _this8.props.useRowProps && row.rowProps ? row.rowProps : {};
               return _react2.default.createElement(
                 rb.Td,
-                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
+                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, rowProps),
                 _react2.default.createElement(
                   _reactRouter.Link,
                   (0, _extends3.default)({}, header.linkProps, { to: _this8.getHeaderLinkURL(header.link, row) }),
@@ -1271,10 +1272,10 @@ var ResponsiveTable = function (_Component) {
                 )
               );
             } else {
-              var rowProps = _this8.props.useRowProps && row.rowProps ? row.rowProps : {};
+              var _rowProps = _this8.props.useRowProps && row.rowProps ? row.rowProps : {};
               return _react2.default.createElement(
                 rb.Td,
-                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, rowProps, { onClick: function onClick() {
+                (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, _rowProps, { onClick: function onClick() {
                     if (_this8.props.selectEntireRow) {
                       _this8.selectRow({
                         selectedRowData: row,
@@ -1320,25 +1321,46 @@ var ResponsiveTable = function (_Component) {
             _this9.updateTableData({ search: _this9.searchInputTextVal });
           });
         };
+        var tabFilterOnChange = function tabFilterOnChange(event, newvalue) {
+          var _this10 = this;
+
+          var newValueState = newvalue.panes[newvalue.activeIndex];
+          var newState = (0, _assign2.default)({}, this.state.headerFilters, (0, _defineProperty3.default)({}, newvalue.headername, newValueState.value));
+          this.setState({ headerFilters: newState }, function () {
+            _this10.updateTableData({ search: _this10.searchInputTextVal });
+          });
+        };
         filterOnChange = filterOnChange.bind(this);
+        tabFilterOnChange = tabFilterOnChange.bind(this);
         var filterLayout = function filterLayout(passProps, idx) {
           var labelProps = passProps.labelProps;
 
           var dropdownProps = (0, _assign2.default)({}, passProps, { labelProps: undefined });
-          return _react2.default.createElement(
-            'div',
-            { key: idx, className: 'header_filter_button' },
-            _react2.default.createElement(
-              rb.Label,
-              labelProps,
-              ' ',
-              dropdownProps.label,
-              ' '
-            ),
-            _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({}, dropdownProps, {
-              onChange: filterOnChange
-            }))
-          );
+          if (passProps.tabFilter) {
+            return _react2.default.createElement(
+              'div',
+              { key: idx, className: 'header_filter_button' },
+              _react2.default.createElement(
+                rb.Label,
+                labelProps,
+                dropdownProps.label
+              ),
+              _react2.default.createElement(_semanticUiReact.Tab, (0, _extends3.default)({ menu: { attached: false, tabular: false } }, dropdownProps, { onTabChange: tabFilterOnChange }))
+            );
+          } else {
+            return _react2.default.createElement(
+              'div',
+              { key: idx, className: 'header_filter_button' },
+              _react2.default.createElement(
+                rb.Label,
+                labelProps,
+                dropdownProps.label
+              ),
+              _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({}, dropdownProps, {
+                onChange: filterOnChange
+              }))
+            );
+          }
         };
         filterButtons = this.props.filterButtons.map(function (filterProps) {
           return filterLayout(filterProps);
