@@ -3,6 +3,7 @@
   "version": "10.1.1",
   "private": true,
   "devDependencies": {
+    "@fortawesome/fontawesome-pro": "^5.8.1",
     "animate.css": "^3.5.2",
     "capitalize": "^1.0.0",
     "eslint": "^3.14.1",
