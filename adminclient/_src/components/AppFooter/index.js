@@ -40,6 +40,8 @@ var _reBulma = require('re-bulma');
 
 var _AppLayoutMap = require('../AppLayoutMap');
 
+require('@fortawesome/fontawesome-pro/css/all.css');
+
 require('font-awesome/css/font-awesome.css');
 
 var _styles = require('../../styles');
