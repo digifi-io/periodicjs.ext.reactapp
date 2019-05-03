@@ -9,6 +9,7 @@ import qs from 'querystring';
 import debounce from 'debounce';
 import * as rb from 're-bulma';
 import numeral from 'numeral';
+import CountUp from 'react-countup';
 import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, Image } from 're-bulma';
 // import console = require('console');
 
@@ -63,7 +64,6 @@ class SwimLane extends Component {
         super(props);
         this.state = {
             droppableList: this.props.droppableList,
-            headerInfo: {},
             searchTextInput: '',
             teamMembers: [],
         };
@@ -77,21 +77,6 @@ class SwimLane extends Component {
     getList(id) {
         return this.state.droppableList[id].items;
     } 
-
-    componentWillMount() {
-        this.updateHeaderInfo();
-    }
-
-    updateHeaderInfo() {
-        let newHeaderInfo = this.state.headerInfo;
-        this.state.droppableList.map((listItem, idx) => {
-            let newAmount = listItem.items.reduce(function (a, b) {
-                return a + b.amountNum;
-            }, 0);
-            newHeaderInfo[idx] = `${listItem.items.length} for ${numeral(newAmount).format('$0,0')}`;
-        })
-        this.setState({headerInfo: newHeaderInfo});
-    }
 
     onDragEnd(result) {
         const { source, destination } = result;
@@ -124,7 +109,6 @@ class SwimLane extends Component {
                     fetch(fetchUrl, Object.assign(fetchOptions, { body: JSON.stringify(body) }))
                 }
             });
-            this.updateHeaderInfo();
         }
     };
 
@@ -148,9 +132,7 @@ class SwimLane extends Component {
         });
         utilities.fetchComponent(fetchUrl, { headers, })()
             .then(data => {
-                this.setState({ droppableList: data.droppableList }, () => {
-                    this.updateHeaderInfo();
-                })
+                this.setState({ droppableList: data.droppableList })
             })
     }
 
@@ -181,7 +163,9 @@ class SwimLane extends Component {
             <CardHeaderTitle style={listItem.cardProps.headerTitleStyle}>
                 {(!listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle ==='string')? listItem.cardProps.cardTitle
                 : this.getRenderedComponent(listItem.cardProps.cardTitle)}
-                <div {...listItem.headerInfoProps}>{this.state.headerInfo[idx]}</div>
+                <div {...listItem.headerInfoProps}>{`${listItem.items.length} for ${numeral(listItem.items.reduce(function (a, b) {
+                return a + b.amountNum;
+            }, 0)).format('$0,0')}`}</div>
             </CardHeaderTitle>
             </CardHeader>
             <CardContent {...listItem.cardProps.cardContentProps}>
