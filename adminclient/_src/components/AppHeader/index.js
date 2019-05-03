@@ -40,6 +40,8 @@ var _reBulma = require('re-bulma');
 
 var _reactRouter = require('react-router');
 
+require('@fortawesome/fontawesome-pro/css/all.css');
+
 require('font-awesome/css/font-awesome.css');
 
 var _styles = require('../../styles');
@@ -58,7 +60,7 @@ var _semanticUiReact = require('semantic-ui-react');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import ResponsiveLink from '../ResponsiveLink';;;
+// FormHorizontal, NavToggle, ControlLabel, Group,
 var AppHeader = function (_Component) {
   (0, _inherits3.default)(AppHeader, _Component);
 
@@ -249,7 +251,8 @@ var AppHeader = function (_Component) {
     }
   }]);
   return AppHeader;
-}(_react.Component); // FormHorizontal, NavToggle, ControlLabel, Group,
+}(_react.Component);
+// import ResponsiveLink from '../ResponsiveLink';
 
 
 exports.default = AppHeader;

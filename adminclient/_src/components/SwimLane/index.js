@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
 var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
@@ -82,6 +86,10 @@ var _numeral = require('numeral');
 
 var _numeral2 = _interopRequireDefault(_numeral);
 
+var _reactCountup = require('react-countup');
+
+var _reactCountup2 = _interopRequireDefault(_reactCountup);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -151,14 +159,17 @@ var SwimLane = function (_Component) {
 
         _this.state = {
             droppableList: _this.props.droppableList,
-            headerInfo: {},
             searchTextInput: '',
-            teamMembers: []
+            teamMembers: [],
+            startCount: [],
+            endCount: []
         };
         _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
         _this.getList = _this.getList.bind(_this);
         _this.searchDebounced = (0, _debounce2.default)(_this.searchFetch, 200);
         _this.search = _this.search.bind(_this);
+        _this.updateCountState = _this.updateCountState.bind(_this);
+        _this.countCurrentListTotals = _this.countCurrentListTotals.bind(_this);
         _this.onDragEnd = _this.onDragEnd.bind(_this);
         return _this;
     }
@@ -171,23 +182,16 @@ var SwimLane = function (_Component) {
     }, {
         key: 'componentWillMount',
         value: function componentWillMount() {
-            this.updateHeaderInfo();
-        }
-    }, {
-        key: 'updateHeaderInfo',
-        value: function updateHeaderInfo() {
-            var newHeaderInfo = this.state.headerInfo;
-            this.state.droppableList.map(function (listItem, idx) {
-                var newAmount = listItem.items.reduce(function (a, b) {
-                    return a + b.amountNum;
-                }, 0);
-                newHeaderInfo[idx] = listItem.items.length + ' for ' + (0, _numeral2.default)(newAmount).format('$0,0');
+            this.setState({
+                startCount: this.countCurrentListTotals(),
+                endCount: this.countCurrentListTotals()
             });
-            this.setState({ headerInfo: newHeaderInfo });
         }
     }, {
         key: 'onDragEnd',
         value: function onDragEnd(result) {
+            var _this2 = this;
+
             var source = result.source,
                 destination = result.destination;
 
@@ -211,24 +215,42 @@ var SwimLane = function (_Component) {
                     if (fetchUrl) {
                         fetch(fetchUrl, (0, _assign2.default)(fetchOptions, { body: (0, _stringify2.default)(body) }));
                     }
+                    _this2.updateCountState();
                 });
-                this.updateHeaderInfo();
             }
+        }
+    }, {
+        key: 'countCurrentListTotals',
+        value: function countCurrentListTotals() {
+            return this.props.droppableList.map(function (listItem) {
+                return listItem.items.reduce(function (a, b) {
+                    return a + b.amountNum;
+                }, 0);
+            });
+        }
+    }, {
+        key: 'updateCountState',
+        value: function updateCountState() {
+            var newEndState = this.countCurrentListTotals();
+            this.setState({
+                startCount: this.state.endCount,
+                endCount: newEndState
+            });
         }
     }, {
         key: 'search',
         value: function search(e) {
-            var _this2 = this;
+            var _this3 = this;
 
             e.preventDefault();
             this.setState({ searchTextInput: e.target.value }, function () {
-                _this2.searchDebounced(_this2.state.searchTextInput);
+                _this3.searchDebounced(_this3.state.searchTextInput);
             });
         }
     }, {
         key: 'searchFetch',
         value: function searchFetch(queryString) {
-            var _this3 = this;
+            var _this4 = this;
 
             var searchOptions = this.props.searchOptions;
             var token = localStorage.getItem('Admin Panel_jwt_token');
@@ -241,15 +263,13 @@ var SwimLane = function (_Component) {
                 'x-access-token': token
             });
             _util2.default.fetchComponent(fetchUrl, { headers: headers })().then(function (data) {
-                _this3.setState({ droppableList: data.droppableList }, function () {
-                    _this3.updateHeaderInfo();
-                });
+                _this4.setState({ droppableList: data.droppableList });
             });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this5 = this;
+            var _this6 = this;
 
             var itemStyle = this.props.itemProps && this.props.itemProps.style ? this.props.itemProps.style : {};
             var imageStyle = this.props.imageStyle ? this.props.imageStyle : {};
@@ -265,10 +285,10 @@ var SwimLane = function (_Component) {
             var dropdownProps = filterOptions.dropdownProps ? filterOptions.dropdownProps : {};
             var searchProps = this.props.searchOptions ? this.props.searchOptions.searchProps : {};
             var filterOnChange = function filterOnChange(event, newvalue) {
-                var _this4 = this;
+                var _this5 = this;
 
                 this.setState({ teamMembers: newvalue.value }, function () {
-                    _this4.searchFetch(_this4.state.searchTextInput);
+                    _this5.searchFetch(_this5.state.searchTextInput);
                 });
             };
             filterOnChange = filterOnChange.bind(this);
@@ -283,11 +303,20 @@ var SwimLane = function (_Component) {
                         _react2.default.createElement(
                             _reBulma.CardHeaderTitle,
                             { style: listItem.cardProps.headerTitleStyle },
-                            !listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle === 'string' ? listItem.cardProps.cardTitle : _this5.getRenderedComponent(listItem.cardProps.cardTitle),
+                            !listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle === 'string' ? listItem.cardProps.cardTitle : _this6.getRenderedComponent(listItem.cardProps.cardTitle),
                             _react2.default.createElement(
                                 'div',
-                                listItem.headerInfoProps,
-                                _this5.state.headerInfo[idx]
+                                (0, _extends3.default)({}, listItem.headerInfoProps, {
+                                    className: (listItem.headerInfoProps.className ? listItem.headerInfoProps.className : '') + ' ' + (_this6.state.endCount[idx] > _this6.state.startCount[idx] ? 'swimlane_increasing' : _this6.state.endCount[idx] < _this6.state.startCount[idx] ? 'swimlane_decreasing' : '') }),
+                                listItem.items.length + ' for $',
+                                _react2.default.createElement(_reactCountup2.default, {
+                                    start: _this6.state.startCount[idx],
+                                    end: _this6.state.endCount[idx]
+                                    // {...countUpProps}
+                                    , useEasing: true,
+                                    duration: 1,
+                                    separator: ','
+                                })
                             )
                         )
                     ),
@@ -334,7 +363,7 @@ var SwimLane = function (_Component) {
                                                             }, imageStyle) }),
                                                         _react2.default.createElement(
                                                             _ResponsiveButton2.default,
-                                                            (0, _extends3.default)({}, (0, _assign2.default)({}, _this5.props, titleButtonProps, { onclickPropObject: item }), { style: (0, _assign2.default)({ border: 'none' }, titleTextStyle) }),
+                                                            (0, _extends3.default)({}, (0, _assign2.default)({}, _this6.props, titleButtonProps, { onclickPropObject: item }), { style: (0, _assign2.default)({ border: 'none' }, titleTextStyle) }),
                                                             item.itemName
                                                         )
                                                     ),
@@ -351,7 +380,8 @@ var SwimLane = function (_Component) {
                                                             null,
                                                             item.date
                                                         )
-                                                    )
+                                                    ),
+                                                    item.footer && !Array.isArray(item.footer) && (0, _typeof3.default)(item.footer) === 'object' ? _this6.getRenderedComponent(item.footer) : null
                                                 );
                                             }
                                         );
@@ -374,10 +404,10 @@ var SwimLane = function (_Component) {
                         icon: 'fa fa-search'
                     }, searchProps, {
                         onChange: function onChange(data) {
-                            return _this5.search(data);
+                            return _this6.search(data);
                         },
                         ref: function ref(input) {
-                            _this5.searchTextInput = input;
+                            _this6.searchTextInput = input;
                         }
                     })),
                     droppables,

@@ -80,6 +80,7 @@
   "deprecated": false,
   "description": "react based admin.",
   "devDependencies": {
+    "@fortawesome/fontawesome-pro": "^5.8.1",
     "babel-cli": "^6.23.0",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
@@ -161,5 +162,5 @@
     "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
     "test": "mocha -R spec --recursive"
   },
-  "version": "12.1.37"
+  "version": "12.1.38"
 }

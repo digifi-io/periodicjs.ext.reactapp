@@ -516,14 +516,14 @@ export function getFormDropdown(options) {
   let imageField = (formElement.passProps.imageField) ? formElement.passProps.imageField : 'image';
   if (this.props.__formOptions && formElement.formoptions_field && this.props.__formOptions[ formElement.formoptions_field ]) {
     dropdowndata = this.props.__formOptions[ formElement.formoptions_field ];
-    dropdowndata = dropdowndata.map(option => ((option[imageField]) ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ]}));
+    dropdowndata = dropdowndata.map(option => ((option[imageField]) ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], icon: option.icon}));
   }
   else if (this.props.__formOptions && this.props.__formOptions[ formElement.name ]) {
     dropdowndata = this.props.__formOptions[ formElement.name ];
-    dropdowndata = dropdowndata.map(option => ((option[imageField]) ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ]}));
+    dropdowndata = dropdowndata.map(option => ((option[imageField]) ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], icon: option.icon}));
   } else {
     dropdowndata = formElement.options || [];
-    dropdowndata = dropdowndata.map(option => ((option[imageField]) ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ]}));
+    dropdowndata = dropdowndata.map(option => ((option[imageField]) ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], icon: option.icon}));
   }
   passedProps.options = dropdowndata;
   if (formElement.disableOnChange) {

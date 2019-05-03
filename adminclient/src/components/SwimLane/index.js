@@ -9,6 +9,7 @@ import qs from 'querystring';
 import debounce from 'debounce';
 import * as rb from 're-bulma';
 import numeral from 'numeral';
+import CountUp from 'react-countup';
 import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, Image } from 're-bulma';
 // import console = require('console');
 
@@ -63,14 +64,17 @@ class SwimLane extends Component {
         super(props);
         this.state = {
             droppableList: this.props.droppableList,
-            headerInfo: {},
             searchTextInput: '',
             teamMembers: [],
+            startCount: [],
+            endCount: []
         };
         this.getRenderedComponent = getRenderedComponent.bind(this);
         this.getList = this.getList.bind(this);
         this.searchDebounced = debounce(this.searchFetch, 200);
         this.search = this.search.bind(this);
+        this.updateCountState = this.updateCountState.bind(this);
+        this.countCurrentListTotals = this.countCurrentListTotals.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
     }
 
@@ -79,18 +83,10 @@ class SwimLane extends Component {
     } 
 
     componentWillMount() {
-        this.updateHeaderInfo();
-    }
-
-    updateHeaderInfo() {
-        let newHeaderInfo = this.state.headerInfo;
-        this.state.droppableList.map((listItem, idx) => {
-            let newAmount = listItem.items.reduce(function (a, b) {
-                return a + b.amountNum;
-            }, 0);
-            newHeaderInfo[idx] = `${listItem.items.length} for ${numeral(newAmount).format('$0,0')}`;
+        this.setState({
+            startCount: this.countCurrentListTotals(),
+            endCount: this.countCurrentListTotals()
         })
-        this.setState({headerInfo: newHeaderInfo});
     }
 
     onDragEnd(result) {
@@ -123,10 +119,26 @@ class SwimLane extends Component {
                 if (fetchUrl) {
                     fetch(fetchUrl, Object.assign(fetchOptions, { body: JSON.stringify(body) }))
                 }
+                this.updateCountState();
             });
-            this.updateHeaderInfo();
         }
     };
+    
+    countCurrentListTotals() {
+        return this.props.droppableList.map(listItem => {
+            return listItem.items.reduce(function (a, b) {
+                return a + b.amountNum;
+            }, 0)
+        });
+    }
+
+    updateCountState() {
+        let newEndState = this.countCurrentListTotals();
+        this.setState({
+            startCount: this.state.endCount,
+            endCount: newEndState,
+        })
+    }
 
     search(e) {
         e.preventDefault();
@@ -148,9 +160,7 @@ class SwimLane extends Component {
         });
         utilities.fetchComponent(fetchUrl, { headers, })()
             .then(data => {
-                this.setState({ droppableList: data.droppableList }, () => {
-                    this.updateHeaderInfo();
-                })
+                this.setState({ droppableList: data.droppableList })
             })
     }
 
@@ -181,7 +191,23 @@ class SwimLane extends Component {
             <CardHeaderTitle style={listItem.cardProps.headerTitleStyle}>
                 {(!listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle ==='string')? listItem.cardProps.cardTitle
                 : this.getRenderedComponent(listItem.cardProps.cardTitle)}
-                <div {...listItem.headerInfoProps}>{this.state.headerInfo[idx]}</div>
+                    <div {...listItem.headerInfoProps} 
+                    className={`${(listItem.headerInfoProps.className) ? listItem.headerInfoProps.className : ''} ${
+                        (this.state.endCount[idx] > this.state.startCount[idx])
+                            ? 'swimlane_increasing'
+                            : (this.state.endCount[idx] < this.state.startCount[idx])
+                                ? 'swimlane_decreasing'
+                                : ''
+                    }`}>{`${listItem.items.length} for $`} 
+                    <CountUp
+                        start={this.state.startCount[idx]}
+                        end={this.state.endCount[idx]}
+                        // {...countUpProps}
+                        useEasing={true}
+                        duration={1}
+                        separator=","
+                    />
+                </div>
             </CardHeaderTitle>
             </CardHeader>
             <CardContent {...listItem.cardProps.cardContentProps}>
@@ -224,6 +250,7 @@ class SwimLane extends Component {
                                         <span>{item.amount}</span>
                                         <span>{item.date}</span>
                                     </div>
+                                    {(item.footer && !Array.isArray(item.footer) && typeof item.footer === 'object') ? this.getRenderedComponent(item.footer) : null}
                                 </div>
                             )}
                         </Draggable>)
