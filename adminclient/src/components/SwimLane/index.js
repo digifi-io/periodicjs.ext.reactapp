@@ -66,17 +66,28 @@ class SwimLane extends Component {
             droppableList: this.props.droppableList,
             searchTextInput: '',
             teamMembers: [],
+            startCount: [],
+            endCount: []
         };
         this.getRenderedComponent = getRenderedComponent.bind(this);
         this.getList = this.getList.bind(this);
         this.searchDebounced = debounce(this.searchFetch, 200);
         this.search = this.search.bind(this);
+        this.updateCountState = this.updateCountState.bind(this);
+        this.countCurrentListTotals = this.countCurrentListTotals.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
     }
 
     getList(id) {
         return this.state.droppableList[id].items;
     } 
+
+    componentWillMount() {
+        this.setState({
+            startCount: this.countCurrentListTotals(),
+            endCount: this.countCurrentListTotals()
+        })
+    }
 
     onDragEnd(result) {
         const { source, destination } = result;
@@ -108,9 +119,26 @@ class SwimLane extends Component {
                 if (fetchUrl) {
                     fetch(fetchUrl, Object.assign(fetchOptions, { body: JSON.stringify(body) }))
                 }
+                this.updateCountState();
             });
         }
     };
+    
+    countCurrentListTotals() {
+        return this.props.droppableList.map(listItem => {
+            return listItem.items.reduce(function (a, b) {
+                return a + b.amountNum;
+            }, 0)
+        });
+    }
+
+    updateCountState() {
+        let newEndState = this.countCurrentListTotals();
+        this.setState({
+            startCount: this.state.endCount,
+            endCount: newEndState,
+        })
+    }
 
     search(e) {
         e.preventDefault();
@@ -163,9 +191,16 @@ class SwimLane extends Component {
             <CardHeaderTitle style={listItem.cardProps.headerTitleStyle}>
                 {(!listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle ==='string')? listItem.cardProps.cardTitle
                 : this.getRenderedComponent(listItem.cardProps.cardTitle)}
-                <div {...listItem.headerInfoProps}>{`${listItem.items.length} for ${numeral(listItem.items.reduce(function (a, b) {
-                return a + b.amountNum;
-            }, 0)).format('$0,0')}`}</div>
+                <div {...listItem.headerInfoProps}>{`${listItem.items.length} for $`} 
+                    <CountUp
+                        start={this.state.startCount[idx]}
+                        end={this.state.endCount[idx]}
+                        // {...countUpProps}
+                        useEasing={true}
+                        duration={1}
+                        separator=","
+                    />
+                </div>
             </CardHeaderTitle>
             </CardHeader>
             <CardContent {...listItem.cardProps.cardContentProps}>
