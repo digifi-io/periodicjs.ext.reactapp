@@ -191,7 +191,14 @@ class SwimLane extends Component {
             <CardHeaderTitle style={listItem.cardProps.headerTitleStyle}>
                 {(!listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle ==='string')? listItem.cardProps.cardTitle
                 : this.getRenderedComponent(listItem.cardProps.cardTitle)}
-                <div {...listItem.headerInfoProps}>{`${listItem.items.length} for $`} 
+                    <div {...listItem.headerInfoProps} 
+                    className={`${(listItem.headerInfoProps.className) ? listItem.headerInfoProps.className : ''} ${
+                        (this.state.endCount[idx] > this.state.startCount[idx])
+                            ? 'swimlane_increasing'
+                            : (this.state.endCount[idx] < this.state.startCount[idx])
+                                ? 'swimlane_decreasing'
+                                : ''
+                    }`}>{`${listItem.items.length} for $`} 
                     <CountUp
                         start={this.state.startCount[idx]}
                         end={this.state.endCount[idx]}
