@@ -1451,15 +1451,17 @@ export function getFormColorPicker(options) {
   };  
   return (<FormItem key={i} {...formElement.layoutProps} >
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
-    <ColorPicker key={i} {...ColorPickerProps} color={this.state[ formElement.name ]} {...this.state} />
-    <Input {...passableProps}
-      help={getFormElementHelp(hasError, this.state, formElement.name)}
-      color={(hasError) ? 'isDanger' : undefined}
-      icon={(hasError) ? formElement.errorIcon || 'fa fa-exclamation' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
-      hasIconRight={formElement.errorIconRight}
-      onChange={handleOnChange.bind(this)}
-      placeholder={formElement.placeholder}
-      value={initialVal} />
+    <div style={{display: 'flex'}} className='__ra_color_picker'>
+      <ColorPicker key={i} {...ColorPickerProps} color={this.state[ formElement.name ]} {...this.state}/>
+      <Input {...passableProps}
+        help={getFormElementHelp(hasError, this.state, formElement.name)}
+        color={(hasError) ? 'isDanger' : undefined}
+        icon={(hasError) ? formElement.errorIcon || 'fa fa-exclamation' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
+        hasIconRight={formElement.errorIconRight}
+        onChange={handleOnChange.bind(this)}
+        placeholder={formElement.placeholder}
+        value={initialVal} />
+    </div>
   </FormItem>
   );
 }
