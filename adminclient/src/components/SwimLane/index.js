@@ -232,17 +232,38 @@ class SwimLane extends Component {
                                         draggableStyle
                                     )}>
                                     <div style={Object.assign({display:'flex', alignItems: 'center'},)}>
-                                        <span style={Object.assign({
-                                            width: '25px', 
-                                            height: '25px', 
-                                            borderRadius: '100px', 
-                                            background: '#ccc', 
-                                            flex:'none', 
-                                            backgroundSize: 'cover',
-                                            backgroundRepeat: 'no-repeat',
-                                            backgroundImage: (item.image) ? `url(${item.image})` : undefined,
-                                            marginRight: '8px'
-                                            }, imageStyle)} >
+                                        <span style={{position: 'relative'}}>
+                                            <span style={Object.assign({
+                                                display: 'block',
+                                                width: '28px', 
+                                                height: '28px', 
+                                                borderRadius: '100px', 
+                                                background: '#ccc', 
+                                                flex:'none', 
+                                                backgroundSize: 'cover',
+                                                backgroundRepeat: 'no-repeat',
+                                                backgroundImage: (item.image) ? `url(${item.image})` : undefined,
+                                                marginRight: '15px'
+                                                }, imageStyle)}>
+                                            </span>
+                                            {(item.teamMemberCount && item.teamMemberCount > 1)
+                                                ? <span style={{
+                                                    position: 'absolute',
+                                                    backgroundColor: 'rgb(0, 122, 255)',
+                                                    color: 'white',
+                                                    fontSize: '10px',
+                                                    right: '10px',
+                                                    bottom: '-2px',
+                                                    lineHeight: '17px',
+                                                    height: '17px',
+                                                    width: '17px',
+                                                    borderRadius: '100%',
+                                                    textAlign: 'center',
+                                                    fontWeight: 'bold',
+                                                    boxShadow: 'rgba(17, 17, 17, 0.2) 0px 0px 0px 1px',
+                                                    whiteSpace: 'nowrap',
+                                                }}>{`+${item.teamMemberCount-1}`}</span>
+                                                : null}
                                         </span>
                                         <ResponsiveButton {...Object.assign({}, this.props, titleButtonProps, { onclickPropObject: item } )} style={Object.assign({border:'none'}, titleTextStyle)}>{item.itemName}</ResponsiveButton>
                                     </div>
