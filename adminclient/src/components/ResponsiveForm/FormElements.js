@@ -583,7 +583,10 @@ export function getFormDropdown(options) {
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div {...wrapperProps} style={Object.assign({}, wrapperProps.style, {position: 'relative'})}>
-      <Dropdown {...passedProps}
+      <Dropdown 
+        fluid
+        selection
+        {...passedProps}
         value={initialValue}
         onChange={(event, newvalue) => {
           onChange.call(this, event, newvalue);
