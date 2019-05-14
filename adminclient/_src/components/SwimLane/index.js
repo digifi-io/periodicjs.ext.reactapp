@@ -350,17 +350,42 @@ var SwimLane = function (_Component) {
                                                     _react2.default.createElement(
                                                         'div',
                                                         { style: (0, _assign2.default)({ display: 'flex', alignItems: 'center' }) },
-                                                        _react2.default.createElement('span', { style: (0, _assign2.default)({
-                                                                width: '25px',
-                                                                height: '25px',
-                                                                borderRadius: '100px',
-                                                                background: '#ccc',
-                                                                flex: 'none',
-                                                                backgroundSize: 'cover',
-                                                                backgroundRepeat: 'no-repeat',
-                                                                backgroundImage: item.image ? 'url(' + item.image + ')' : undefined,
-                                                                marginRight: '8px'
-                                                            }, imageStyle) }),
+                                                        _react2.default.createElement(
+                                                            'span',
+                                                            { style: { position: 'relative' } },
+                                                            _react2.default.createElement('span', { style: (0, _assign2.default)({
+                                                                    display: 'block',
+                                                                    width: '28px',
+                                                                    height: '28px',
+                                                                    borderRadius: '100px',
+                                                                    background: '#ccc',
+                                                                    flex: 'none',
+                                                                    backgroundSize: 'cover',
+                                                                    backgroundRepeat: 'no-repeat',
+                                                                    backgroundImage: item.image ? 'url(' + item.image + ')' : undefined,
+                                                                    marginRight: '15px'
+                                                                }, imageStyle) }),
+                                                            item.teamMemberCount && item.teamMemberCount > 1 ? _react2.default.createElement(
+                                                                'span',
+                                                                { style: {
+                                                                        position: 'absolute',
+                                                                        backgroundColor: 'rgb(0, 122, 255)',
+                                                                        color: 'white',
+                                                                        fontSize: '10px',
+                                                                        right: '10px',
+                                                                        bottom: '-2px',
+                                                                        lineHeight: '17px',
+                                                                        height: '17px',
+                                                                        width: '17px',
+                                                                        borderRadius: '100%',
+                                                                        textAlign: 'center',
+                                                                        fontWeight: 'bold',
+                                                                        boxShadow: 'rgba(17, 17, 17, 0.2) 0px 0px 0px 1px',
+                                                                        whiteSpace: 'nowrap'
+                                                                    } },
+                                                                '+' + (item.teamMemberCount - 1)
+                                                            ) : null
+                                                        ),
                                                         _react2.default.createElement(
                                                             _ResponsiveButton2.default,
                                                             (0, _extends3.default)({}, (0, _assign2.default)({}, _this6.props, titleButtonProps, { onclickPropObject: item }), { style: (0, _assign2.default)({ border: 'none' }, titleTextStyle) }),
