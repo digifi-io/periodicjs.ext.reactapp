@@ -87,12 +87,16 @@ function getCustomErrorIcon(hasError, isValid, state, formelement) {
     : null;
 }
 
-function getCustomLeftIcon(formelement) {
-  // let iconStyle = formelement.leftIconStyle;
-  let iconVar = (formelement.leftIcon)
-    ? <i className={`__re-bulma_icon ${formelement.leftIcon}`} style={{position: 'absolute', top:'10px', left: '6px', zIndex:1}} aria-hidden="true"></i>
-    : null;
-  return iconVar;
+function getCustomLeftIcon(formElement, state) {
+  state = state || {};
+  let iconVar = (formElement.updateIconOnChange && state[formElement.name])
+    ? formElement.options.filter(obj => obj.value === state[formElement.name])[0].icon
+    : (formElement.leftIcon)
+      ? formElement.leftIcon 
+      : null;  
+  if (iconVar) {
+    return <i className={`__re-bulma_icon icon ${iconVar}`} style={{position: 'absolute', top:'10px', left: '6px', zIndex:1}} aria-hidden="true"></i>;
+  }
 }
 
 function valueChangeHandler(formElement) {
@@ -513,7 +517,7 @@ export function getFormDropdown(options) {
     wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
     : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
     : wrapperProps.className;
-  wrapperProps.className = (formElement.leftIcon) ? wrapperProps.className + ' __ra-left-icon' : wrapperProps.className;
+  wrapperProps.className = (formElement.leftIcon || formElement.updateIconOnChange) ? wrapperProps.className + ' __ra-left-icon' : wrapperProps.className;
 
   let onChange;
   let passedProps = formElement.passProps;
@@ -579,7 +583,6 @@ export function getFormDropdown(options) {
   if (formElement.passProps.multiple && Array.isArray(unflatten(this.state)[ formElement.name ])) {
     initialValue = unflatten(this.state)[ formElement.name ].filter(i => i !== undefined);
   }
-
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div {...wrapperProps} style={Object.assign({}, wrapperProps.style, {position: 'relative'})}>
@@ -593,7 +596,7 @@ export function getFormDropdown(options) {
           if (customCallbackfunction) customCallbackfunction(event, newvalue);
         }}
         />
-      {getCustomLeftIcon(formElement)}
+      {getCustomLeftIcon(formElement, this.state)}
       {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
       {getCustomErrorLabel(hasError, this.state, formElement)}
     </div>
