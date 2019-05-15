@@ -75,6 +75,7 @@ class SwimLane extends Component {
         this.search = this.search.bind(this);
         this.updateCountState = this.updateCountState.bind(this);
         this.countCurrentListTotals = this.countCurrentListTotals.bind(this);
+        this.setChangeClass = this.setChangeClass.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
     }
 
@@ -115,11 +116,15 @@ class SwimLane extends Component {
             body[ 'entity_id' ] = result.draggableId;
             body[ 'source_idx' ] = source.droppableId;
             body[ 'destination_idx' ] = destination.droppableId;
-            this.setState({ droppableList }, () => {
+            this.setState({
+                droppableList,
+                startCount: this.state.endCount,
+            }, () => {
                 if (fetchUrl) {
                     fetch(fetchUrl, Object.assign(fetchOptions, { body: JSON.stringify(body) }))
                 }
-                this.updateCountState();
+                setTimeout(this.updateCountState, 1)
+                
             });
         }
     };
@@ -132,10 +137,17 @@ class SwimLane extends Component {
         });
     }
 
+    setChangeClass(idx){
+        return (this.state.endCount[idx] > this.state.startCount[idx]) 
+            ? 'swimlane_increasing' 
+                :(this.state.endCount[idx] < this.state.startCount[idx]) 
+                ?'swimlane_decreasing' 
+                : '';
+    }
+
     updateCountState() {
         let newEndState = this.countCurrentListTotals();
         this.setState({
-            startCount: this.state.endCount,
             endCount: newEndState,
         })
     }
@@ -192,21 +204,16 @@ class SwimLane extends Component {
                 {(!listItem.cardProps.cardTitle || typeof listItem.cardProps.cardTitle ==='string')? listItem.cardProps.cardTitle
                 : this.getRenderedComponent(listItem.cardProps.cardTitle)}
                     <div {...listItem.headerInfoProps} 
-                    className={`${(listItem.headerInfoProps.className) ? listItem.headerInfoProps.className : ''} ${
-                        (this.state.endCount[idx] > this.state.startCount[idx])
-                            ? 'swimlane_increasing'
-                            : (this.state.endCount[idx] < this.state.startCount[idx])
-                                ? 'swimlane_decreasing'
-                                : ''
-                    }`}>{`${listItem.items.length} for $`} 
+                    className = {
+                        `${(listItem.headerInfoProps.className) ? listItem.headerInfoProps.className : ''} ${this.setChangeClass(idx)}`
+                    }>{`${listItem.items.length} for $`}
                     <CountUp
                         start={this.state.startCount[idx]}
                         end={this.state.endCount[idx]}
                         // {...countUpProps}
                         useEasing={true}
                         duration={1}
-                        separator=","
-                    />
+                        separator=","/>
                 </div>
             </CardHeaderTitle>
             </CardHeader>
