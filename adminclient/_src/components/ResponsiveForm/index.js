@@ -189,6 +189,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormButton = _FormElements.getFormButton.bind(_this);
     _this.getFormRemoteDropdown = _FormElements.getFormRemoteDropdown.bind(_this);
     _this.getFormSemanticCheckbox = _FormElements.getFormSemanticCheckbox.bind(_this);
+    _this.getFormProgressSteps = _FormElements.getFormProgressSteps.bind(_this);
     _this.getCardFooterItem = _FormElements.getCardFooterItem.bind(_this);
     _this.getFormSelect = _FormElements.getFormSelect.bind(_this);
     _this.getRawInput = _FormElements.getRawInput.bind(_this);
@@ -533,6 +534,8 @@ var ResponsiveForm = function (_Component) {
             return _this5.getFormCheckbox({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'Semantic.checkbox') {
             return _this5.getFormSemanticCheckbox({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'progress') {
+            return _this5.getFormProgressSteps({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'label') {
             return _react2.default.createElement(
               _reBulma.Column,

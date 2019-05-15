@@ -170,6 +170,7 @@ var SwimLane = function (_Component) {
         _this.search = _this.search.bind(_this);
         _this.updateCountState = _this.updateCountState.bind(_this);
         _this.countCurrentListTotals = _this.countCurrentListTotals.bind(_this);
+        _this.setChangeClass = _this.setChangeClass.bind(_this);
         _this.onDragEnd = _this.onDragEnd.bind(_this);
         return _this;
     }
@@ -211,11 +212,14 @@ var SwimLane = function (_Component) {
                 body['entity_id'] = result.draggableId;
                 body['source_idx'] = source.droppableId;
                 body['destination_idx'] = destination.droppableId;
-                this.setState({ droppableList: droppableList }, function () {
+                this.setState({
+                    droppableList: droppableList,
+                    startCount: this.state.endCount
+                }, function () {
                     if (fetchUrl) {
                         fetch(fetchUrl, (0, _assign2.default)(fetchOptions, { body: (0, _stringify2.default)(body) }));
                     }
-                    _this2.updateCountState();
+                    setTimeout(_this2.updateCountState, 1);
                 });
             }
         }
@@ -229,11 +233,15 @@ var SwimLane = function (_Component) {
             });
         }
     }, {
+        key: 'setChangeClass',
+        value: function setChangeClass(idx) {
+            return this.state.endCount[idx] > this.state.startCount[idx] ? 'swimlane_increasing' : this.state.endCount[idx] < this.state.startCount[idx] ? 'swimlane_decreasing' : '';
+        }
+    }, {
         key: 'updateCountState',
         value: function updateCountState() {
             var newEndState = this.countCurrentListTotals();
             this.setState({
-                startCount: this.state.endCount,
                 endCount: newEndState
             });
         }
@@ -307,7 +315,7 @@ var SwimLane = function (_Component) {
                             _react2.default.createElement(
                                 'div',
                                 (0, _extends3.default)({}, listItem.headerInfoProps, {
-                                    className: (listItem.headerInfoProps.className ? listItem.headerInfoProps.className : '') + ' ' + (_this6.state.endCount[idx] > _this6.state.startCount[idx] ? 'swimlane_increasing' : _this6.state.endCount[idx] < _this6.state.startCount[idx] ? 'swimlane_decreasing' : '') }),
+                                    className: (listItem.headerInfoProps.className ? listItem.headerInfoProps.className : '') + ' ' + _this6.setChangeClass(idx) }),
                                 listItem.items.length + ' for $',
                                 _react2.default.createElement(_reactCountup2.default, {
                                     start: _this6.state.startCount[idx],
@@ -315,8 +323,7 @@ var SwimLane = function (_Component) {
                                     // {...countUpProps}
                                     , useEasing: true,
                                     duration: 1,
-                                    separator: ','
-                                })
+                                    separator: ',' })
                             )
                         )
                     ),

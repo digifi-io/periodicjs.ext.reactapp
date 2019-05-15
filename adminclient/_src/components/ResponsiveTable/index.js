@@ -1357,7 +1357,15 @@ var ResponsiveTable = function (_Component) {
                 dropdownProps.label
               ),
               _react2.default.createElement(_semanticUiReact.Dropdown, (0, _extends3.default)({}, dropdownProps, {
-                onChange: filterOnChange
+                onChange: filterOnChange,
+                renderLabel: function renderLabel(label) {
+                  return {
+                    icon: label.icon,
+                    content: label.text,
+                    image: label.image,
+                    style: label.selectedLabelStyle
+                  };
+                }
               }))
             );
           }
