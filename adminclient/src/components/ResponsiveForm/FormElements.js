@@ -1006,7 +1006,7 @@ export function getFormSelect(options) {
 
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
-    <span className={"__re-bulma_control" + iconClassNames} style={{ position: 'relative', display: 'block' }}>
+    <div className={"__re-bulma_control" + iconClassNames} style={{ position: 'relative', display: 'block' }}>
       {getCustomLeftIcon(formElement)}
       <Select {...formElement.passProps}
         style={Object.assign({}, { flex: 'inherit', marginBottom: 0 }, (formElement.passProps && formElement.passProps.style) ? formElement.passProps.style : {})}
@@ -1023,7 +1023,7 @@ export function getFormSelect(options) {
         })}
       </Select>
       {(!formElement.errorIconLeft) ? getCustomErrorIcon(hasError, isValid, this.state, formElement) : null}
-    </span>
+    </div>
   </FormItem>);
 }
 
@@ -1155,6 +1155,8 @@ export function getFormProgressSteps(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[ formElement.name ]) ? true : false;
+  let customLabel = getCustomFormLabel.bind(this);
+  formElement.steps = formElement.steps || [];
   if (formElement.disableOnChange) {
     onValueChange = () => { };
   } else if (!onValueChange) {
@@ -1175,40 +1177,52 @@ export function getFormProgressSteps(options) {
       });
     };
   }
+  if (!hasValue) {
+    let defaultChecked = formElement.steps.filter(obj => obj.checked);
+    if (defaultChecked.length > 0) {
+      let updatedStateProp = {};
+      updatedStateProp[this.state[formElement.formdata_name] || formElement.name] = defaultChecked[0].value;
+      this.setState(updatedStateProp)
+    }
+  }
+  
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
-    <Step.Group fluid {...formElement.passProps}>
-      {
-        formElement.steps.map((step, idx) => {
-          return (
-            <Step {...step.stepProps}
-                disabled={(formElement.passProps && formElement.passProps.disabled)
-                  ? formElement.passProps.disabled
-                  : null}
-                active={(this.state[ formElement.name ] == idx) ? true : null}
-                key={`${formElement.name}-${idx}`}
-              >
-              <label style={{position: 'relative', cursor: 'pointer'}}>
-                <input
-                    type='radio'
-                    name={this.state[ formElement.formdata_name ] || formElement.name}
-                    checked={(this.state[ formElement.name ] == idx)
-                      ? true
-                      : false}
-                    onChange={onValueChange}
-                    value={idx}
-                    style={{position: 'absolute', opacity: 0, top: 0, left: 0}}
-                  />
-                <Step.Content>
-                  {(!Array.isArray(step.title) && typeof step.title === 'object')
-                    ? this.getRenderedComponent(step.title)
-                    : <div>{step.title}</div>}
-                </Step.Content>
-              </label>
-            </Step>);
-        })
-      }
-    </Step.Group>
-    {getCustomErrorLabel(hasError, this.state, formElement)}
+    {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
+    <div className={"__re-bulma_control"}>
+      <Step.Group fluid {...formElement.passProps}>
+        {
+          formElement.steps.map((step, idx) => {
+            return (
+              <Step {...step.stepProps}
+                  disabled={(formElement.passProps && formElement.passProps.disabled)
+                    ? formElement.passProps.disabled
+                    : null}
+                active={(this.state[formElement.name] === step.value) ? true : null}
+                  key={`${formElement.name}-${idx}`}
+                >
+                <label style={{position: 'relative', cursor: 'pointer'}}>
+                  <input
+                      type='radio'
+                      name={this.state[ formElement.formdata_name ] || formElement.name}
+                      checked={(this.state[ formElement.name ] === step.value)
+                        ? true
+                        : false}
+                      onChange={onValueChange}
+                      value={step.value}
+                      style={{position: 'absolute', opacity: 0, top: 0, left: 0}}
+                    />
+                  <Step.Content>
+                    {(!Array.isArray(step.title) && typeof step.title === 'object')
+                      ? this.getRenderedComponent(step.title)
+                      : <div>{step.title}</div>}
+                  </Step.Content>
+                </label>
+              </Step>);
+          })
+        }
+      </Step.Group>
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </div>
   </FormItem>);
 }
 
