@@ -1151,7 +1151,7 @@ function getFormSelect(options) {
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
     formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
-      'span',
+      'div',
       { className: "__re-bulma_control" + iconClassNames, style: { position: 'relative', display: 'block' } },
       getCustomLeftIcon(formElement),
       _react2.default.createElement(
@@ -1328,6 +1328,8 @@ function getFormProgressSteps(options) {
 
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
+  var customLabel = getCustomFormLabel.bind(this);
+  formElement.steps = formElement.steps || [];
   if (formElement.disableOnChange) {
     onValueChange = function onValueChange() {};
   } else if (!onValueChange) {
@@ -1348,45 +1350,61 @@ function getFormProgressSteps(options) {
       });
     };
   }
+  if (!hasValue) {
+    var defaultChecked = formElement.steps.filter(function (obj) {
+      return obj.checked;
+    });
+    if (defaultChecked.length > 0) {
+      var updatedStateProp = {};
+      updatedStateProp[this.state[formElement.formdata_name] || formElement.name] = defaultChecked[0].value;
+      this.setState(updatedStateProp);
+    }
+  }
+
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
+    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
-      _semanticUiReact.Step.Group,
-      (0, _extends3.default)({ fluid: true }, formElement.passProps),
-      formElement.steps.map(function (step, idx) {
-        return _react2.default.createElement(
-          _semanticUiReact.Step,
-          (0, _extends3.default)({}, step.stepProps, {
-            disabled: formElement.passProps && formElement.passProps.disabled ? formElement.passProps.disabled : null,
-            active: _this12.state[formElement.name] == idx ? true : null,
-            key: formElement.name + '-' + idx
-          }),
-          _react2.default.createElement(
-            'label',
-            { style: { position: 'relative', cursor: 'pointer' } },
-            _react2.default.createElement('input', {
-              type: 'radio',
-              name: _this12.state[formElement.formdata_name] || formElement.name,
-              checked: _this12.state[formElement.name] == idx ? true : false,
-              onChange: onValueChange,
-              value: idx,
-              style: { position: 'absolute', opacity: 0, top: 0, left: 0 }
+      'div',
+      { className: "__re-bulma_control" },
+      _react2.default.createElement(
+        _semanticUiReact.Step.Group,
+        (0, _extends3.default)({ fluid: true }, formElement.passProps),
+        formElement.steps.map(function (step, idx) {
+          return _react2.default.createElement(
+            _semanticUiReact.Step,
+            (0, _extends3.default)({}, step.stepProps, {
+              disabled: formElement.passProps && formElement.passProps.disabled ? formElement.passProps.disabled : null,
+              active: _this12.state[formElement.name] === step.value ? true : null,
+              key: formElement.name + '-' + idx
             }),
             _react2.default.createElement(
-              _semanticUiReact.Step.Content,
-              null,
-              !Array.isArray(step.title) && (0, _typeof3.default)(step.title) === 'object' ? _this12.getRenderedComponent(step.title) : _react2.default.createElement(
-                'div',
+              'label',
+              { style: { position: 'relative', cursor: 'pointer' } },
+              _react2.default.createElement('input', {
+                type: 'radio',
+                name: _this12.state[formElement.formdata_name] || formElement.name,
+                checked: _this12.state[formElement.name] === step.value ? true : false,
+                onChange: onValueChange,
+                value: step.value,
+                style: { position: 'absolute', opacity: 0, top: 0, left: 0 }
+              }),
+              _react2.default.createElement(
+                _semanticUiReact.Step.Content,
                 null,
-                step.title
+                !Array.isArray(step.title) && (0, _typeof3.default)(step.title) === 'object' ? _this12.getRenderedComponent(step.title) : _react2.default.createElement(
+                  'div',
+                  null,
+                  step.title
+                )
               )
             )
-          )
-        );
-      })
-    ),
-    getCustomErrorLabel(hasError, this.state, formElement)
+          );
+        })
+      ),
+      getCustomErrorLabel(hasError, this.state, formElement)
+    )
   );
 }
 
