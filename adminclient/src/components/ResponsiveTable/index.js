@@ -1148,6 +1148,12 @@ class ResponsiveTable extends Component {
               <rb.Label {...labelProps}>{dropdownProps.label}</rb.Label>
               <Dropdown {...dropdownProps}
                 onChange={filterOnChange} 
+                renderLabel={(label) => ({
+                  icon: label.icon,
+                  content: label.text,
+                  image: label.image,
+                  style: label.selectedLabelStyle
+                })}
               />
             </div>
           );
