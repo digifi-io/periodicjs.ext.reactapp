@@ -21,7 +21,7 @@ import Slider from 'rc-slider';
 import { default as RCSwitch } from 'rc-switch';
 import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma';
 import MaskedInput from 'react-text-mask';
-import { Dropdown, Checkbox } from 'semantic-ui-react';
+import { Dropdown, Checkbox, Step, Radio } from 'semantic-ui-react';
 import moment from 'moment';
 import numeral from 'numeral';
 import pluralize from 'pluralize';
@@ -87,12 +87,16 @@ function getCustomErrorIcon(hasError, isValid, state, formelement) {
     : null;
 }
 
-function getCustomLeftIcon(formelement) {
-  // let iconStyle = formelement.leftIconStyle;
-  let iconVar = (formelement.leftIcon)
-    ? <i className={`__re-bulma_icon ${formelement.leftIcon}`} style={{position: 'absolute', top:'10px', left: '6px', zIndex:1}} aria-hidden="true"></i>
-    : null;
-  return iconVar;
+function getCustomLeftIcon(formElement, state) {
+  state = state || {};
+  let iconVar = (formElement.updateIconOnChange && state[formElement.name])
+    ? formElement.options.filter(obj => obj.value === state[formElement.name])[0].icon
+    : (formElement.leftIcon)
+      ? formElement.leftIcon 
+      : null;  
+  if (iconVar) {
+    return <i className={`__re-bulma_icon icon ${iconVar}`} style={{position: 'absolute', top:'9px', left: '6px', zIndex:1}} aria-hidden="true"></i>;
+  }
 }
 
 function valueChangeHandler(formElement) {
@@ -513,7 +517,7 @@ export function getFormDropdown(options) {
     wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
     : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
     : wrapperProps.className;
-  wrapperProps.className = (formElement.leftIcon) ? wrapperProps.className + ' __ra-left-icon' : wrapperProps.className;
+  wrapperProps.className = (formElement.leftIcon || formElement.updateIconOnChange) ? wrapperProps.className + ' __ra-left-icon' : wrapperProps.className;
 
   let onChange;
   let passedProps = formElement.passProps;
@@ -525,14 +529,20 @@ export function getFormDropdown(options) {
   let imageField = (formElement.passProps.imageField) ? formElement.passProps.imageField : 'image';
   if (this.props.__formOptions && formElement.formoptions_field && this.props.__formOptions[ formElement.formoptions_field ]) {
     dropdowndata = this.props.__formOptions[ formElement.formoptions_field ];
-    dropdowndata = dropdowndata.map(option => ((option[imageField]) ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], icon: option.icon}));
+    dropdowndata = dropdowndata.map(option => ((option[imageField]) 
+      ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } 
+      : { text: option[displayField], value: option[valueField], key: option[valueField], icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: (option.content) ? this.getRenderedComponent(option.content) : null}));
   }
   else if (this.props.__formOptions && this.props.__formOptions[ formElement.name ]) {
     dropdowndata = this.props.__formOptions[ formElement.name ];
-    dropdowndata = dropdowndata.map(option => ((option[imageField]) ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], icon: option.icon}));
+    dropdowndata = dropdowndata.map(option => ((option[imageField]) 
+      ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } 
+      : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: (option.content) ? this.getRenderedComponent(option.content) : null}));
   } else {
     dropdowndata = formElement.options || [];
-    dropdowndata = dropdowndata.map(option => ((option[imageField]) ? { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[imageField]}, } : { text: option[ displayField ], value: option[ valueField ], key: option[ valueField ], icon: option.icon}));
+    dropdowndata = dropdowndata.map(option => ((option[imageField]) 
+      ? { text: option[displayField], value: option[valueField], key: option[valueField], image: { avatar: true, src: option[imageField] }, } 
+      : { text: option[displayField], value: option[valueField], key: option[valueField], icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: (option.content) ? this.getRenderedComponent(option.content) : null}));
   }
   passedProps.options = dropdowndata;
   if (formElement.disableOnChange) {
@@ -579,18 +589,26 @@ export function getFormDropdown(options) {
   if (formElement.passProps.multiple && Array.isArray(unflatten(this.state)[ formElement.name ])) {
     initialValue = unflatten(this.state)[ formElement.name ].filter(i => i !== undefined);
   }
-
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div {...wrapperProps} style={Object.assign({}, wrapperProps.style, {position: 'relative'})}>
-      <Dropdown {...passedProps}
+      <Dropdown 
+        fluid
+        selection
+        {...passedProps}
+        renderLabel={(label) => ({
+          icon: label.icon,
+          content: label.text,
+          image: label.image,
+          style: label.selectedLabelStyle
+        })}
         value={initialValue}
         onChange={(event, newvalue) => {
           onChange.call(this, event, newvalue);
           if (customCallbackfunction) customCallbackfunction(event, newvalue);
         }}
         />
-      {getCustomLeftIcon(formElement)}
+      {getCustomLeftIcon(formElement, this.state)}
       {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
       {getCustomErrorLabel(hasError, this.state, formElement)}
     </div>
@@ -1048,8 +1066,7 @@ export function getFormCheckbox(options) {
         ? this.state[ formElement.name ] === formElement.value
         : this.state[ formElement.name ]}
       onChange={onValueChange}
-    >
-    </input>
+    />
     {customLabel(formElement)}
     <span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder ] || formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
@@ -1130,6 +1147,67 @@ export function getFormSemanticCheckbox(options) {
     >
     </Checkbox>
     {/*<span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder] || formElement.placeholder}</span>*/}
+    {getCustomErrorLabel(hasError, this.state, formElement)}
+  </FormItem>);
+}
+
+export function getFormProgressSteps(options) {
+  let { formElement, i, onValueChange, } = options;
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let hasValue = (formElement.name && this.state[ formElement.name ]) ? true : false;
+  if (formElement.disableOnChange) {
+    onValueChange = () => { };
+  } else if (!onValueChange) {
+    onValueChange = (event ) => {
+      let updatedStateProp = {};
+      updatedStateProp[this.state[formElement.formdata_name] || formElement.name] = event.target.value;
+      // console.debug('after', { updatedStateProp, formElement, }, event.target);
+      if (formElement.onChangeFilter) {
+        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(this, Object.assign({}, this.state, updatedStateProp), updatedStateProp);
+      }
+      this.setState(updatedStateProp, () => {
+        if (formElement.validateOnChange) {
+          this.validateFormElement({
+            formElement,
+          });
+        }
+      });
+    };
+  }
+  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
+    <Step.Group fluid {...formElement.passProps}>
+      {
+        formElement.steps.map((step, idx) => {
+          return (
+            <Step {...step.stepProps}
+                disabled={(formElement.passProps && formElement.passProps.disabled)
+                  ? formElement.passProps.disabled
+                  : null}
+                active={(this.state[ formElement.name ] == idx) ? true : null}
+                key={`${formElement.name}-${idx}`}
+              >
+              <label style={{position: 'relative', cursor: 'pointer'}}>
+                <input
+                    type='radio'
+                    name={this.state[ formElement.formdata_name ] || formElement.name}
+                    checked={(this.state[ formElement.name ] == idx)
+                      ? true
+                      : false}
+                    onChange={onValueChange}
+                    value={idx}
+                    style={{position: 'absolute', opacity: 0, top: 0, left: 0}}
+                  />
+                <Step.Content>
+                  {(!Array.isArray(step.title) && typeof step.title === 'object')
+                    ? this.getRenderedComponent(step.title)
+                    : <div>{step.title}</div>}
+                </Step.Content>
+              </label>
+            </Step>);
+        })
+      }
+    </Step.Group>
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
 }

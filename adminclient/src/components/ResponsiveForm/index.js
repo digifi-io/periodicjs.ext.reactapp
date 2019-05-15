@@ -3,7 +3,36 @@ import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, Ca
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormMaskedInput, getFormDNDTable, getFormDropdown, getFormRemoteDropdown, getFormCheckbox, getFormColorPicker, getFormSemanticCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormDatePicker, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getFormTabs, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSwitch, getFormButton, getFormImageCropper } from './FormElements';
+import {
+  getFormTextInputArea,
+  getFormMaskedInput,
+  getFormDNDTable,
+  getFormDropdown,
+  getFormRemoteDropdown,
+  getFormCheckbox,
+  getFormColorPicker,
+  getFormSemanticCheckbox,
+  getFormProgressSteps, 
+  getFormSubmit,
+  getFormSelect,
+  getCardFooterItem,
+  getFormCode,
+  getFormDatePicker,
+  getFormTextArea,
+  getFormEditor,
+  getFormLink,
+  getHiddenInput,
+  getFormGroup,
+  getFormTabs,
+  getImage,
+  getFormDatalist,
+  getRawInput,
+  getSliderInput,
+  getFormDatatable,
+  getFormSwitch,
+  getFormButton,
+  getFormImageCropper
+} from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, valueCheckFormElement } from './FormHelpers';
 import flatten, { unflatten, } from 'flat';
 import qs from 'querystring';
@@ -125,6 +154,7 @@ class ResponsiveForm extends Component {
     this.getFormButton = getFormButton.bind(this);
     this.getFormRemoteDropdown = getFormRemoteDropdown.bind(this);
     this.getFormSemanticCheckbox = getFormSemanticCheckbox.bind(this);
+    this.getFormProgressSteps = getFormProgressSteps.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
     this.getRawInput = getRawInput.bind(this);
@@ -485,6 +515,8 @@ class ResponsiveForm extends Component {
           return this.getFormCheckbox({ formElement, i: j, formgroup, });
         } else if (formElement.type === 'Semantic.checkbox') {
           return this.getFormSemanticCheckbox({ formElement, i: j, formgroup, });
+        } else if (formElement.type === 'progress') {
+          return this.getFormProgressSteps({ formElement, i: j, formgroup, });
         } else if (formElement.type === 'label') {
           return (<Column key={j} {...formElement.layoutProps}>
             <Label key={j} {...formElement.labelProps}>{formElement.label}</Label>
