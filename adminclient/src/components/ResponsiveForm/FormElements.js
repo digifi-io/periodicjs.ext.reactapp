@@ -95,7 +95,7 @@ function getCustomLeftIcon(formElement, state) {
       ? formElement.leftIcon 
       : null;  
   if (iconVar) {
-    return <i className={`__re-bulma_icon icon ${iconVar}`} style={{position: 'absolute', top:'10px', left: '6px', zIndex:1}} aria-hidden="true"></i>;
+    return <i className={`__re-bulma_icon icon ${iconVar}`} style={{position: 'absolute', top:'9px', left: '6px', zIndex:1}} aria-hidden="true"></i>;
   }
 }
 
