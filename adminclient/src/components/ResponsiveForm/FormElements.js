@@ -1156,6 +1156,11 @@ export function getFormProgressSteps(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[ formElement.name ]) ? true : false;
   let customLabel = getCustomFormLabel.bind(this);
+  formElement.steps = (this.props.__formOptions && this.props.__formOptions[formElement.name])
+    ? this.props.__formOptions[formElement.name]
+    : (formElement.steps)
+      ? formElement.steps
+      : [];
   formElement.steps = formElement.steps || [];
   if (formElement.disableOnChange) {
     onValueChange = () => { };
@@ -1185,7 +1190,6 @@ export function getFormProgressSteps(options) {
       this.setState(updatedStateProp)
     }
   }
-  
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div className={"__re-bulma_control"}>
@@ -1193,30 +1197,31 @@ export function getFormProgressSteps(options) {
         {
           formElement.steps.map((step, idx) => {
             return (
-              <Step {...step.stepProps}
+              <Step
                   disabled={(formElement.passProps && formElement.passProps.disabled)
                     ? formElement.passProps.disabled
                     : null}
-                active={(this.state[formElement.name] === step.value) ? true : null}
-                  key={`${formElement.name}-${idx}`}
-                >
-                <label style={{position: 'relative', cursor: 'pointer'}}>
-                  <input
-                      type='radio'
-                      name={this.state[ formElement.formdata_name ] || formElement.name}
-                      checked={(this.state[ formElement.name ] === step.value)
-                        ? true
-                        : false}
-                      onChange={onValueChange}
-                      value={step.value}
-                      style={{position: 'absolute', opacity: 0, top: 0, left: 0}}
-                    />
+                  {...step.stepProps}
+                  active={(this.state[formElement.name] === step.value) ? true : null}
+                    key={`${formElement.name}-${idx}`}
+                  as={'label'} 
+                  style={{ position: 'relative', cursor: 'pointer' }}
+                >                  
+                <input
+                    type='radio'
+                    name={this.state[ formElement.formdata_name ] || formElement.name}
+                    checked={(this.state[ formElement.name ] === step.value)
+                      ? true
+                      : false}
+                    onChange={onValueChange}
+                    value={step.value}
+                    style={{position: 'absolute', opacity: 0, top: 0, left: 0}}
+                  />
                   <Step.Content>
                     {(!Array.isArray(step.title) && typeof step.title === 'object')
                       ? this.getRenderedComponent(step.title)
                       : <div>{step.title}</div>}
                   </Step.Content>
-                </label>
               </Step>);
           })
         }
