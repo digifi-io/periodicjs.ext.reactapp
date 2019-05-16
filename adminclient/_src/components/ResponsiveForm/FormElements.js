@@ -1329,6 +1329,7 @@ function getFormProgressSteps(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var customLabel = getCustomFormLabel.bind(this);
+  formElement.steps = this.props.__formOptions && this.props.__formOptions[formElement.name] ? this.props.__formOptions[formElement.name] : formElement.steps ? formElement.steps : [];
   formElement.steps = formElement.steps || [];
   if (formElement.disableOnChange) {
     onValueChange = function onValueChange() {};
@@ -1360,7 +1361,6 @@ function getFormProgressSteps(options) {
       this.setState(updatedStateProp);
     }
   }
-
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
@@ -1374,30 +1374,29 @@ function getFormProgressSteps(options) {
         formElement.steps.map(function (step, idx) {
           return _react2.default.createElement(
             _semanticUiReact.Step,
-            (0, _extends3.default)({}, step.stepProps, {
-              disabled: formElement.passProps && formElement.passProps.disabled ? formElement.passProps.disabled : null,
+            (0, _extends3.default)({
+              disabled: formElement.passProps && formElement.passProps.disabled ? formElement.passProps.disabled : null
+            }, step.stepProps, {
               active: _this12.state[formElement.name] === step.value ? true : null,
-              key: formElement.name + '-' + idx
+              key: formElement.name + '-' + idx,
+              as: 'label',
+              style: { position: 'relative', cursor: 'pointer' }
+            }),
+            _react2.default.createElement('input', {
+              type: 'radio',
+              name: _this12.state[formElement.formdata_name] || formElement.name,
+              checked: _this12.state[formElement.name] === step.value ? true : false,
+              onChange: onValueChange,
+              value: step.value,
+              style: { position: 'absolute', opacity: 0, top: 0, left: 0 }
             }),
             _react2.default.createElement(
-              'label',
-              { style: { position: 'relative', cursor: 'pointer' } },
-              _react2.default.createElement('input', {
-                type: 'radio',
-                name: _this12.state[formElement.formdata_name] || formElement.name,
-                checked: _this12.state[formElement.name] === step.value ? true : false,
-                onChange: onValueChange,
-                value: step.value,
-                style: { position: 'absolute', opacity: 0, top: 0, left: 0 }
-              }),
-              _react2.default.createElement(
-                _semanticUiReact.Step.Content,
+              _semanticUiReact.Step.Content,
+              null,
+              !Array.isArray(step.title) && (0, _typeof3.default)(step.title) === 'object' ? _this12.getRenderedComponent(step.title) : _react2.default.createElement(
+                'div',
                 null,
-                !Array.isArray(step.title) && (0, _typeof3.default)(step.title) === 'object' ? _this12.getRenderedComponent(step.title) : _react2.default.createElement(
-                  'div',
-                  null,
-                  step.title
-                )
+                step.title
               )
             )
           );
