@@ -25,22 +25,27 @@ var flushCached = function (filepath, fn, isModule) {
 };
 
 var watcher = function (filepath, onChange, periodic) {
-  let isModule = (path.extname(filepath) === '.js');
-  if (!WATCHED.has(filepath)) {
-    let listener;
-    if (typeof onChange !== 'function') listener = flushCached(filepath, null, isModule);
-    else listener = flushCached(filepath, onChange, isModule);
-    fs.watch(filepath, 'utf8', listener);
-    WATCHED.set(filepath, true);
-  }
-  if (isModule) {
-    let requiredFile = require(filepath);
-    requiredFile = (typeof requiredFile === 'function')
-      ? requiredFile(periodic)
-      : requiredFile;
-    return Promisie.resolve(requiredFile);
-  } else {
-    return fs.readJsonAsync(filepath);
+  try {
+    let isModule = (path.extname(filepath) === '.js');
+    if (!WATCHED.has(filepath)) {
+      let listener;
+      if (typeof onChange !== 'function') listener = flushCached(filepath, null, isModule);
+      else listener = flushCached(filepath, onChange, isModule);
+      fs.watch(filepath, 'utf8', listener);
+      WATCHED.set(filepath, true);
+    }
+    if (isModule) {
+      let requiredFile = require(filepath);
+      requiredFile = (typeof requiredFile === 'function')
+        ? requiredFile(periodic)
+        : requiredFile;
+      return Promisie.resolve(requiredFile);
+    } else {
+      return fs.readJsonAsync(filepath);
+    }
+  } catch (err) {
+    err.code = `${err.code} - ${err.message} - ${filepath}`;
+    return Promisie.reject(err);
   }
 };
 
