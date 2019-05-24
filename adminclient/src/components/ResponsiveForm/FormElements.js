@@ -820,7 +820,7 @@ export function getFormAddressAPIInput(options) {
     formElement.wrapperProps, {
       className: `__re-bulma_control${(formElement.leftIcon) ? ' __ra-left-icon' : ''} ${(formElement.wrapperProps && formElement.wrapperProps.className) ? formElement.wrapperProps.className : ''}`,
     })
-  if (typeof initialValue !== 'string') {
+  if (initialValue && typeof initialValue === 'object') {
     initialValue = initialValue.formatted_address || '';
   }
   if (formElement.disableOnChange) {
