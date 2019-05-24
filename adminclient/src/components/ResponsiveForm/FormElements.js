@@ -802,9 +802,7 @@ export function getFormMaskedInput(options) {
 }
 
 export function getFormAddressAPIInput(options) {
-  console.log('this is the settings');
   let applicationSettings = this.props.getState().settings;
-  console.log({ applicationSettings });
 
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
@@ -822,19 +820,16 @@ export function getFormAddressAPIInput(options) {
     formElement.wrapperProps, {
       className: `__re-bulma_control${(formElement.leftIcon) ? ' __ra-left-icon' : ''} ${(formElement.wrapperProps && formElement.wrapperProps.className) ? formElement.wrapperProps.className : ''}`,
     })
-
   if (typeof initialValue !== 'string') {
-    initialValue = JSON.stringify(initialValue, null, 2);
+    initialValue = initialValue.formatted_address || '';
   }
   if (formElement.disableOnChange) {
     onChange = () => { };
   } else if (!onChange) {
-    onChange = (event) => {
-      let text = event.target.value;
+    onChange = (value) => {
       let updatedStateProp = {};
       let customCallbackfunction;
-
-      updatedStateProp[ formElement.name ] = (passableProps.maxLength) ? text.substring(0, passableProps.maxLength) : text;
+      updatedStateProp[ formElement.name ] = value.target.value;
       if (formElement.onChangeFilter) {
         const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
         updatedStateProp = onChangeFunc.call(this, Object.assign({}, this.state, updatedStateProp), updatedStateProp);
@@ -852,38 +847,11 @@ export function getFormAddressAPIInput(options) {
   passableProps = getPassablePropkeyevents(passableProps, formElement);
 
   function handlePlaceSelect() {
-    console.log('triggered');
-    // Extract City From Address Object
     let addressObject = this.autocomplete.getPlace();
     let addressData = { formatted_address: addressObject.formatted_address };
     let address = addressObject.address_components;
-    let fieldConfig = {
-      'street_number': {
-        field_name: 'street_number',
-      },
-      'route': {
-        field_name: 'street_name',
-        short: true,
-      },
-      'locality': {
-        field_name: 'city',
-        short: true,
-      },
-      'administrative_area_level_1': {
-        field_name: 'state',
-        short: true,
-      },
-      'postal_code': {
-        field_name: 'zipcode',
-        name_type: 'long',
-      },
-      'country': {
-        field_name: 'zipcode',
-        name_type: 'long',
-      },
-    };
-    console.log({ addressObject });
-    if (address) {
+    if (formElement.passProps && formElement.passProps.include_places_detail && address) {
+      let fieldConfig = formElement.passProps.fieldConfig || {}
       for (let i = 0; i < address.length; i++) {
         let addressChunk = address[ i ];
         if (addressChunk.types && addressChunk.types[ 0 ]) {
@@ -896,21 +864,21 @@ export function getFormAddressAPIInput(options) {
         }
       }
     }
-    
-    console.log({ addressData })
-    // Check if address is valid
-    if (address) {
-      // Set State
-      this.setState(
-        Object.assign({}, addressData, {
-          query: addressObject.formatted_address,
-        }));
+    let updateData;
+    if (formElement.passProps && formElement.passProps.include_places_detail && address) {
+      updateData = Object.assign({}, addressData, {
+        query: addressObject.formatted_address,
+      });
+    } else {
+      updateData = addressObject.formatted_address;
     }
+    onChange({
+      target: {
+        value: updateData
+      }
+    });
   }
   function handleScriptLoad() {
-    console.log('SHOWING UP!!');
-    // Declare Options For Autocomplete
-    
     let options = {
       types: [ 'address' ],
       componentRestrictions: { country: "us" },
@@ -920,21 +888,21 @@ export function getFormAddressAPIInput(options) {
     } else {
       options.fields = [ "formatted_address",];
     }
-    // Initialize Google Autocomplete
-    /*global google*/ // To disable any eslint 'google not defined' errors
+    /*global google*/ // PLEASE KEEP THIS LINE To disable any eslint 'google not defined' errors
     this.autocomplete = new google.maps.places.Autocomplete(
-      document.getElementById('autocomplete'),
+      document.getElementById('autocomplete_address'),
       options,
     );
     this.autocomplete.setFields([ 'address_components', 'formatted_address' ]);
-    // Fire Event when a suggested name is selected
     this.autocomplete.addListener('place_changed', handlePlaceSelect);
   }
   handlePlaceSelect = handlePlaceSelect.bind(this);
   handleScriptLoad = handleScriptLoad.bind(this);
+
   if (submitMultipartForm) clearTimeout(submitMultipartForm);
   if (applicationSettings && applicationSettings.credentials && applicationSettings.credentials.google_places_api) {
     let api_credential = applicationSettings.credentials.google_places_api;
+    let inputProps = (formElement.passProps && formElement.passProps.inputProps) ? formElement.passProps.inputProps : {};
     return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
       {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
       <div {...wrapperProps} style={Object.assign({}, wrapperProps.style, { position: 'relative' })}>
@@ -943,7 +911,7 @@ export function getFormAddressAPIInput(options) {
           url={`https://maps.googleapis.com/maps/api/js?key=${api_credential}&libraries=places`}
           onLoad={handleScriptLoad}
         />
-        <input id="autocomplete" className="__re-bulma_input" />
+        <input id="autocomplete_address" {...inputProps} value={initialValue} onChange={(e) => { this.setState({[formElement.name]: e.target.value}) }} />
       </div>
     </FormItem>); 
   } else {
