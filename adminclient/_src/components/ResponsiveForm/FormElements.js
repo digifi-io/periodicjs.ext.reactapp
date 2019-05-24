@@ -959,7 +959,7 @@ function getFormAddressAPIInput(options) {
   var wrapperProps = (0, _assign2.default)({}, formElement.wrapperProps, {
     className: '__re-bulma_control' + (formElement.leftIcon ? ' __ra-left-icon' : '') + ' ' + (formElement.wrapperProps && formElement.wrapperProps.className ? formElement.wrapperProps.className : '')
   });
-  if (typeof initialValue !== 'string') {
+  if (initialValue && (typeof initialValue === 'undefined' ? 'undefined' : (0, _typeof3.default)(initialValue)) === 'object') {
     initialValue = initialValue.formatted_address || '';
   }
   if (formElement.disableOnChange) {
