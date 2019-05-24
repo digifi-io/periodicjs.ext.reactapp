@@ -6,6 +6,7 @@ import utilities from '../../util';
 import {
   getFormTextInputArea,
   getFormMaskedInput,
+  getFormAddressAPIInput,
   getFormDNDTable,
   getFormDropdown,
   getFormRemoteDropdown,
@@ -147,6 +148,7 @@ class ResponsiveForm extends Component {
     this.getFormDatePicker = getFormDatePicker.bind(this);
     this.getFormTextInputArea = getFormTextInputArea.bind(this);
     this.getFormMaskedInput = getFormMaskedInput.bind(this);
+    this.getFormAddressAPIInput = getFormAddressAPIInput.bind(this);
     this.getFormDropdown = getFormDropdown.bind(this);
     this.getFormColorPicker = getFormColorPicker.bind(this);
     this.getFormTextArea = getFormTextArea.bind(this);
@@ -503,6 +505,8 @@ class ResponsiveForm extends Component {
           return this.getFormDatalist({ formElement, i: j, formgroup, });
         } else if (formElement.type === 'dropdown') {
           return this.getFormDropdown({ formElement, i: j, formgroup, });
+        } else if (formElement.type === 'address_api_input') {
+          return this.getFormAddressAPIInput({ formElement, i: j, formgroup, });
         } else if (formElement.type === 'colorpicker') {
           return this.getFormColorPicker({ formElement, i: j, formgroup, });
         } else if (formElement.type === 'remote_dropdown') {
