@@ -805,7 +805,7 @@ export function getFormAddressAPIInput(options) {
   let applicationSettings = this.props.getState().settings;
 
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
-  let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+  let initialValue = getInitialValue(formElement, this.state);
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   let hasError = getErrorStatus(this.state, formElement.name);
   let isValid = getValidStatus(this.state, formElement.name);
