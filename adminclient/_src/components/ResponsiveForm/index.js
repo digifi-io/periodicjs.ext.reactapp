@@ -182,6 +182,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormDatePicker = _FormElements.getFormDatePicker.bind(_this);
     _this.getFormTextInputArea = _FormElements.getFormTextInputArea.bind(_this);
     _this.getFormMaskedInput = _FormElements.getFormMaskedInput.bind(_this);
+    _this.getFormAddressAPIInput = _FormElements.getFormAddressAPIInput.bind(_this);
     _this.getFormDropdown = _FormElements.getFormDropdown.bind(_this);
     _this.getFormColorPicker = _FormElements.getFormColorPicker.bind(_this);
     _this.getFormTextArea = _FormElements.getFormTextArea.bind(_this);
@@ -522,6 +523,8 @@ var ResponsiveForm = function (_Component) {
             return _this5.getFormDatalist({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'dropdown') {
             return _this5.getFormDropdown({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'address_api_input') {
+            return _this5.getFormAddressAPIInput({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'colorpicker') {
             return _this5.getFormColorPicker({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'remote_dropdown') {
