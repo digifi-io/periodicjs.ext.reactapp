@@ -1160,7 +1160,7 @@ function getFormTextInputArea(options) {
     formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
     _react2.default.createElement(
       'div',
-      (0, _extends3.default)({}, wrapperProps, { style: (0, _assign2.default)({}, wrapperProps.style, { position: 'relative' }) }),
+      (0, _extends3.default)({}, wrapperProps, { style: (0, _assign2.default)({}, wrapperProps.style, { position: 'relative', display: 'block' }) }),
       getCustomLeftIcon(formElement),
       _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
         help: getFormElementHelp(hasError, this.state, formElement.name),

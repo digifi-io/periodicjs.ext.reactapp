@@ -1008,7 +1008,7 @@ export function getFormTextInputArea(options) {
   if (submitMultipartForm) clearTimeout(submitMultipartForm);
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
-    <div {...wrapperProps} style={Object.assign({}, wrapperProps.style, { position: 'relative' })}>
+    <div {...wrapperProps} style={Object.assign({}, wrapperProps.style, {position: 'relative', display: 'block'})}>
       {getCustomLeftIcon(formElement)}
       <Input {...passableProps}
         help={getFormElementHelp(hasError, this.state, formElement.name)}
@@ -1713,7 +1713,7 @@ export function getFormColorPicker(options) {
         icon={(hasError) ? formElement.errorIcon || 'fa fa-exclamation' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
         hasIconRight={formElement.errorIconRight}
         onChange={handleOnChange.bind(this)}
-        placeholder={formElement.placeholder}
+        placeholder={formElement.placeholder} 
         value={initialVal} />
     </div>
   </FormItem>
