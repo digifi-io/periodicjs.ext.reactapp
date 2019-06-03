@@ -778,7 +778,7 @@ class ResponsiveTable extends Component {
     //     usingFiltersInSearch: props.usingFiltersInSearch  
   }
   render() {
-    // console.debug('render this.state', this.state);
+    // console.debug('render this.state', this.state);    
     let maxFormRowLength = 0;
     let calcStartIndex = ((this.state.currentPage - 1) * this.state.limit);
     let startIndex = (!this.props.baseUrl)
@@ -1465,7 +1465,16 @@ class ResponsiveTable extends Component {
                           cursor: 'pointer',
                         }} {...this.props.headerLinkProps} onClick={() => {
                           this.updateTableData({ sort: header.sortid, search: this.searchInputTextVal, });
-                        }}>{(!Array.isArray(header.label) && typeof header.label === "object") ? this.getRenderedComponent(header.label) : header.label}</a>)
+                          }}>{(!Array.isArray(header.label) && typeof header.label === "object") ? this.getRenderedComponent(header.label) : header.label}
+                            <i className={(this.state.sortProp === header.sortid) 
+                                ? (this.state.sortOrder === "-") 
+                                  ? "fas fa-caret-up" 
+                                  : "fas fa-caret-down"
+                                : "fas fa-sort"
+                                }
+                              aria-hidden={true} 
+                              style={{marginLeft: "5px"}}></i>
+                          </a>)
                         : (!Array.isArray(header.label) && typeof header.label === "object") ? this.getRenderedComponent(header.label) : header.label
                       }
                     </rb.Th>
