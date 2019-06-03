@@ -1056,7 +1056,7 @@ function getFormAddressAPIInput(options) {
           } }))
       )
     );
-  } else {
+  } else if (formElement.leftIcon) {
     return _react2.default.createElement(
       _FormItem2.default,
       (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
@@ -1074,6 +1074,20 @@ function getFormAddressAPIInput(options) {
           placeholder: formElement.placeholder,
           value: initialValue }))
       )
+    );
+  } else {
+    return _react2.default.createElement(
+      _FormItem2.default,
+      (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
+      formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
+      _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
+        help: getFormElementHelp(hasError, this.state, formElement.name),
+        color: hasError ? 'isDanger' : undefined,
+        icon: hasError ? formElement.errorIcon || 'fa fa-exclamation' : isValid ? formElement.validIcon || 'fa fa-check' : formElement.initialIcon ? formElement.initialIcon : undefined,
+        hasIconRight: formElement.errorIconRight,
+        onChange: onChange,
+        placeholder: formElement.placeholder,
+        value: initialValue }))
     );
   }
 }
