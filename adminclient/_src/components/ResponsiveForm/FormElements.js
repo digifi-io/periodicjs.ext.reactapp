@@ -1809,7 +1809,8 @@ function getFormLink(options) {
     }
   }, formElement.linkWrapperProps);
   // console.debug({ linkWrapperProps, formElement });
-
+  wrapperProps.className = wrapperProps.className || "";
+  wrapperProps.className = formElement.leftIcon ? wrapperProps.className + ' __ra-left-icon' : wrapperProps.className;
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
@@ -1817,6 +1818,7 @@ function getFormLink(options) {
     _react2.default.createElement(
       'span',
       wrapperProps,
+      getCustomLeftIcon(formElement),
       _react2.default.createElement(
         'span',
         linkWrapperProps,

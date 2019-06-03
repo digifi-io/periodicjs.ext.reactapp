@@ -950,7 +950,7 @@ var ResponsiveTable = function (_Component) {
     value: function render() {
       var _this8 = this;
 
-      // console.debug('render this.state', this.state);
+      // console.debug('render this.state', this.state);    
       var maxFormRowLength = 0;
       var calcStartIndex = (this.state.currentPage - 1) * this.state.limit;
       var startIndex = !this.props.baseUrl ? calcStartIndex : this.searchInputTextVal && !this.props.calculatePagination ? this.state.limit * (this.state.currentPage - 1) : 0;
@@ -1875,7 +1875,10 @@ var ResponsiveTable = function (_Component) {
                         } }, _this8.props.headerLinkProps, { onClick: function onClick() {
                           _this8.updateTableData({ sort: header.sortid, search: _this8.searchInputTextVal });
                         } }),
-                      !Array.isArray(header.label) && (0, _typeof3.default)(header.label) === "object" ? _this8.getRenderedComponent(header.label) : header.label
+                      !Array.isArray(header.label) && (0, _typeof3.default)(header.label) === "object" ? _this8.getRenderedComponent(header.label) : header.label,
+                      _react2.default.createElement('i', { className: _this8.state.sortProp === header.sortid ? _this8.state.sortOrder === "-" ? "fas fa-caret-up" : "fas fa-caret-down" : "fas fa-sort",
+                        'aria-hidden': true,
+                        style: { marginLeft: "5px" } })
                     ) : !Array.isArray(header.label) && (0, _typeof3.default)(header.label) === "object" ? _this8.getRenderedComponent(header.label) : header.label
                   );
                 })
