@@ -50,6 +50,7 @@ const defaultStyles = {
     display: 'inline-flex',
     height: 30,
     lineHeight: '30px',
+    position: 'relative',
     // padding: '0px 5px',
     margin: 0,
     width:'100%',

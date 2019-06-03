@@ -1575,10 +1575,12 @@ export function getFormLink(options) {
     },
   }, formElement.linkWrapperProps);
   // console.debug({ linkWrapperProps, formElement });
-
+  wrapperProps.className = wrapperProps.className || "";
+  wrapperProps.className = (formElement.leftIcon) ? wrapperProps.className + ' __ra-left-icon' : wrapperProps.className;
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}
-    <span {...wrapperProps}>
+    <span {...wrapperProps} >
+      {getCustomLeftIcon(formElement)}
       <span {...linkWrapperProps}>
         {button}
       </span>
