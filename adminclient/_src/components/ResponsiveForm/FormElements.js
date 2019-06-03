@@ -1168,14 +1168,31 @@ function getFormTextInputArea(options) {
     });
   }
   if (submitMultipartForm) clearTimeout(submitMultipartForm);
-  return _react2.default.createElement(
-    _FormItem2.default,
-    (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
-    formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
-    _react2.default.createElement(
-      'div',
-      (0, _extends3.default)({}, wrapperProps, { style: (0, _assign2.default)({}, wrapperProps.style, { position: 'relative', display: 'block' }) }),
-      getCustomLeftIcon(formElement),
+
+  if (formElement.leftIcon) {
+    return _react2.default.createElement(
+      _FormItem2.default,
+      (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
+      formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
+      _react2.default.createElement(
+        'div',
+        (0, _extends3.default)({}, wrapperProps, { style: (0, _assign2.default)({}, wrapperProps.style, { position: 'relative', display: 'block' }) }),
+        getCustomLeftIcon(formElement),
+        _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
+          help: getFormElementHelp(hasError, this.state, formElement.name),
+          color: hasError ? 'isDanger' : undefined,
+          icon: hasError ? formElement.errorIcon || 'fa fa-exclamation' : isValid ? formElement.validIcon || 'fa fa-check' : formElement.initialIcon ? formElement.initialIcon : undefined,
+          hasIconRight: formElement.errorIconRight,
+          onChange: onChange,
+          placeholder: formElement.placeholder,
+          value: initialValue }))
+      )
+    );
+  } else {
+    return _react2.default.createElement(
+      _FormItem2.default,
+      (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
+      formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement),
       _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
         help: getFormElementHelp(hasError, this.state, formElement.name),
         color: hasError ? 'isDanger' : undefined,
@@ -1184,8 +1201,8 @@ function getFormTextInputArea(options) {
         onChange: onChange,
         placeholder: formElement.placeholder,
         value: initialValue }))
-    )
-  );
+    );
+  }
 }
 
 function getFormImageCropper(options) {
