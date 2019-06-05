@@ -1,9 +1,46 @@
 import flatten from 'flat';
 import validate from 'validate.js';
 
+/**
+ *
+ *
+ * @param {String} function_string sting for function name
+ * @returns the window function associated with the function_string if it exists on the window. Otherwise the function returns null
+ */
+const getWindowFunction = function_string => {
+  if (typeof function_string === 'string' && function_string.indexOf('func:window') !== -1 && typeof window[ function_string.replace('func:window.', '') ] === 'function') {
+    return window[ function_string.replace('func:window.', '') ];
+  }
+  return null;
+};
+
+/**
+ *
+ * creates custom validations on the validator object provided by validate.js. 
+ * @param {Object} validation validation object defined as part of the validations array in the form manifest
+ * @param {Array} validation.custom_validators list of names for custom validations. Each name gets set as the key for the validation on the validate.validators object
+ * @param {Array} validation.custom_validators_functions list of function names for custom validations. Function gets defined on the window. Format for function can be found in 
+ * Validate.js docs
+ */
+const createValidators = validation => {
+  validation.custom_validators.forEach((custom_validator, index) => {
+    if (validation.custom_validator_functions) {
+      const window_function = getWindowFunction(validation.custom_validator_functions[ index ])
+      if (window_function) {
+        validate.validators[ custom_validator ] = window_function;
+      }
+    }
+  });
+};
+
 export function validateFormElement(options) {
   try {
     let { formElement, } = options;
+    /*allows for custom validations to be defined in manifest. If there are custom validations on the formElement, define them on the validators object
+    provided by validate.js*/
+    this.props.validations.forEach(validation => {
+      if (validation.custom_validators && validation.custom_validators.length) createValidators(validation)
+    })
     let validation = this.props.validations.filter(validation => validation.name === formElement.name);
     validation = (validation.length > 0) ? validation[ 0 ] : false;
     if (validation) {
@@ -56,6 +93,7 @@ export function validateForm(options) {
   // console.debug('testin valdation',this.props.validations,) 
   if (this.props.validations) {
     this.props.validations.forEach(validation => {
+      if (validation.custom_validators && validation.custom_validators.length) createValidators(validation)
       let validationerror = validate({
         [ validation.name ]: formdata[ validation.name ],
       }, validation.constraints);

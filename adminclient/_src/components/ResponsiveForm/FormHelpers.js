@@ -47,10 +47,47 @@ var _validate4 = _interopRequireDefault(_validate3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ *
+ *
+ * @param {String} function_string sting for function name
+ * @returns the window function associated with the function_string if it exists on the window. Otherwise the function returns null
+ */
+var getWindowFunction = function getWindowFunction(function_string) {
+  if (typeof function_string === 'string' && function_string.indexOf('func:window') !== -1 && typeof window[function_string.replace('func:window.', '')] === 'function') {
+    return window[function_string.replace('func:window.', '')];
+  }
+  return null;
+};
+
+/**
+ *
+ * creates custom validations on the validator object provided by validate.js. 
+ * @param {Object} validation validation object defined as part of the validations array in the form manifest
+ * @param {Array} validation.custom_validators list of names for custom validations. Each name gets set as the key for the validation on the validate.validators object
+ * @param {Array} validation.custom_validators_functions list of function names for custom validations. Function gets defined on the window. Format for function can be found in 
+ * Validate.js docs
+ */
+var createValidators = function createValidators(validation) {
+  validation.custom_validators.forEach(function (custom_validator, index) {
+    if (validation.custom_validator_functions) {
+      var window_function = getWindowFunction(validation.custom_validator_functions[index]);
+      if (window_function) {
+        _validate4.default.validators[custom_validator] = window_function;
+      }
+    }
+  });
+};
+
 function validateFormElement(options) {
   try {
     var formElement = options.formElement;
+    /*allows for custom validations to be defined in manifest. If there are custom validations on the formElement, define them on the validators object
+    provided by validate.js*/
 
+    this.props.validations.forEach(function (validation) {
+      if (validation.custom_validators && validation.custom_validators.length) createValidators(validation);
+    });
     var validation = this.props.validations.filter(function (validation) {
       return validation.name === formElement.name;
     });
@@ -106,6 +143,7 @@ function validateForm(options) {
 
   if (this.props.validations) {
     this.props.validations.forEach(function (validation) {
+      if (validation.custom_validators && validation.custom_validators.length) createValidators(validation);
       var validationerror = (0, _validate4.default)((0, _defineProperty3.default)({}, validation.name, formdata[validation.name]), validation.constraints);
       // console.debug(formdata[ validation.name ], { validation, validationerror, });
       if (validationerror) {
