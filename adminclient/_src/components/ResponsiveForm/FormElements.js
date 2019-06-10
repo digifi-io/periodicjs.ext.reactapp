@@ -986,7 +986,7 @@ function getFormAddressAPIInput(options) {
   passableProps = getPassablePropkeyevents(passableProps, formElement);
 
   function handlePlaceSelect() {
-    var addressObject = this.autocomplete.getPlace();
+    var addressObject = formElement.autocomplete.getPlace();
     var addressData = { formatted_address: addressObject.formatted_address };
     var address = addressObject.address_components;
     if (formElement.passProps && formElement.passProps.include_places_detail && address) {
@@ -1028,9 +1028,9 @@ function getFormAddressAPIInput(options) {
       options.fields = ["formatted_address"];
     }
     /*global google*/ // PLEASE KEEP THIS LINE To disable any eslint 'google not defined' errors
-    this.autocomplete = new google.maps.places.Autocomplete(document.getElementById('autocomplete_address'), options);
-    this.autocomplete.setFields(['address_components', 'formatted_address']);
-    this.autocomplete.addListener('place_changed', handlePlaceSelect);
+    formElement.autocomplete = new google.maps.places.Autocomplete(document.querySelector('.autocomplete_address_' + formElement.name + ' > input'), options);
+    formElement.autocomplete.setFields(['address_components', 'formatted_address']);
+    formElement.autocomplete.addListener('place_changed', handlePlaceSelect);
   }
   handlePlaceSelect = handlePlaceSelect.bind(this);
   handleScriptLoad = handleScriptLoad.bind(this);
@@ -1039,6 +1039,8 @@ function getFormAddressAPIInput(options) {
   if (applicationSettings && applicationSettings.credentials && applicationSettings.credentials.google_places_api) {
     var api_credential = applicationSettings.credentials.google_places_api;
     var inputProps = formElement.passProps && formElement.passProps.inputProps ? formElement.passProps.inputProps : {};
+    var className = passableProps.className ? passableProps.className : '';
+    className += ' autocomplete_address_' + formElement.name;
     return _react2.default.createElement(
       _FormItem2.default,
       (0, _extends3.default)({ key: i }, formElement.layoutProps, { initialIcon: formElement.initialIcon, isValid: isValid, hasError: hasError, hasValue: hasValue }),
@@ -1051,9 +1053,17 @@ function getFormAddressAPIInput(options) {
           url: 'https://maps.googleapis.com/maps/api/js?key=' + api_credential + '&libraries=places',
           onLoad: handleScriptLoad
         }),
-        _react2.default.createElement('input', (0, _extends3.default)({ id: 'autocomplete_address' }, inputProps, { value: initialValue, onChange: function onChange(e) {
+        _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, inputProps, {
+          value: initialValue,
+          className: className,
+          onChange: function onChange(e) {
             _this9.setState((0, _defineProperty3.default)({}, formElement.name, e.target.value));
-          } }))
+          },
+          help: getFormElementHelp(hasError, this.state, formElement.name),
+          color: hasError ? 'isDanger' : undefined,
+          icon: hasError ? formElement.errorIcon || 'fa fa-exclamation' : isValid ? formElement.validIcon || 'fa fa-check' : formElement.initialIcon ? formElement.initialIcon : undefined,
+          hasIconRight: formElement.errorIconRight,
+          placeholder: formElement.placeholder }))
       )
     );
   } else if (formElement.leftIcon) {
