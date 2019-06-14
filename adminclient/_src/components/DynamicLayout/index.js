@@ -71,6 +71,7 @@ var DynamicLayout = function (_Component) {
       var _this2 = this;
 
       try {
+        var CustomContainerTag = this.props.customContainerTag ? this.props.customContainerTag : 'div';
         var mappedItemLayout = this.state.items && Array.isArray(this.state.items) && this.state.items.length ? this.state.items.map(function (item) {
           var mergedLayout = (0, _assign2.default)({}, _this2.props.layout, {
             props: (0, _assign2.default)({}, _this2.props.layout.props, item)
@@ -84,8 +85,9 @@ var DynamicLayout = function (_Component) {
           this.props.columnsProps,
           mappedItemLayout
         ) : _react2.default.createElement(
-          'div',
-          { style: (0, _assign2.default)({
+          CustomContainerTag,
+          {
+            style: (0, _assign2.default)({
               flexDirection: 'rows',
               display: 'flex'
             }, this.props.style) },
