@@ -26,6 +26,7 @@ class DynamicLayout extends Component {
   }
   render() {
     try {
+      let CustomContainerTag = (this.props.customContainerTag) ? this.props.customContainerTag : 'div';
       let mappedItemLayout = ((this.state.items && Array.isArray(this.state.items) && this.state.items.length)
             ? this.state.items.map(item => {
               let mergedLayout = Object.assign({}, this.props.layout, {
@@ -38,13 +39,12 @@ class DynamicLayout extends Component {
 
       let dynamicComponentLayout = (this.props.isColumns)
         ? (<Columns {...this.props.columnsProps}>{mappedItemLayout}</Columns>)
-        : (<div style={
-        Object.assign({
-          flexDirection: 'rows',
-          display: 'flex',
-        },
-          this.props.style)
-      }>{mappedItemLayout}</div>);
+        : ( <CustomContainerTag 
+              style={Object.assign({
+                flexDirection: 'rows',
+                display: 'flex',
+              }, this.props.style)
+            }>{mappedItemLayout}</CustomContainerTag>);
       // console.debug({dynamicComponentLayout})
       return dynamicComponentLayout;
     } catch (e) {
