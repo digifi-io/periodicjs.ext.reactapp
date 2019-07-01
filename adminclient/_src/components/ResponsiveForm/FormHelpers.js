@@ -287,64 +287,108 @@ function setAddNameToName(options) {
 }
 
 function setFormNameFields(options) {
-  var _this2 = this;
-
   var formElementFields = options.formElementFields,
       formdata = options.formdata;
 
   var multipleDropdowns = {};
   var addNameToName = setAddNameToName.bind(this);
+  function _mapFormFieldNames(formgroup, formdata, formElementFields) {
+    var _this2 = this;
+
+    if (formgroup.formElements && formgroup.formElements.length) {
+      formgroup.formElements.forEach(function (formElement) {
+        var formElementsLeft = formElement.formGroupElementsLeft && formElement.formGroupElementsLeft.length ? formElement.formGroupElementsLeft : false;
+        var formElementsRight = formElement.formGroupElementsRight && formElement.formGroupElementsRight.length ? formElement.formGroupElementsRight : false;
+        var formGroupLeft = formElement.formGroupCardLeft && formElement.formGroupCardLeft.length ? formElement.formGroupCardLeft : false;
+        var formGroupRight = formElement.formGroupCardRight && formElement.formGroupCardRight.length ? formElement.formGroupCardRight : false;
+        if (formElementsLeft || formElementsRight) {
+          if (formElementsLeft) formElementsLeft.forEach(function (formElm) {
+            return addNameToName({
+              formElementFields: formElementFields,
+              formdata: formdata,
+              formElm: formElm,
+              multipleDropdowns: multipleDropdowns
+            });
+          });
+          if (formElementsRight) formElementsRight.forEach(function (formElm) {
+            return addNameToName({
+              formElementFields: formElementFields,
+              formdata: formdata,
+              formElm: formElm,
+              multipleDropdowns: multipleDropdowns
+            });
+          });
+        } else if (formGroupLeft || formGroupRight) {
+          if (formGroupLeft) formGroupLeft.forEach(function (formElm) {
+            return addNameToName({
+              formElementFields: formElementFields,
+              formdata: formdata,
+              formElm: formElm,
+              multipleDropdowns: multipleDropdowns
+            });
+          });
+          if (formGroupRight) formGroupRight.forEach(function (formElm) {
+            return addNameToName({
+              formElementFields: formElementFields,
+              formdata: formdata,
+              formElm: formElm,
+              multipleDropdowns: multipleDropdowns
+            });
+          });
+        } else if (formElement.type === 'group') {
+          if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(function (formElm) {
+            return addNameToName({
+              formElementFields: formElementFields,
+              formdata: formdata,
+              formElm: formElm,
+              multipleDropdowns: multipleDropdowns
+            });
+          });
+        } else if (formElement.type === 'tabs') {
+          if (formElement.name && formElement.passProps && formElement.passProps.markActiveTab) {
+            formdata[formElement.name] = _this2.state ? _this2.state[formElement.name] || formElement.value : formElement.value;
+            formElementFields.push(formElement.name);
+          }
+          if (formElement.tabs && formElement.tabs.length) {
+            formElement.tabs.forEach(function (tab) {
+              if (tab.formElements && tab.formElements.length) {
+                tab.formElements.forEach(function (formElm) {
+                  return addNameToName({
+                    formElementFields: formElementFields,
+                    formdata: formdata,
+                    formElm: formElm,
+                    multipleDropdowns: multipleDropdowns
+                  });
+                });
+              }
+            });
+          }
+        } else if (!formElement || formElement.disabled || formElement.passProps && formElement.passProps.state === 'isDisabled') {
+          //skip if dsiabled
+          // console.debug('skip', formElement);
+
+        } else {
+          if (formElement.name) {
+            addNameToName({
+              formElementFields: formElementFields,
+              formdata: formdata,
+              formElm: formElement,
+              multipleDropdowns: multipleDropdowns
+            });
+            // formElementFields.push(formElement.name);
+          }
+        }
+      });
+    }
+  }
   if (this.props.formgroups && this.props.formgroups.length) {
     this.props.formgroups.forEach(function (formgroup) {
-      if (formgroup.formElements && formgroup.formElements.length) {
-        formgroup.formElements.forEach(function (formElement) {
-          var formElementsLeft = formElement.formGroupElementsLeft && formElement.formGroupElementsLeft.length ? formElement.formGroupElementsLeft : false;
-          var formElementsRight = formElement.formGroupElementsRight && formElement.formGroupElementsRight.length ? formElement.formGroupElementsRight : false;
-          var formGroupLeft = formElement.formGroupCardLeft && formElement.formGroupCardLeft.length ? formElement.formGroupCardLeft : false;
-          var formGroupRight = formElement.formGroupCardRight && formElement.formGroupCardRight.length ? formElement.formGroupCardRight : false;
-          if (formElementsLeft || formElementsRight) {
-            if (formElementsLeft) formElementsLeft.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
-            });
-            if (formElementsRight) formElementsRight.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
-            });
-          } else if (formGroupLeft || formGroupRight) {
-            if (formGroupLeft) formGroupLeft.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
-            });
-            if (formGroupRight) formGroupRight.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
-            });
-          } else if (formElement.type === 'group') {
-            if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(function (formElm) {
-              return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
-            });
-          } else if (formElement.type === 'tabs') {
-            if (formElement.name && formElement.passProps && formElement.passProps.markActiveTab) {
-              formdata[formElement.name] = _this2.state ? _this2.state[formElement.name] || formElement.value : formElement.value;
-              formElementFields.push(formElement.name);
-            }
-            if (formElement.tabs && formElement.tabs.length) {
-              formElement.tabs.forEach(function (tab) {
-                if (tab.formElements && tab.formElements.length) {
-                  tab.formElements.forEach(function (formElm) {
-                    return addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElm, multipleDropdowns: multipleDropdowns });
-                  });
-                }
-              });
-            }
-          } else if (!formElement || formElement.disabled || formElement.passProps && formElement.passProps.state === 'isDisabled') {
-            //skip if dsiabled
-            // console.debug('skip', formElement);
-
-          } else {
-            if (formElement.name) {
-              addNameToName({ formElementFields: formElementFields, formdata: formdata, formElm: formElement, multipleDropdowns: multipleDropdowns });
-              // formElementFields.push(formElement.name);
-            }
-          }
+      if (formgroup.gridElements) {
+        formgroup.gridElements.map(function (grid) {
+          return _mapFormFieldNames(grid, formdata, formElementFields);
         });
+      } else {
+        _mapFormFieldNames(formgroup, formdata, formElementFields);
       }
     });
   }
