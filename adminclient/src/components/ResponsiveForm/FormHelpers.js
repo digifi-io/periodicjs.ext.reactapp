@@ -230,54 +230,97 @@ export function setAddNameToName(options) {
   return { formdata, formElementFields, formElement: formElm, multipleDropdowns, };
 }
 
+
 export function setFormNameFields(options) {
   let { formElementFields, formdata, } = options;
   let multipleDropdowns = {};
   const addNameToName = setAddNameToName.bind(this);
+  function _mapFormFieldNames(formgroup, formdata, formElementFields) {
+    if (formgroup.formElements && formgroup.formElements.length) {
+      formgroup.formElements.forEach(formElement => {
+        let formElementsLeft = (formElement.formGroupElementsLeft && formElement.formGroupElementsLeft.length) ? formElement.formGroupElementsLeft : false;
+        let formElementsRight = (formElement.formGroupElementsRight && formElement.formGroupElementsRight.length) ? formElement.formGroupElementsRight : false;
+        let formGroupLeft = (formElement.formGroupCardLeft && formElement.formGroupCardLeft.length) ? formElement.formGroupCardLeft : false;
+        let formGroupRight = (formElement.formGroupCardRight && formElement.formGroupCardRight.length) ? formElement.formGroupCardRight : false;
+        if (formElementsLeft || formElementsRight) {
+          if (formElementsLeft) formElementsLeft.forEach(formElm => addNameToName({
+            formElementFields,
+            formdata,
+            formElm,
+            multipleDropdowns,
+          }));
+          if (formElementsRight) formElementsRight.forEach(formElm => addNameToName({
+            formElementFields,
+            formdata,
+            formElm,
+            multipleDropdowns,
+          }));
+        } else if (formGroupLeft || formGroupRight) {
+          if (formGroupLeft) formGroupLeft.forEach(formElm => addNameToName({
+            formElementFields,
+            formdata,
+            formElm,
+            multipleDropdowns,
+          }));
+          if (formGroupRight) formGroupRight.forEach(formElm => addNameToName({
+            formElementFields,
+            formdata,
+            formElm,
+            multipleDropdowns,
+          }));
+        } else if (formElement.type === 'group') {
+          if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(formElm => addNameToName({
+            formElementFields,
+            formdata,
+            formElm,
+            multipleDropdowns,
+          }));
+        } else if (formElement.type === 'tabs') {
+          if (formElement.name && formElement.passProps && formElement.passProps.markActiveTab) {
+            formdata[formElement.name] = (this.state) ?
+              this.state[formElement.name] || formElement.value :
+              formElement.value;
+            formElementFields.push(formElement.name)
+          }
+          if (formElement.tabs && formElement.tabs.length) {
+            formElement.tabs.forEach(tab => {
+              if (tab.formElements && tab.formElements.length) {
+                tab.formElements.forEach(formElm => addNameToName({
+                  formElementFields,
+                  formdata,
+                  formElm,
+                  multipleDropdowns,
+                }));
+              }
+            })
+          }
+        } else if (!formElement ||
+          formElement.disabled ||
+          (formElement.passProps && formElement.passProps.state === 'isDisabled')
+        ) {
+          //skip if dsiabled
+          // console.debug('skip', formElement);
+
+        } else {
+          if (formElement.name) {
+            addNameToName({
+              formElementFields,
+              formdata,
+              formElm: formElement,
+              multipleDropdowns,
+            });
+            // formElementFields.push(formElement.name);
+          }
+        }
+      });
+    }
+  }
   if (this.props.formgroups && this.props.formgroups.length) {
     this.props.formgroups.forEach(formgroup => {
-      if (formgroup.formElements && formgroup.formElements.length) {
-        formgroup.formElements.forEach(formElement => {
-          let formElementsLeft = (formElement.formGroupElementsLeft && formElement.formGroupElementsLeft.length) ? formElement.formGroupElementsLeft : false;
-          let formElementsRight = (formElement.formGroupElementsRight && formElement.formGroupElementsRight.length) ? formElement.formGroupElementsRight : false;
-          let formGroupLeft = (formElement.formGroupCardLeft && formElement.formGroupCardLeft.length) ? formElement.formGroupCardLeft : false;
-          let formGroupRight = (formElement.formGroupCardRight && formElement.formGroupCardRight.length) ? formElement.formGroupCardRight : false;
-          if (formElementsLeft || formElementsRight) {
-            if (formElementsLeft) formElementsLeft.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
-            if (formElementsRight) formElementsRight.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
-          } else if (formGroupLeft || formGroupRight) {
-            if (formGroupLeft) formGroupLeft.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
-            if (formGroupRight) formGroupRight.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
-          } else if (formElement.type === 'group') {
-            if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
-          } else if (formElement.type === 'tabs') {
-            if (formElement.name && formElement.passProps && formElement.passProps.markActiveTab) {
-              formdata[ formElement.name ] = (this.state) ?
-              this.state[ formElement.name ] || formElement.value :
-              formElement.value;
-              formElementFields.push(formElement.name)
-            }
-            if (formElement.tabs && formElement.tabs.length) {
-              formElement.tabs.forEach(tab => {
-                if (tab.formElements && tab.formElements.length) {
-                  tab.formElements.forEach(formElm => addNameToName({ formElementFields, formdata, formElm, multipleDropdowns, }));
-                }
-              })
-            }
-          } else if (!formElement ||
-            formElement.disabled ||
-            (formElement.passProps && formElement.passProps.state === 'isDisabled')
-          ) {
-            //skip if dsiabled
-            // console.debug('skip', formElement);
-
-          } else {
-            if (formElement.name) {
-              addNameToName({ formElementFields, formdata, formElm: formElement, multipleDropdowns, });
-              // formElementFields.push(formElement.name);
-            }
-          }
-        });
+      if (formgroup.gridElements) {
+        formgroup.gridElements.map(grid => _mapFormFieldNames(grid, formdata, formElementFields))
+      } else {
+        _mapFormFieldNames(formgroup, formdata, formElementFields);
       }
     });
   }
