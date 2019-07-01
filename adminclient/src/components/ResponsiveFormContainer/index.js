@@ -1,7 +1,7 @@
 import React, { Component, PropTypes, } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import ResponsiveForm from '../ResponsiveForm';
-import console = require('console');
+// import console = require('console');
 
 const propTypes = {
   form: PropTypes.object,
