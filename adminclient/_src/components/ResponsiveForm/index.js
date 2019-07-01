@@ -695,6 +695,24 @@ var ResponsiveForm = function (_Component) {
             )
           );
         }
+        if (formgroup.gridElements) {
+          return _react2.default.createElement(
+            _reBulma.Columns,
+            gridProps,
+            formgroup.gridElements && formgroup.gridElements.length ? formgroup.gridElements.map(function (grid) {
+              var gridColumnProps = (0, _assign2.default)({}, grid.gridColumnProps, {
+                style: (0, _assign2.default)({
+                  padding: 0
+                }, grid.columnProps && grid.columnProps.style ? grid.columnProps.style : {})
+              });
+              return _react2.default.createElement(
+                _reBulma.Column,
+                gridColumnProps,
+                grid.formElements && grid.formElements.length ? grid.formElements.map(getFormElements) : null
+              );
+            }) : null
+          );
+        }
         return _react2.default.createElement(
           _reBulma.Columns,
           gridProps,
