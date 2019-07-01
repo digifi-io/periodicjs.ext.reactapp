@@ -53,7 +53,7 @@ class ResponsiveFormContainer extends Component {
   }
 
   updateDoubleCardFormGroup(options) {
-    let { formgroup, prevState, currState, prop, order} = options;
+    let { formgroup, prevState, currState, prop, order } = options;
     let formElementsQueue = [];
     formElementsQueue.push(...formgroup.formElements[ 0 ][ prop ].slice());
     formgroup.formElements[ 0 ][ prop ] = (order.length) ? order.map(el => false) : [];
@@ -88,7 +88,11 @@ class ResponsiveFormContainer extends Component {
       }
     });
     let validations = formElements.reduce((valArr, formElement) => { 
-      if (formElement.name && this.props.validations[ formElement.name ]) valArr.push(this.props.validations[ formElement.name ]);
+      if (formElement.type === 'group') {
+        formElement.groupElements.map(element => {
+          if (element.name && this.props.validations[element.name]) valArr.push(this.props.validations[element.name]);
+        })
+      } else if (formElement.name && this.props.validations[ formElement.name ]) valArr.push(this.props.validations[ formElement.name ]);
       return valArr;
     }, []);
     return validations;

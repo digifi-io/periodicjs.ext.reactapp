@@ -160,7 +160,11 @@ var ResponsiveFormContainer = function (_Component) {
         }
       });
       var validations = formElements.reduce(function (valArr, formElement) {
-        if (formElement.name && _this2.props.validations[formElement.name]) valArr.push(_this2.props.validations[formElement.name]);
+        if (formElement.type === 'group') {
+          formElement.groupElements.map(function (element) {
+            if (element.name && _this2.props.validations[element.name]) valArr.push(_this2.props.validations[element.name]);
+          });
+        } else if (formElement.name && _this2.props.validations[formElement.name]) valArr.push(_this2.props.validations[formElement.name]);
         return valArr;
       }, []);
       return validations;
