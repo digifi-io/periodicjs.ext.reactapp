@@ -639,6 +639,19 @@ class ResponsiveForm extends Component {
           </Column>
         </Columns>);
       }
+      if (formgroup.gridElements) {
+        return (<Columns {...gridProps}>
+          {(formgroup.gridElements && formgroup.gridElements.length) ? formgroup.gridElements.map(grid => {
+            let gridColumnProps = Object.assign({}, grid.gridColumnProps, 
+            {
+              style: Object.assign({
+                padding: 0,
+              }, (grid.columnProps && grid.columnProps.style) ? grid.columnProps.style : {})
+            })
+            return <Column {...gridColumnProps}>{(grid.formElements && grid.formElements.length) ? grid.formElements.map(getFormElements) : null}</Column>
+          }) : null}
+        </Columns>);
+      }
       return (<Columns {...gridProps}>
         {(formgroup.formElements && formgroup.formElements.length) ? formgroup.formElements.map(getFormElements) : null}
       </Columns>);
