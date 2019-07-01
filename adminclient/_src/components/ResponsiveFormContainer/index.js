@@ -48,6 +48,8 @@ var _ResponsiveForm2 = _interopRequireDefault(_ResponsiveForm);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import console = require('console');
+
 var propTypes = {
   form: _react.PropTypes.object,
   renderFormElements: _react.PropTypes.object,
@@ -149,7 +151,11 @@ var ResponsiveFormContainer = function (_Component) {
 
       var formElements = [];
       this.props.form.formgroups.forEach(function (formgroup) {
-        if (formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight) {
+        if (formgroup.gridElements) {
+          formgroup.gridElements.map(function (grid) {
+            if (grid.formElements) formElements.push.apply(formElements, (0, _toConsumableArray3.default)(grid.formElements));
+          });
+        } else if (formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight) {
           formElements.push.apply(formElements, (0, _toConsumableArray3.default)(formgroup.formElements[0].formGroupCardLeft));
           formElements.push.apply(formElements, (0, _toConsumableArray3.default)(formgroup.formElements[0].formGroupCardRight));
         } else if (formgroup.formElements[0].formGroupElementsLeft && formgroup.formElements[0].formGroupElementsRight) {
@@ -175,7 +181,12 @@ var ResponsiveFormContainer = function (_Component) {
       var _this3 = this;
 
       this.props.form.formgroups = this.props.form.formgroups.map(function (formgroup) {
-        if (formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight) {
+        if (formgroup.gridElements) {
+          formgroup.gridElements.map(function (grid) {
+            if (grid.formElements) return _this3.updateFormGroup({ formgroup: grid, prevState: prevState, currState: currState, order: grid.order });
+          });
+          return formgroup;
+        } else if (formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight) {
           formgroup = _this3.updateDoubleCardFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState, prop: 'formGroupCardLeft', order: formgroup.formElements[0].leftOrder });
           formgroup = _this3.updateDoubleCardFormGroup({ formgroup: formgroup, prevState: prevState, currState: currState, prop: 'formGroupCardRight', order: formgroup.formElements[0].rightOrder });
           return formgroup;
