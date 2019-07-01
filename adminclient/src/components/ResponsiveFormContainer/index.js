@@ -1,6 +1,7 @@
 import React, { Component, PropTypes, } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import ResponsiveForm from '../ResponsiveForm';
+import console = require('console');
 
 const propTypes = {
   form: PropTypes.object,
@@ -77,7 +78,11 @@ class ResponsiveFormContainer extends Component {
   updateValidations(options) {
     let formElements = [];
     this.props.form.formgroups.forEach(formgroup => {
-      if ((formgroup.formElements[ 0 ].formGroupCardLeft && formgroup.formElements[ 0 ].formGroupCardRight)) {
+      if (formgroup.gridElements) {
+        formgroup.gridElements.map(grid => {
+          if (grid.formElements) formElements.push(...grid.formElements);
+        })
+      } else if ((formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight)) {
         formElements.push(...formgroup.formElements[0].formGroupCardLeft);
         formElements.push(...formgroup.formElements[0].formGroupCardRight);
       } else if ((formgroup.formElements[ 0 ].formGroupElementsLeft && formgroup.formElements[ 0 ].formGroupElementsRight)) {
@@ -100,7 +105,12 @@ class ResponsiveFormContainer extends Component {
 
   updateFormLayout(prevState, currState) {
     this.props.form.formgroups = this.props.form.formgroups.map(formgroup => {
-      if ((formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight)) {
+      if (formgroup.gridElements) {
+        formgroup.gridElements.map(grid => {
+          if (grid.formElements) return this.updateFormGroup({ formgroup: grid, prevState, currState, order: grid.order });
+        })
+        return formgroup; 
+      } else if ((formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardRight)) {
         formgroup = this.updateDoubleCardFormGroup({ formgroup, prevState, currState, prop: 'formGroupCardLeft', order: formgroup.formElements[0].leftOrder });
         formgroup = this.updateDoubleCardFormGroup({ formgroup, prevState, currState, prop: 'formGroupCardRight', order: formgroup.formElements[0].rightOrder });
         return formgroup;
