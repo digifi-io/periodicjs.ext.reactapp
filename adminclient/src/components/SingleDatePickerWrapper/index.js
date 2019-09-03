@@ -102,7 +102,7 @@ class SingleDatePickerWrapper extends Component {
     ]);
 
     return (
-      <div className={`${(this.state.focused) ? 'active' : ''}`}>
+      <div className={`${(this.state.focused) ? '__ra_date_picker_active' : ''}`}>
         <SingleDatePicker
           {...props}
           id="date_input"
