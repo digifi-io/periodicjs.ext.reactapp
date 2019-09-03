@@ -929,7 +929,6 @@ function getFormMaskedInput(options) {
     _react2.default.createElement(
       'span',
       (0, _extends3.default)({}, wrapperProps, { style: (0, _assign2.default)({}, wrapperProps.style, { position: 'relative' }) }),
-      getCustomLeftIcon(formElement),
       _react2.default.createElement(_reactTextMask2.default, (0, _extends3.default)({}, passableProps, {
         mask: mask,
         className: hasError ? passableProps.className + ' __re-bulma_is-danger' : passableProps.className,
@@ -937,6 +936,7 @@ function getFormMaskedInput(options) {
         onChange: onChange,
         placeholder: formElement.placeholder,
         value: initialValue })),
+      getCustomLeftIcon(formElement),
       getCustomErrorIcon(hasError, isValid, this.state, formElement),
       getCustomErrorLabel(hasError, this.state, formElement)
     )
@@ -1081,15 +1081,14 @@ function getFormAddressAPIInput(options) {
       _react2.default.createElement(
         'div',
         (0, _extends3.default)({}, wrapperProps, { style: (0, _assign2.default)({}, wrapperProps.style, { position: 'relative' }) }),
-        getCustomLeftIcon(formElement),
         _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
           help: getFormElementHelp(hasError, this.state, formElement.name),
           color: hasError ? 'isDanger' : undefined,
-          icon: hasError ? formElement.errorIcon || 'fa fa-exclamation' : isValid ? formElement.validIcon || 'fa fa-check' : formElement.initialIcon ? formElement.initialIcon : undefined,
-          hasIconRight: formElement.errorIconRight,
+          icon: formElement.leftIcon,
           onChange: onChange,
           placeholder: formElement.placeholder,
-          value: initialValue }))
+          value: initialValue })),
+        getCustomErrorIcon(hasError, isValid, this.state, formElement)
       )
     );
   } else {
@@ -1194,15 +1193,14 @@ function getFormTextInputArea(options) {
       _react2.default.createElement(
         'div',
         (0, _extends3.default)({}, wrapperProps, { style: (0, _assign2.default)({}, wrapperProps.style, { position: 'relative', display: 'block' }) }),
-        getCustomLeftIcon(formElement),
         _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
           help: getFormElementHelp(hasError, this.state, formElement.name),
           color: hasError ? 'isDanger' : undefined,
-          icon: hasError ? formElement.errorIcon || 'fa fa-exclamation' : isValid ? formElement.validIcon || 'fa fa-check' : formElement.initialIcon ? formElement.initialIcon : undefined,
-          hasIconRight: formElement.errorIconRight,
+          icon: formElement.leftIcon,
           onChange: onChange,
           placeholder: formElement.placeholder,
-          value: initialValue }))
+          value: initialValue })),
+        getCustomErrorIcon(hasError, isValid, this.state, formElement)
       )
     );
   } else {
@@ -1349,7 +1347,6 @@ function getFormSelect(options) {
     _react2.default.createElement(
       'div',
       { className: "__re-bulma_control" + iconClassNames, style: { position: 'relative', display: 'block' } },
-      getCustomLeftIcon(formElement),
       _react2.default.createElement(
         _reBulma.Select,
         (0, _extends3.default)({}, formElement.passProps, {
@@ -1370,6 +1367,7 @@ function getFormSelect(options) {
           );
         })
       ),
+      getCustomLeftIcon(formElement),
       !formElement.errorIconLeft ? getCustomErrorIcon(hasError, isValid, this.state, formElement) : null
     )
   );
@@ -1710,12 +1708,12 @@ function getRawInput(options) {
     _react2.default.createElement(
       'div',
       (0, _extends3.default)({}, wrapperProps, { style: (0, _assign2.default)({}, wrapperProps.style, { position: 'relative' }) }),
-      getCustomLeftIcon(formElement),
       _react2.default.createElement('input', (0, _extends3.default)({}, passableProps, {
         type: formElement.type,
         checked: this.state[formElement.name],
         onChange: onValueChange
       })),
+      getCustomLeftIcon(formElement),
       getCustomErrorLabel(hasError, this.state, formElement)
     )
   );
@@ -2089,8 +2087,8 @@ function getFormDatePicker(options) {
       _react2.default.createElement(
         'div',
         { className: '__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right' + (formElement.leftIcon ? ' __ra-left-icon' : ''), style: { position: 'relative' } },
-        getCustomLeftIcon(formElement),
         _react2.default.createElement(_SingleDatePickerWrapper2.default, (0, _extends3.default)({ key: i }, SingleDatePickerProps)),
+        getCustomLeftIcon(formElement),
         getCustomErrorIcon(hasError, isValid, this.state, formElement),
         getCustomErrorLabel(hasError, this.state, formElement)
       )
@@ -2103,8 +2101,8 @@ function getFormDatePicker(options) {
       _react2.default.createElement(
         'div',
         { className: '__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right' + (formElement.leftIcon ? ' __ra-left-icon' : ''), style: { position: 'relative' } },
-        getCustomLeftIcon(formElement),
         _react2.default.createElement(_DateRangePickerWrapper2.default, (0, _extends3.default)({ key: i }, RangeDatePickerProps)),
+        getCustomLeftIcon(formElement),
         getCustomErrorIcon(hasError, isValid, this.state, formElement),
         getCustomErrorLabel(hasError, this.state, formElement)
       )
