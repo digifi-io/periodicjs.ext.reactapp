@@ -655,17 +655,17 @@ function getFormDropdown(options) {
   if (this.props.__formOptions && formElement.formoptions_field && this.props.__formOptions[formElement.formoptions_field]) {
     dropdowndata = this.props.__formOptions[formElement.formoptions_field];
     dropdowndata = dropdowndata.map(function (option) {
-      return option[imageField] ? { text: option[displayField], value: option[valueField], key: _renderContentComponent(option[valueField]), image: { avatar: true, src: option[imageField] } } : { text: option[displayField], value: option[valueField], key: _renderContentComponent(option[valueField]), icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: option.content ? _this6.getRenderedComponent(option.content) : null };
+      return option[imageField] ? { text: _renderContentComponent(option[displayField]), value: option[valueField], key: option[valueField], image: { avatar: true, src: option[imageField] } } : { text: _renderContentComponent(option[displayField]), value: option[valueField], key: option[valueField], icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: option.content ? _this6.getRenderedComponent(option.content) : null };
     });
   } else if (this.props.__formOptions && this.props.__formOptions[formElement.name]) {
     dropdowndata = this.props.__formOptions[formElement.name];
     dropdowndata = dropdowndata.map(function (option) {
-      return option[imageField] ? { text: option[displayField], value: option[valueField], key: _renderContentComponent(option[valueField]), image: { avatar: true, src: option[imageField] } } : { text: option[displayField], value: option[valueField], key: _renderContentComponent(option[valueField]), icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: option.content ? _this6.getRenderedComponent(option.content) : null };
+      return option[imageField] ? { text: _renderContentComponent(option[displayField]), value: option[valueField], key: option[valueField], image: { avatar: true, src: option[imageField] } } : { text: _renderContentComponent(option[displayField]), value: option[valueField], key: option[valueField], icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: option.content ? _this6.getRenderedComponent(option.content) : null };
     });
   } else {
     dropdowndata = formElement.options || [];
     dropdowndata = dropdowndata.map(function (option) {
-      return option[imageField] ? { text: option[displayField], value: option[valueField], key: _renderContentComponent(option[valueField]), image: { avatar: true, src: option[imageField] } } : { text: option[displayField], value: option[valueField], key: _renderContentComponent(option[valueField]), icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: option.content ? _this6.getRenderedComponent(option.content) : null };
+      return option[imageField] ? { text: _renderContentComponent(option[displayField]), value: option[valueField], key: option[valueField], image: { avatar: true, src: option[imageField] } } : { text: _renderContentComponent(option[displayField]), value: option[valueField], key: option[valueField], icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: option.content ? _this6.getRenderedComponent(option.content) : null };
     });
   }
   passedProps.options = dropdowndata;
