@@ -793,7 +793,6 @@ export function getFormMaskedInput(options) {
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <span {...wrapperProps} style={Object.assign({}, wrapperProps.style, { position: 'relative' })}>
-      {getCustomLeftIcon(formElement)}
       <MaskedInput
         {...passableProps}
         mask={mask}
@@ -802,6 +801,7 @@ export function getFormMaskedInput(options) {
         onChange={onChange}
         placeholder={formElement.placeholder}
         value={initialValue} />
+      {getCustomLeftIcon(formElement)}
       {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
       {getCustomErrorLabel(hasError, this.state, formElement)}
     </span>
@@ -937,15 +937,14 @@ export function getFormAddressAPIInput(options) {
     return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
       {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
       <div {...wrapperProps} style={Object.assign({}, wrapperProps.style, { position: 'relative' })}>
-        {getCustomLeftIcon(formElement)}
         <Input {...passableProps}
           help={getFormElementHelp(hasError, this.state, formElement.name)}
           color={(hasError) ? 'isDanger' : undefined}
-          icon={(hasError) ? formElement.errorIcon || 'fa fa-exclamation' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
-          hasIconRight={formElement.errorIconRight}
+          icon={formElement.leftIcon}
           onChange={onChange}
           placeholder={formElement.placeholder}
           value={initialValue} />
+          {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
       </div>
     </FormItem>); 
   } else {
@@ -1042,15 +1041,14 @@ export function getFormTextInputArea(options) {
       return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
       {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
       <div {...wrapperProps} style={Object.assign({}, wrapperProps.style, {position: 'relative', display: 'block'})}>
-        {getCustomLeftIcon(formElement)}
         <Input {...passableProps}
           help={getFormElementHelp(hasError, this.state, formElement.name)}
           color={(hasError) ? 'isDanger' : undefined}
-          icon={(hasError) ? formElement.errorIcon || 'fa fa-exclamation' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
-          hasIconRight={formElement.errorIconRight}
+          icon={formElement.leftIcon}
           onChange={onChange}
           placeholder={formElement.placeholder}
           value={initialValue} />
+          {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
       </div>
   </FormItem>);
   } else {
@@ -1185,7 +1183,6 @@ export function getFormSelect(options) {
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div className={"__re-bulma_control" + iconClassNames} style={{ position: 'relative', display: 'block' }}>
-      {getCustomLeftIcon(formElement)}
       <Select {...formElement.passProps}
         style={Object.assign({}, { flex: 'inherit', marginBottom: 0 }, (formElement.passProps && formElement.passProps.style) ? formElement.passProps.style : {})}
         help={getFormElementHelp(hasError, this.state, formElement.name)}
@@ -1200,6 +1197,7 @@ export function getFormSelect(options) {
           return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
         })}
       </Select>
+        {getCustomLeftIcon(formElement)}
       {(!formElement.errorIconLeft) ? getCustomErrorIcon(hasError, isValid, this.state, formElement) : null}
     </div>
   </FormItem>);
@@ -1495,13 +1493,13 @@ export function getRawInput(options) {
   return (<FormItem key={i} {...formElement.layoutProps} >
     {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
     <div {...wrapperProps} style={Object.assign({}, wrapperProps.style, { position: 'relative' })}>
-      {getCustomLeftIcon(formElement)}
       <input {...passableProps}
         type={formElement.type}
         checked={this.state[ formElement.name ]}
         onChange={onValueChange}
-      >
+        >
       </input>
+      {getCustomLeftIcon(formElement)}
       {getCustomErrorLabel(hasError, this.state, formElement)}
     </div>
   </FormItem>);
@@ -1806,8 +1804,8 @@ export function getFormDatePicker(options) {
     return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
       {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
       <div className={`__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right${(formElement.leftIcon) ? ' __ra-left-icon' : ''}`} style={{ position: 'relative' }}>
-        {getCustomLeftIcon(formElement)}
         <SingleDatePickerWrapper key={i} {...SingleDatePickerProps} />
+        {getCustomLeftIcon(formElement)}
         {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
         {getCustomErrorLabel(hasError, this.state, formElement)}
       </div>
@@ -1817,8 +1815,8 @@ export function getFormDatePicker(options) {
     return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue}>
       {formElement.customLabel ? customLabel(formElement) : getFormLabel(formElement)}
       <div className={`__re-bulma_control  __re-bulma_has-icon __re-bulma_has-icon-right${(formElement.leftIcon) ? ' __ra-left-icon' : ''}`} style={{ position: 'relative' }}>
-        {getCustomLeftIcon(formElement)}
         <DateRangePickerWrapper key={i} {...RangeDatePickerProps} />
+        {getCustomLeftIcon(formElement)}
         {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
         {getCustomErrorLabel(hasError, this.state, formElement)}
       </div>
