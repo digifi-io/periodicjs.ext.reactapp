@@ -84,7 +84,7 @@ function getCustomErrorIcon(hasError, isValid, state, formelement) {
         : '';
 
   return (formelement.errorIconRight || formelement.errorIconLeft)
-    ? <i className={`__re-bulma_fa ${iconVar}`} style={iconStyle}></i>
+    ? <i className={`__re-bulma_fa ${iconVar} __ra_custom_error_icon`} style={iconStyle}></i>
     : null;
 }
 
@@ -941,7 +941,7 @@ export function getFormAddressAPIInput(options) {
           help={getFormElementHelp(hasError, this.state, formElement.name)}
           color={(hasError) ? 'isDanger' : undefined}
           icon={formElement.leftIcon}
-          onChange={onChange}
+          onChange={onChange} 
           placeholder={formElement.placeholder}
           value={initialValue} />
           {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
