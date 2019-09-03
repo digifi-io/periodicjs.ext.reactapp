@@ -168,7 +168,7 @@ var SingleDatePickerWrapper = function (_Component) {
 
       return _react2.default.createElement(
         'div',
-        { className: '' + (this.state.focused ? 'active' : '') },
+        { className: '' + (this.state.focused ? '__ra_date_picker_active' : '') },
         _react2.default.createElement(_reactDates.SingleDatePicker, (0, _extends3.default)({}, props, {
           id: 'date_input',
           date: date,
