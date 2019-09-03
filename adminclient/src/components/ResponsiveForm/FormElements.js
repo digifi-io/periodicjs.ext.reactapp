@@ -504,14 +504,6 @@ export function getFormDatalist(options) {
   </FormItem>);
 }
 
-function _renderContentComponent(content){
-  if (typeof content === 'object' && !Array.isArray) {
-    return this.getRenderedComponent(content);
-  } else {
-    return content;
-  }
-}
-
 export function getFormDropdown(options) {
   let { formElement, i, } = options;
   let initialValue = getInitialValue(formElement, Object.assign({}, this.state, unflatten(this.state)));
@@ -522,7 +514,13 @@ export function getFormDropdown(options) {
   let wrapperProps = Object.assign({
     className: '__re-bulma_control',
   }, formElement.wrapperProps)
-
+  let _renderContentComponent = (content) => {
+    if (typeof content === 'object' && !Array.isArray(content)) {
+      return this.getRenderedComponent(content);
+    } else {
+      return content;
+    }
+  }
   wrapperProps.className = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ?
     wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
     : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
@@ -540,15 +538,15 @@ export function getFormDropdown(options) {
   if (this.props.__formOptions && formElement.formoptions_field && this.props.__formOptions[ formElement.formoptions_field ]) {
     dropdowndata = this.props.__formOptions[ formElement.formoptions_field ];
     dropdowndata = dropdowndata.map(option => ((option[ imageField ])
-      ? { text: _renderContentComponent(option[ displayField ]), value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[ imageField ] }, }
-      : { text: _renderContentComponent(option[ displayField ]), value: option[ valueField ], key: option[ valueField ], icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: (option.content) ? this.getRenderedComponent(option.content) : null }));
+    ? { text: _renderContentComponent(option[ displayField ]), value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[ imageField ] }, }
+    : { text: _renderContentComponent(option[ displayField ]), value: option[ valueField ], key: option[ valueField ], icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: (option.content) ? this.getRenderedComponent(option.content) : null }));
   }
   else if (this.props.__formOptions && this.props.__formOptions[ formElement.name ]) {
     dropdowndata = this.props.__formOptions[ formElement.name ];
     dropdowndata = dropdowndata.map(option => ((option[ imageField ])
       ? { text: _renderContentComponent(option[ displayField ]), value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[ imageField ] }, }
       : { text: _renderContentComponent(option[ displayField ]), value: option[ valueField ], key: option[ valueField ], icon: option.icon, selectedLabelStyle: option.selectedLabelStyle, content: (option.content) ? this.getRenderedComponent(option.content) : null }));
-  } else {
+    } else {
     dropdowndata = formElement.options || [];
     dropdowndata = dropdowndata.map(option => ((option[ imageField ])
       ? { text: _renderContentComponent(option[ displayField ]), value: option[ valueField ], key: option[ valueField ], image: { avatar: true, src: option[ imageField ] }, }
