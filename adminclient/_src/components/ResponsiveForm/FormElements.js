@@ -618,14 +618,6 @@ function getFormDatalist(options) {
   );
 }
 
-function _renderContentComponent(content) {
-  if ((typeof content === 'undefined' ? 'undefined' : (0, _typeof3.default)(content)) === 'object' && !Array.isArray) {
-    return this.getRenderedComponent(content);
-  } else {
-    return content;
-  }
-}
-
 function getFormDropdown(options) {
   var _this6 = this;
 
@@ -640,7 +632,13 @@ function getFormDropdown(options) {
   var wrapperProps = (0, _assign2.default)({
     className: '__re-bulma_control'
   }, formElement.wrapperProps);
-
+  var _renderContentComponent = function _renderContentComponent(content) {
+    if ((typeof content === 'undefined' ? 'undefined' : (0, _typeof3.default)(content)) === 'object' && !Array.isArray(content)) {
+      return _this6.getRenderedComponent(content);
+    } else {
+      return content;
+    }
+  };
   wrapperProps.className = (hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft) ? formElement.errorIconRight ? wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right' : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left' : wrapperProps.className;
   wrapperProps.className = formElement.leftIcon || formElement.updateIconOnChange ? wrapperProps.className + ' __ra-left-icon' : wrapperProps.className;
 
